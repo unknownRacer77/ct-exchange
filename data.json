@@ -1,7 +1,7 @@
 [
     {
         "page": 1,
-        "timestamp": "2026-08-17 02:33:51",
+        "timestamp": "2026-08-17 02:35:17",
         "items": [
             {
                 "name": "다",
@@ -25,7 +25,7 @@
     },
     {
         "page": 2,
-        "timestamp": "2026-08-17 02:33:55",
+        "timestamp": "2026-08-17 02:35:21",
         "items": [
             {
                 "name": "다",
@@ -49,7 +49,7 @@
     },
     {
         "page": 3,
-        "timestamp": "2026-08-17 02:33:59",
+        "timestamp": "2026-08-17 02:35:25",
         "items": [
             {
                 "name": "다",
@@ -67,7 +67,7 @@
     },
     {
         "page": 4,
-        "timestamp": "2026-08-17 02:34:03",
+        "timestamp": "2026-08-17 02:35:30",
         "items": [
             {
                 "name": "다",
@@ -84,318 +84,6 @@
             {
                 "name": "IMZ",
                 "nickname": "7이 느쩐니' (",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 5,
-        "timestamp": "2026-08-17 02:34:07",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 6,
-        "timestamp": "2026-08-17 02:34:11",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "I",
-                "nickname": "15 e:",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "IMZ",
-                "nickname": "7이 느쩐니' (",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 7,
-        "timestamp": "2026-08-17 02:34:15",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 8,
-        "timestamp": "2026-08-17 02:34:19",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "VI",
-                "nickname": "xnc 렉수에 O(",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 9,
-        "timestamp": "2026-08-17 02:34:23",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 10,
-        "timestamp": "2026-08-17 02:34:28",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 11,
-        "timestamp": "2026-08-17 02:34:32",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 12,
-        "timestamp": "2026-08-17 02:34:36",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 13,
-        "timestamp": "2026-08-17 02:34:40",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "",
-                "nickname": "",
-                "time": "",
-                "price": "2"
-            },
-            {
-                "name": "IMZ",
-                "nickname": "7이 느쩐니' (",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 14,
-        "timestamp": "2026-08-17 02:34:44",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 15,
-        "timestamp": "2026-08-17 02:34:48",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "EXU VON",
-                "nickname": "가Cel H데 기크 -",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 16,
-        "timestamp": "2026-08-17 02:34:52",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "",
-                "nickname": "",
-                "time": "",
-                "price": "2"
-            }
-        ]
-    },
-    {
-        "page": 17,
-        "timestamp": "2026-08-17 02:34:56",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 18,
-        "timestamp": "2026-08-17 02:35:00",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
-                "time": "",
-                "price": ""
-            }
-        ]
-    },
-    {
-        "page": 19,
-        "timestamp": "2026-08-17 02:35:04",
-        "items": [
-            {
-                "name": "다",
-                "nickname": "I",
-                "time": "",
-                "price": ""
-            },
-            {
-                "name": "W?",
-                "nickname": "`",
                 "time": "",
                 "price": ""
             }
