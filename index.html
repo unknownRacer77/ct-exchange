@@ -3,501 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>시티거래소 - 실시간 마켓</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>시티레이서 거래소</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Pretendard', sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f4f5f7;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* 상단 헤더 카드 */
+        .header-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .title-area h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 12px;
+            background: #e8ecef;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* 필터 버튼 영역 */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .filter-btn {
+            border: none;
+            background: #e5e8eb;
+            color: #4e5968;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: #ffffff;
+            color: #191f28;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* 거래소 테이블 디자인 */
+        .table-container {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: #8c8275; /* 헤더 우드/브라운 톤 */
+            color: #ffffff;
+        }
+
+        th {
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f2f4f6;
+            font-size: 14px;
+            color: #333d4b;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .item-cell {
+            font-weight: 600;
+        }
+
+        .price {
+            font-weight: 700;
+            color: #191f28;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #8b95a1;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-start p-4">
-
-    <!-- 메인 컨테이너 -->
-    <div id="mobile-frame" class="w-full max-w-md md:max-h-[880px] bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300">
-        
-        <!-- 상단 헤더 -->
-        <header class="bg-slate-900/80 backdrop-blur border-b border-slate-800 p-4 flex items-center justify-between sticky top-0 z-10">
-            <div class="flex items-center space-x-2">
-                <div class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></div>
-                <h1 class="font-bold text-lg tracking-wide text-cyan-400">시티거래소</h1>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button onclick="triggerManualSync()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700 transition flex items-center space-x-1">
-                    <i class="fa-solid fa-rotate text-[10px]"></i>
-                    <span id="last-sync-time">방금 전</span>
-                </button>
-                <button onclick="toggleMobileFrame()" class="hidden md:block text-slate-400 hover:text-white px-2 py-1 text-xs bg-slate-800 rounded-lg">
-                    <i class="fa-solid fa-expand"></i>
-                </button>
+<body>
+    <div class="container">
+        <!-- 헤더 영역 -->
+        <header class="header-card">
+            <div class="header-info">
+                <div class="title-area">
+                    <h1>시티레이서 실시간 매물 목록</h1>
+                    <span class="badge">전체 서버</span>
+                </div>
             </div>
         </header>
 
-        <!-- 크롤러 상태 바 -->
-        <div class="bg-slate-950/50 px-4 py-2 border-b border-slate-800/60 text-xs flex flex-col gap-1.5">
-            <div class="flex justify-between items-center text-slate-400">
-                <span id="crawler-status-label">24시간 크롤러: 1 / 1 페이지 탐색 중...</span>
-                <span id="crawler-page-count" class="font-mono text-cyan-400 font-semibold">100%</span>
-            </div>
-            <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                <div id="crawler-progress-bar" class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-full transition-all duration-300"></div>
-            </div>
+        <!-- 필터 버튼 영역 -->
+        <div class="filter-bar">
+            <button class="filter-btn active">전체</button>
+            <button class="filter-btn">최신순</button>
+            <button class="filter-btn">가격 low</button>
+            <button class="filter-btn">가격 high</button>
         </div>
 
-        <!-- 메인 콘텐츠 스크롤 영역 -->
-        <main class="flex-1 overflow-y-auto p-4 space-y-4">
-            
-            <!-- 시세 차트 카드 -->
-            <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-3.5">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-xs font-semibold text-slate-300 uppercase tracking-wider">시장 평균 시세 추이</h2>
-                    <span class="text-[10px] text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/50">실시간</span>
-                </div>
-                <div class="h-28 w-full">
-                    <canvas id="marketChart"></canvas>
-                </div>
-            </div>
-
-            <!-- 검색 및 필터 -->
-            <div class="space-y-2">
-                <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-sm"></i>
-                    <input type="text" id="search-input" oninput="handleSearch()" placeholder="아이템 이름 또는 판매자 검색..." 
-                        class="w-full bg-slate-800/60 border border-slate-700/60 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
-                </div>
-
-                <!-- 카테고리 탭 -->
-                <div class="flex space-x-1.5 overflow-x-auto pb-1 text-xs">
-                    <button onclick="filterCategory('ALL')" class="cat-btn px-3 py-1.5 rounded-lg font-medium bg-cyan-500 text-slate-950 transition whitespace-nowrap">전체</button>
-                    <button onclick="filterCategory('PARTS')" class="cat-btn px-3 py-1.5 rounded-lg font-medium bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap">파츠</button>
-                    <button onclick="filterCategory('ENGINE')" class="cat-btn px-3 py-1.5 rounded-lg font-medium bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap">엔진/미션</button>
-                </div>
-
-                <!-- 클래스 필터 -->
-                <div class="flex space-x-1 overflow-x-auto pb-1 text-[11px]">
-                    <button onclick="filterClass('ALL')" class="cls-btn px-2.5 py-1 rounded bg-slate-800 text-cyan-400 border border-cyan-500/40 transition whitespace-nowrap">전체클래스</button>
-                    <button onclick="filterClass('G')" class="cls-btn px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap">G클래스</button>
-                    <button onclick="filterClass('S')" class="cls-btn px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap">S클래스</button>
-                    <button onclick="filterClass('A')" class="cls-btn px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap">A클래스</button>
-                    <button onclick="filterClass('B')" class="cls-btn px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap">B클래스</button>
-                    <button onclick="filterClass('C')" class="cls-btn px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap">C클래스</button>
-                </div>
-            </div>
-
-            <!-- 아이템 리스트 -->
-            <div id="item-list" class="space-y-2.5">
-                <!-- 동적 렌더링 영역 -->
-            </div>
-
-        </main>
-
-        <!-- 하단 네비게이션바 -->
-        <nav class="bg-slate-900 border-t border-slate-800 py-2.5 px-6 flex justify-around items-center text-xs text-slate-400">
-            <button onclick="switchTab('market')" id="nav-market" class="flex flex-col items-center text-cyan-400 transition">
-                <i class="fa-solid fa-store text-base mb-1"></i>
-                <span>거래소</span>
-            </button>
-            <button onclick="switchTab('bookmarks')" id="nav-bookmarks" class="flex flex-col items-center hover:text-slate-200 transition">
-                <i class="fa-solid fa-bookmark text-base mb-1"></i>
-                <span>즐겨찾기</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- 상세 정보 모달 -->
-    <div id="detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-2xl relative animate-in fade-in zoom-in duration-200">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            
-            <div class="flex items-center space-x-3">
-                <div id="modal-icon-bg" class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl">
-                    <i id="modal-icon" class="fa-solid fa-box"></i>
-                </div>
-                <div>
-                    <span id="modal-class" class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-cyan-400 border border-slate-700">클래스</span>
-                    <h3 id="modal-name" class="font-bold text-base text-white mt-1">아이템 이름</h3>
-                </div>
-            </div>
-
-            <div class="bg-slate-950/50 rounded-xl p-3.5 space-y-2 border border-slate-800/60 text-xs">
-                <div class="flex justify-between">
-                    <span class="text-slate-400">판매 가격</span>
-                    <span id="modal-price" class="font-bold text-cyan-400 font-mono text-sm">0 CT</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">판매자</span>
-                    <span id="modal-seller" class="text-slate-200 font-medium">-</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">등록 잔여 시간</span>
-                    <span id="modal-time" class="text-slate-300 font-mono">-</span>
-                </div>
-            </div>
-
-            <!-- 개별 아이템 시세 차트 -->
-            <div class="space-y-1.5">
-                <span class="text-[11px] text-slate-400 font-medium">최근 수집 시세 변동</span>
-                <div class="h-24 w-full bg-slate-800/30 rounded-xl p-2 border border-slate-800">
-                    <canvas id="detailChart"></canvas>
-                </div>
-            </div>
-
-            <div class="flex space-x-2 pt-1">
-                <button onclick="toggleBookmarkFromModal()" id="modal-bookmark-btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl font-medium text-xs border border-slate-700 transition flex items-center justify-center space-x-1.5">
-                    <i class="fa-regular fa-bookmark"></i>
-                    <span>즐겨찾기 추가</span>
-                </button>
-                <button onclick="closeModal()" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 py-2.5 rounded-xl font-bold text-xs transition">
-                    확인
-                </button>
-            </div>
+        <!-- 데이터 테이블 -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 35%;">이름</th>
+                        <th style="width: 10%;">수량</th>
+                        <th style="width: 25%;">가격</th>
+                        <th style="width: 15%;">닉네임</th>
+                        <th style="width: 15%;">남은시간</th>
+                    </tr>
+                </thead>
+                <tbody id="item-table-body">
+                    <tr>
+                        <td colspan="5" class="loading">데이터를 불러오는 중입니다...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- 토스트 메시지 -->
-    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-slate-200 px-4 py-2.5 rounded-xl shadow-2xl text-xs z-50 hidden flex items-center space-x-2 transition-all">
-        <i class="fa-solid fa-circle-check text-cyan-400"></i>
-        <span id="toast-message">메시지 내용</span>
-    </div>
-
-    <!-- 자바스크립트 로직 -->
     <script>
-        let items = [];
-        let currentCategory = 'ALL';
-        let currentClass = 'ALL';
-        let currentTab = 'market';
-        let searchQuery = '';
-        let crawlerPage = 1;
-        const totalPages = 5;
-        let selectedItemForModal = null;
-        let marketChartObj = null;
-        let detailChartObj = null;
+        // data.json 불러오기 및 강제 최신화
+        async function fetchAndRender() {
+            try {
+                // ?t=타임스탬프 붙여서 브라우저 캐시 방지 (화면 바로 갱신)
+                const response = await fetch('data.json?t=' + new Date().getTime());
+                if (!response.ok) throw new Error('data.json 로드 실패');
+                
+                const jsonData = await response.json();
 
- // data.json에서 데이터를 불러와 렌더링하는 함수
-async function fetchAndRenderItems() {
-    try {
-        const response = await fetch('data.json?t=' + new Date().getTime());
-        if (!response.ok) throw new Error('data.json 로드 실패');
-        const jsonData = await response.json();
-        
-        let rawItems = [];
-        if (Array.isArray(jsonData)) {
-            jsonData.forEach(pageData => {
-                if (pageData.items && Array.isArray(pageData.items)) {
-                    rawItems.push(...pageData.items);
-                }
-            });
-        }
-        
-        // 카테고리 및 아이콘 자동 분류 함수 연결
-        items = rawItems.map((item, index) => {
-            return {
-                id: index + 1,
-                name: item.name || '알 수 없는 아이템',
-                category: getCategoryFromName(item.name || ''),
-                cls: extractClass(item.name || ''),
-                price: parsePrice(item.price),
-                timeMinutes: parseTimeMinutes(item.time),
-                seller: item.nickname || '알 수 없음',
-                icon: getIconByCategory(item.name || ''),
-                isBookmarked: false
-            };
-        });
-        
-        renderItems();
-    } catch (error) {
-        console.error('데이터 처리 오류:', error);
-    }
-}
-        // 아이템 이름에서 클래스 추출
-        function extractClass(name) {
-            if (name.includes('G클래스')) return 'G';
-            if (name.includes('S클래스')) return 'S';
-            if (name.includes('A클래스')) return 'A';
-            if (name.includes('B클래스')) return 'B';
-            if (name.includes('C클래스')) return 'C';
-            return 'ALL';
-        }
+                // 파이썬 이중 구조(page -> items) 풀어헤치기
+                let flatItems = [];
+                jsonData.forEach(pageObj => {
+                    if (pageObj.items && Array.isArray(pageObj.items)) {
+                        flatItems.push(...pageObj.items);
+                    }
+                });
 
-        // 가격 문자열을 숫자로 변환
-        function parsePrice(priceStr) {
-            if (!priceStr) return 0;
-            const cleanStr = priceStr.replace(/[^0-9]/g, '');
-            return cleanStr ? parseInt(cleanStr, 10) : 0;
-        }
-
-        // 시간 문자열을 분 단위로 변환
-        function parseTimeMinutes(timeStr) {
-            if (!timeStr) return 60;
-            let totalMins = 0;
-            const hoursMatch = timeStr.match(/(\d+)\s*시간/);
-            const minsMatch = timeStr.match(/(\d+)\s*분/);
-            if (hoursMatch) totalMins += parseInt(hoursMatch[1], 10) * 60;
-            if (minsMatch) totalMins += parseInt(minsMatch[1], 10);
-            if (totalMins === 0) {
-                const numbers = timeStr.replace(/[^0-9]/g, '');
-                if (numbers) totalMins = parseInt(numbers, 10) || 30;
+                renderTable(flatItems);
+            } catch (error) {
+                console.error('오류 발생:', error);
+                document.querySelector('#item-table-body').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="loading" style="color: red;">
+                            데이터를 불러올 수 없습니다. (data.json 업로드 상태를 확인해주세요)
+                        </td>
+                    </tr>
+                `;
             }
-            return totalMins;
         }
 
-        // 카테고리 판별 (드롭 제외, 엔진/미션과 파츠로 분류)
-        function getCategoryFromName(name) {
-            if (name.includes('엔진') || name.includes('미션')) return 'ENGINE';
-            return 'PARTS';
-        }
-
-        // 아이콘 선택
-        function getIconByCategory(name) {
-            if (name.includes('엔진')) return 'fa-gears';
-            if (name.includes('미션')) return 'fa-sliders';
-            if (name.includes('인터쿨러')) return 'fa-fan';
-            return 'fa-box';
-        }
-
-        // 아이템 목록 렌더링
-        function renderItems() {
-            const listContainer = document.getElementById("item-list");
-            listContainer.innerHTML = "";
-
-            let filtered = items.filter(item => {
-                const matchesCategory = currentCategory === 'ALL' || item.category === currentCategory;
-                const matchesClass = currentClass === 'ALL' || item.cls === currentClass;
-                const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                      item.seller.toLowerCase().includes(searchQuery.toLowerCase());
-                const matchesTab = currentTab === 'market' || (currentTab === 'bookmarks' && item.isBookmarked);
-                return matchesCategory && matchesClass && matchesSearch && matchesTab;
-            });
-
-            if (filtered.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="text-center py-12 text-slate-500 text-xs">
-                        <i class="fa-solid fa-box-open text-2xl mb-2"></i>
-                        <p>등록된 아이템이 없습니다.</p>
-                    </div>
+        // 테이블에 목록 렌더링 (이미지 태그 제거)
+        function renderTable(items) {
+            const tbody = document.querySelector('#item-table-body');
+            
+            if (!items || items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="loading">등록된 매물이 없습니다.</td>
+                    </tr>
                 `;
                 return;
             }
 
-            filtered.forEach(item => {
-                const card = document.createElement("div");
-                card.className = "bg-slate-800/40 hover:bg-slate-800/70 border border-slate-800 hover:border-slate-700 rounded-xl p-3 transition flex items-center justify-between cursor-pointer group";
-                card.onclick = () => openModal(item.id);
-
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700/60 flex items-center justify-center text-cyan-400 text-sm group-hover:border-cyan-500/50 transition">
-                            <i class="fa-solid ${item.icon}"></i>
+            tbody.innerHTML = items.map(item => `
+                <tr>
+                    <td>
+                        <div class="item-cell">
+                            <span>${item.name || '알 수 없음'}</span>
                         </div>
-                        <div>
-                            <div class="flex items-center space-x-1.5">
-                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-cyan-400 font-mono border border-slate-700">${item.cls}</span>
-                                <h4 class="text-xs font-medium text-white group-hover:text-cyan-300 transition">${item.name}</h4>
-                            </div>
-                            <div class="flex items-center space-x-2 mt-1 text-[11px] text-slate-400">
-                                <span>${item.seller}</span>
-                                <span>•</span>
-                                <span class="font-mono">${formatTime(item.timeMinutes)}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-right flex items-center space-x-3">
-                        <div>
-                            <div class="text-xs font-bold text-cyan-400 font-mono">${item.price.toLocaleString()} CT</div>
-                        </div>
-                        <button onclick="event.stopPropagation(); toggleBookmark(${item.id})" class="text-slate-500 hover:text-cyan-400 p-1">
-                            <i class="${item.isBookmarked ? 'fa-solid text-cyan-400' : 'fa-regular'} fa-bookmark text-sm"></i>
-                        </button>
-                    </div>
-                `;
-                listContainer.appendChild(card);
-            });
+                    </td>
+                    <td>1</td>
+                    <td class="price">${item.price ? item.price + '원' : '-'}</td>
+                    <td>${item.nickname || '알 수 없음'}</td>
+                    <td>${item.time || '-'}</td>
+                </tr>
+            `).join('');
         }
 
-        function formatTime(mins) {
-            const h = Math.floor(mins / 60);
-            const m = mins % 60;
-            if (h > 0) return `${h}시간 ${m}분`;
-            return `${m}분`;
-        }
-
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = "cat-btn px-3 py-1.5 rounded-lg font-medium bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap";
-            });
-            event.target.className = "cat-btn px-3 py-1.5 rounded-lg font-medium bg-cyan-500 text-slate-950 transition whitespace-nowrap";
-            renderItems();
-        }
-
-        function filterClass(cls) {
-            currentClass = cls;
-            document.querySelectorAll('.cls-btn').forEach(btn => {
-                btn.className = "cls-btn px-2.5 py-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition whitespace-nowrap";
-            });
-            event.target.className = "cls-btn px-2.5 py-1 rounded bg-slate-800 text-cyan-400 border border-cyan-500/40 transition whitespace-nowrap";
-            renderItems();
-        }
-
-        function handleSearch() {
-            searchQuery = document.getElementById("search-input").value;
-            renderItems();
-        }
-
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById("nav-market").className = tab === 'market' ? "flex flex-col items-center text-cyan-400 transition" : "flex flex-col items-center hover:text-slate-200 transition text-slate-400";
-            document.getElementById("nav-bookmarks").className = tab === 'bookmarks' ? "flex flex-col items-center text-cyan-400 transition" : "flex flex-col items-center hover:text-slate-200 transition text-slate-400";
-            renderItems();
-        }
-
-        function toggleBookmark(id) {
-            const item = items.find(i => i.id === id);
-            if (item) {
-                item.isBookmarked = !item.isBookmarked;
-                renderItems();
-                showToast(item.isBookmarked ? "즐겨찾기에 추가되었습니다." : "즐겨찾기가 해제되었습니다.");
-            }
-        }
-
-        function openModal(id) {
-            selectedItemForModal = items.find(i => i.id === id);
-            if (!selectedItemForModal) return;
-
-            document.getElementById("modal-class").innerText = selectedItemForModal.cls + " 클래스";
-            document.getElementById("modal-name").innerText = selectedItemForModal.name;
-            document.getElementById("modal-price").innerText = selectedItemForModal.price.toLocaleString() + " CT";
-            document.getElementById("modal-seller").innerText = selectedItemForModal.seller;
-            document.getElementById("modal-time").innerText = formatTime(selectedItemForModal.timeMinutes);
-            document.getElementById("modal-icon").className = `fa-solid ${selectedItemForModal.icon}`;
-
-            const bookmarkBtn = document.getElementById("modal-bookmark-btn");
-            if (selectedItemForModal.isBookmarked) {
-                bookmarkBtn.innerHTML = `<i class="fa-solid text-cyan-400 fa-bookmark"></i><span>즐겨찾기 해제</span>`;
-            } else {
-                bookmarkBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i><span>즐겨찾기 추가</span>`;
-            }
-
-            document.getElementById("detail-modal").classList.remove("hidden");
-            renderDetailChart();
-        }
-
-        function closeModal() {
-            document.getElementById("detail-modal").classList.add("hidden");
-        }
-
-        function toggleBookmarkFromModal() {
-            if (selectedItemForModal) {
-                toggleBookmark(selectedItemForModal.id);
-                openModal(selectedItemForModal.id);
-            }
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById("toast");
-            document.getElementById("toast-message").innerText = msg;
-            toast.classList.remove("hidden");
-            setTimeout(() => {
-                toast.classList.add("hidden");
-            }, 2000);
-        }
-
-        // 전체 페이지 비율 연동 크롤러 루프
-        function startCrawlerLoop() {
-            setInterval(() => {
-                crawlerPage += 1;
-                if (crawlerPage > totalPages) {
-                    crawlerPage = 1;
-                }
-                const progressPercent = Math.round((crawlerPage / totalPages) * 100);
-                document.getElementById("crawler-progress-bar").style.width = `${progressPercent}%`;
-                document.getElementById("crawler-page-count").innerText = `${progressPercent}%`;
-                document.getElementById("crawler-status-label").innerText = `24시간 크롤러: ${crawlerPage} / ${totalPages} 페이지 탐색 중...`;
-            }, 800);
-        }
-
-        function triggerManualSync() {
-            const now = new Date();
-            const timeStr = now.toTimeString().split(' ')[0];
-            document.getElementById("last-sync-time").innerText = `방금 전 (${timeStr})`;
-            showToast("실시간 데이터 동기화 완료");
-        }
-
-        function toggleMobileFrame() {
-            const frame = document.getElementById("mobile-frame");
-            if (frame.classList.contains("max-w-md")) {
-                frame.classList.remove("max-w-md", "md:max-h-[880px]");
-                frame.classList.add("max-w-xl");
-            } else {
-                frame.classList.remove("max-w-xl");
-                frame.classList.add("max-w-md", "md:max-h-[880px]");
-            }
-        }
-
-        function initCharts() {
-            const ctx = document.getElementById('marketChart').getContext('2d');
-            marketChartObj = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['6일전', '5일전', '4일전', '3일전', '2일전', '어제', '오늘'],
-                    datasets: [{
-                        label: '평균 시세 (CT)',
-                        data: [480000000, 465000000, 450000000, 430000000, 440000000, 420000000, 425000000],
-                        borderColor: '#00f0ff',
-                        backgroundColor: 'rgba(0, 240, 255, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
-                        y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }
-                    }
-                }
-            });
-        }
-
-        function renderDetailChart() {
-            const ctx = document.getElementById('detailChart').getContext('2d');
-            if (detailChartObj) detailChartObj.destroy();
-
-            detailChartObj = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['1차 수집', '2차 수집', '3차 수집', '4차 수집', '현재'],
-                    datasets: [{
-                        data: [470000000, 460000000, 455000000, 450000000, selectedItemForModal ? selectedItemForModal.price : 450000000],
-                        borderColor: '#ffb700',
-                        backgroundColor: 'rgba(255, 183, 0, 0.1)',
-                        fill: true,
-                        tension: 0.2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { display: false } },
-                        y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }
-                    }
-                }
-            });
-        }
-
-        // 페이지 로드시 실행
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchAndRenderItems();
-            startCrawlerLoop();
-            initCharts();
-        });
+        // 페이지 로드 완료 시 실행
+        document.addEventListener('DOMContentLoaded', fetchAndRender);
     </script>
 </body>
 </html>
