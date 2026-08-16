@@ -87,26 +87,38 @@ def check_last_page_pixel():
         pass
     return False
 
-def preprocess_crop(crop_img, scale=2.5, adaptive=False):
+# 1. 아이템/가격/시간용 전처리 (CLAHE 대비 강화)
+def preprocess_crop(crop_img, scale=2.5):
     img = np.array(crop_img)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     h, w = img.shape[:2]
     img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    if adaptive:
-        # 어두운 배경의 게임 UI 글자를 선명하게 따기 위한 적응형 이진화
-        gray = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-    else:
-        gray = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
-        
-    return gray
+    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+    return clahe.apply(gray)
 
-def clean_ocr_text(text):
-    if not text:
+# 2. 닉네임용 전처리 (CLAHE 대비 강화)
+def preprocess_nickname(crop_img, scale=2.5):
+    img = np.array(crop_img)
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    h, w = img.shape[:2]
+    img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+    return clahe.apply(gray)
+
+# 3. 아이템명 보정 및 대문자 변환
+def clean_item_name(text):
+    if not text: 
         return ""
-    # 자주 틀리는 OCR 오인식 강제 보정
-    text = text.replace('<', 'S').replace(';', 'r').replace('  ', ' ')
+    text = text.upper()
+    replacements = {
+        '오일물러': '오일쿨러', '인터론러': '인터쿨러', '언진': '엔진', 
+        '로러': '로터', '드리쓰로틀': '독립쓰로틀', '드리쓰로든': '독립쓰로틀', 
+        '대뼈라디에이터': '대용량라디에이터', '대뼈': '대용량', '하이객': '하이캠',
+    }
+    for wrong, right in replacements.items():
+        text = text.replace(wrong.upper(), right.upper())
     return text.strip()
 
 def extract_current_page_items(win):
@@ -120,32 +132,30 @@ def extract_current_page_items(win):
         # 아이템 이름
         try:
             name_crop = screenshot.crop((612, 383 + dy, 952, 407 + dy))
-            processed_name = preprocess_crop(name_crop, scale=2.5, adaptive=False)
-            name_text = clean_ocr_text(" ".join(reader.readtext(processed_name, detail=0)))
+            name_text = clean_item_name(" ".join(reader.readtext(preprocess_crop(name_crop), detail=0)))
         except Exception:
             name_text = ""
 
         # 판매자 닉네임
         try:
             nick_crop = screenshot.crop((976, 382 + dy, 1202, 405 + dy))
-            processed_nick = preprocess_crop(nick_crop, scale=2.5, adaptive=False)
-            nickname_text = clean_ocr_text(" ".join(reader.readtext(processed_nick, detail=0)))
+            nickname_text = " ".join(reader.readtext(preprocess_nickname(nick_crop), detail=0)).strip()
         except Exception:
             nickname_text = ""
 
         # 남은 시간
         try:
             time_crop = screenshot.crop((767, 421 + dy, 867, 442 + dy))
-            processed_time = preprocess_crop(time_crop, scale=2.5, adaptive=True)
-            time_text = " ".join(reader.readtext(processed_time, allowlist='0123456789시간분초 ', detail=0)).strip()
+            raw_time = " ".join(reader.readtext(preprocess_crop(time_crop), allowlist='0123456789시간분초 ', detail=0)).strip()
+            time_text = raw_time.replace('간', '시간').replace(' ', '')
         except Exception:
             time_text = ""
 
         # 가격
         try:
             price_crop = screenshot.crop((659, 459 + dy, 864, 480 + dy))
-            processed_price = preprocess_crop(price_crop, scale=2.5, adaptive=True)
-            price_text = " ".join(reader.readtext(processed_price, allowlist='0123456789,CT', detail=0)).strip()
+            raw_price = " ".join(reader.readtext(preprocess_crop(price_crop), allowlist='0123456789,CTO', detail=0)).strip()
+            price_text = raw_price.replace('O', '0').replace('o', '0').replace(' ', '')
         except Exception:
             price_text = ""
 
