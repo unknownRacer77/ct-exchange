@@ -22,10 +22,10 @@ except Exception:
 reader = easyocr.Reader(['en', 'ko'], gpu=False)
 
 COORDS = {
-    'buy_tab': (560, 267),
-    'sell_tab': (770, 264),
-    'refresh': (1172, 339),
-    'next_btn': (934, 1133),
+    'buy_tab': (953, 388),
+    'sell_tab': (1316, 386),
+    'refresh': (1994, 509),
+    'next_btn': (1592, 1779),
 }
 
 all_items_data = []
