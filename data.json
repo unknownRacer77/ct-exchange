@@ -1,7 +1,7 @@
 [
     {
         "page": 1,
-        "timestamp": "2026-08-17 00:27:36",
+        "timestamp": "2026-08-17 00:29:17",
         "items": [
             {
                 "name": "트원터보 SPIG",
@@ -43,7 +43,7 @@
     },
     {
         "page": 2,
-        "timestamp": "2026-08-17 00:27:40",
+        "timestamp": "2026-08-17 00:29:22",
         "items": [
             {
                 "name": "목리스로트 SPIG",
@@ -85,7 +85,7 @@
     },
     {
         "page": 3,
-        "timestamp": "2026-08-17 00:27:45",
+        "timestamp": "2026-08-17 00:29:26",
         "items": [
             {
                 "name": "트원터보 SCIG",
@@ -127,7 +127,7 @@
     },
     {
         "page": 4,
-        "timestamp": "2026-08-17 00:27:50",
+        "timestamp": "2026-08-17 00:29:31",
         "items": [
             {
                 "name": "트원터보 SCIG",
@@ -169,7 +169,7 @@
     },
     {
         "page": 5,
-        "timestamp": "2026-08-17 00:27:54",
+        "timestamp": "2026-08-17 00:29:36",
         "items": [
             {
                 "name": "트원터보 SCIG",
@@ -211,7 +211,7 @@
     },
     {
         "page": 6,
-        "timestamp": "2026-08-17 00:27:59",
+        "timestamp": "2026-08-17 00:29:40",
         "items": [
             {
                 "name": "브레이크액 EXIG",
@@ -253,7 +253,7 @@
     },
     {
         "page": 7,
-        "timestamp": "2026-08-17 00:28:03",
+        "timestamp": "2026-08-17 00:29:45",
         "items": [
             {
                 "name": "오일쿨러 SPIG",
@@ -295,7 +295,7 @@
     },
     {
         "page": 8,
-        "timestamp": "2026-08-17 00:28:08",
+        "timestamp": "2026-08-17 00:29:50",
         "items": [
             {
                 "name": "LM-0O3S DR엔진",
@@ -337,7 +337,7 @@
     },
     {
         "page": 9,
-        "timestamp": "2026-08-17 00:28:13",
+        "timestamp": "2026-08-17 00:29:54",
         "items": [
             {
                 "name": "트원터보 SCIG",
@@ -379,7 +379,7 @@
     },
     {
         "page": 10,
-        "timestamp": "2026-08-17 00:28:17",
+        "timestamp": "2026-08-17 00:29:59",
         "items": [
             {
                 "name": "하이캠 UCIG",
@@ -421,7 +421,7 @@
     },
     {
         "page": 11,
-        "timestamp": "2026-08-17 00:28:22",
+        "timestamp": "2026-08-17 00:30:04",
         "items": [
             {
                 "name": "SPG-R DR엔진",
@@ -458,354 +458,6 @@
                 "nickname": "예라하느매",
                 "time": "시초",
                 "price": "1500000CT"
-            }
-        ]
-    },
-    {
-        "page": 12,
-        "timestamp": "2026-08-17 00:28:27",
-        "items": [
-            {
-                "name": "LM-OO3S FA엔진",
-                "nickname": "덜b세상아",
-                "time": "1시시간",
-                "price": "35950000C"
-            },
-            {
-                "name": "TRS-1 DR엔진",
-                "nickname": "초극하",
-                "time": "시시시시간",
-                "price": "200,000CT"
-            },
-            {
-                "name": "오일쿨러 SPIG",
-                "nickname": "액비씨 =료",
-                "time": "392시시간",
-                "price": "2190000CT"
-            },
-            {
-                "name": "에어름리너 UCIG",
-                "nickname": "IIDII",
-                "time": "3977시",
-                "price": "100,000CT"
-            },
-            {
-                "name": "에어극리너 UCG",
-                "nickname": "FDII",
-                "time": "3927시시간",
-                "price": "100000CT"
-            },
-            {
-                "name": "이테이크파이프 9PIG",
-                "nickname": "GII",
-                "time": "2077시",
-                "price": "1700000CT"
-            }
-        ]
-    },
-    {
-        "page": 13,
-        "timestamp": "2026-08-17 00:28:31",
-        "items": [
-            {
-                "name": "오일쿨러 SPI 설계도6",
-                "nickname": "님작하세요",
-                "time": "39시시간",
-                "price": "590000CT"
-            },
-            {
-                "name": "독립쓰로들 SPTG",
-                "nickname": "덜어세살아",
-                "time": "3816시시간",
-                "price": "1,290,000CT"
-            },
-            {
-                "name": "트위터보 UCG",
-                "nickname": "구칼",
-                "time": "3916시시간",
-                "price": "50000CT"
-            },
-            {
-                "name": "드리스로트 UCIG",
-                "nickname": "777",
-                "time": "301517",
-                "price": "170000CT"
-            },
-            {
-                "name": "에어극리너 SPAG",
-                "nickname": "메비씨 커로",
-                "time": "3945시시간",
-                "price": "1400000CT"
-            },
-            {
-                "name": "IM-OIPS DP에지",
-                "nickname": "Wine계저",
-                "time": "39시시초",
-                "price": "13000CT"
-            }
-        ]
-    },
-    {
-        "page": 14,
-        "timestamp": "2026-08-17 00:28:36",
-        "items": [
-            {
-                "name": "트원터보 UCIG",
-                "nickname": "dhrudaur",
-                "time": "3913시시간",
-                "price": "50,000CT"
-            },
-            {
-                "name": "트리터보 UCIG",
-                "nickname": "dbrudanr",
-                "time": "3813시시간",
-                "price": "50000CT"
-            },
-            {
-                "name": "패드 EX1G",
-                "nickname": "Kinc반찌",
-                "time": "391시시간",
-                "price": "8000000CT"
-            },
-            {
-                "name": "에어름리너 SCIG",
-                "nickname": "h6t779z",
-                "time": "391시",
-                "price": "99,000CT"
-            },
-            {
-                "name": "오이로터 $PA 선계도6",
-                "nickname": "Coioveutt",
-                "time": "390시시간",
-                "price": "600000CT"
-            },
-            {
-                "name": "브레이질로스 3716",
-                "nickname": "여피브이",
-                "time": "390초",
-                "price": "40000CT"
-            }
-        ]
-    },
-    {
-        "page": 15,
-        "timestamp": "2026-08-17 00:28:41",
-        "items": [
-            {
-                "name": "박보어 SP2G",
-                "nickname": "ArWaH",
-                "time": "2923시시간",
-                "price": "500,000CT2"
-            },
-            {
-                "name": "트리터보 SCIG",
-                "nickname": "누진스",
-                "time": "237시시간",
-                "price": "180,000CT"
-            },
-            {
-                "name": "브레이크액 EXIG",
-                "nickname": "무구",
-                "time": "2920시시간",
-                "price": "3000000CT"
-            },
-            {
-                "name": "이리이터파이프 SPIG",
-                "nickname": "하이나의바",
-                "time": "791시7",
-                "price": "1500000CT"
-            },
-            {
-                "name": "CPG-R DR예I지",
-                "nickname": "마aCn",
-                "time": "345시시간",
-                "price": "180000CT"
-            },
-            {
-                "name": "NGONY WOLS",
-                "nickname": "7드같이",
-                "time": "9시시초",
-                "price": "1000000CT"
-            }
-        ]
-    },
-    {
-        "page": 16,
-        "timestamp": "2026-08-17 00:28:46",
-        "items": [
-            {
-                "name": "오일쿨러 SPI 설계도6",
-                "nickname": "살공이",
-                "time": "297시시간",
-                "price": "700,000CT"
-            },
-            {
-                "name": "트리터보 UCIG",
-                "nickname": "awee3r",
-                "time": "1시22시시간",
-                "price": "50000CT"
-            },
-            {
-                "name": "오일쿨러 UCIG",
-                "nickname": "나부래이다",
-                "time": "107시시간",
-                "price": "150000CT"
-            },
-            {
-                "name": "이터국러 SP? 설계도6",
-                "nickname": "FipND 프근",
-                "time": "107시",
-                "price": "800000CT"
-            },
-            {
-                "name": "TRS-1 5A어기",
-                "nickname": "나시이아이",
-                "time": "1320시시간",
-                "price": "900000CT"
-            },
-            {
-                "name": "무러 371G",
-                "nickname": "Pan나o으즈",
-                "time": "1990시",
-                "price": "5000000CT"
-            }
-        ]
-    },
-    {
-        "page": 17,
-        "timestamp": "2026-08-17 00:28:50",
-        "items": [
-            {
-                "name": "로터 FX1G",
-                "nickname": "WLine야a",
-                "time": "1시간19시시간",
-                "price": "7,000,000CT"
-            },
-            {
-                "name": "N-60OX DR엔진",
-                "nickname": "악으로도저",
-                "time": "1시18시시간",
-                "price": "200,000CT"
-            },
-            {
-                "name": "트위터보 SP2 설계도6",
-                "nickname": "CvberNext",
-                "time": "101시시간",
-                "price": "1500000CT"
-            },
-            {
-                "name": "하이캠 UCIG",
-                "nickname": "Snplovplt",
-                "time": "107",
-                "price": "130000CT"
-            },
-            {
-                "name": "도리스로트 SPA G",
-                "nickname": "Do레도",
-                "time": "7시시간79",
-                "price": "1500000CT"
-            },
-            {
-                "name": "오입국러 SCI G",
-                "nickname": "Gomipo?",
-                "time": "371",
-                "price": "240000CT"
-            }
-        ]
-    },
-    {
-        "page": 18,
-        "timestamp": "2026-08-17 00:28:55",
-        "items": [
-            {
-                "name": "대용량라디에이터 UCIG",
-                "nickname": "[상태양회",
-                "time": "1시시간17분",
-                "price": "150000CT"
-            },
-            {
-                "name": "하이캠 UCIG",
-                "nickname": "[살태일회",
-                "time": "시시간17분",
-                "price": "150,000CT"
-            },
-            {
-                "name": "오일쿨러 UCIG",
-                "nickname": "'사태약3",
-                "time": "1시시간171",
-                "price": "150000CT"
-            },
-            {
-                "name": "트위터보 UCIG",
-                "nickname": "(Godllik",
-                "time": "71시시간39",
-                "price": "70000CT"
-            },
-            {
-                "name": "이테이크피이프 VCIG",
-                "nickname": "드머니나가",
-                "time": "7시시간59",
-                "price": "70000CT"
-            },
-            {
-                "name": "트위러H VCIG",
-                "nickname": "sT어",
-                "time": "17751",
-                "price": "77777CT"
-            }
-        ]
-    },
-    {
-        "page": 19,
-        "timestamp": "2026-08-17 00:29:00",
-        "items": [
-            {
-                "name": "트원터보 UCIG",
-                "nickname": "IIPRADAII",
-                "time": "5시시간57분",
-                "price": "80000CT"
-            },
-            {
-                "name": "N-60OX DR엔진",
-                "nickname": "다시고고",
-                "time": "5시시간57분",
-                "price": "200,000CT"
-            },
-            {
-                "name": "N-600X FA엔진",
-                "nickname": "BIAZFP사자",
-                "time": "5시시간531",
-                "price": "2000000CT"
-            },
-            {
-                "name": "이러이터파이프 UCIG",
-                "nickname": "360벌대L",
-                "time": "3시시간409",
-                "price": "65,000CT"
-            },
-            {
-                "name": "브레이크액 EXIG",
-                "nickname": "FioNDZ미",
-                "time": "7시시간76",
-                "price": "1900000CT"
-            },
-            {
-                "name": "트위러H 9CI G",
-                "nickname": "C게이서",
-                "time": "1분",
-                "price": "222222CT"
-            }
-        ]
-    },
-    {
-        "page": 20,
-        "timestamp": "2026-08-17 00:29:04",
-        "items": [
-            {
-                "name": "독리스로트 UCIG",
-                "nickname": "OUEST커피",
-                "time": "4분",
-                "price": "200,000CT"
             }
         ]
     }
