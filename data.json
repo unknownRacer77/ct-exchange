@@ -1,18 +1,11 @@
 [
     {
         "page": 1,
-        "timestamp": "2026-08-17 03:05:02",
+        "timestamp": "2026-08-17 03:06:22",
         "items": [
             {
-                "name": "a",
-                "nickname": "",
-                "time": "",
-                "price": "",
-                "image_path": "item_images/item_2.png"
-            },
-            {
                 "name": "Window [설정]으로",
-                "nickname": "종 Vindows틀 정품 인종합니다",
+                "nickname": "종 Vindows틀 정품 인종합니다.",
                 "time": "",
                 "price": "",
                 "image_path": "item_images/item_3.png"
