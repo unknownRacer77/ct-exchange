@@ -10,19 +10,15 @@ import pydirectinput
 import easyocr
 import cv2
 import numpy as np
-from PIL import Image
-from mss import mss
 
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(2)
 except Exception:
-    try:
-        ctypes.windll.user32.SetProcessDPIAware()
-    except Exception:
-        pass
+    pass
 
 reader = easyocr.Reader(['en', 'ko'], gpu=False)
 
+# [좌표 측정기로 찍은 모니터 전체 절대 좌표] 그대로 입력
 COORDS = {
     'buy_tab': (1900, 770),
     'sell_tab': (2630, 770),
@@ -48,10 +44,7 @@ def click_coord(btn_name):
     pydirectinput.mouseUp()
 
 def get_game_screenshot():
-    with mss() as sct:
-        monitor = sct.monitors[1]
-        sct_img = sct.grab(monitor)
-        return Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+    return pyautogui.screenshot()
 
 def get_item_list_screenshot():
     full_img = get_game_screenshot()
