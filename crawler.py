@@ -10,6 +10,7 @@ import pydirectinput
 import easyocr
 import cv2
 import numpy as np
+import torch
 from PIL import Image
 
 try:
@@ -17,7 +18,8 @@ try:
 except Exception:
     pass
 
-# GPU 활성화로 인식 속도 대폭 향상
+# GPU 사용 가능 여부 확인 및 출력
+print(f">> PyTorch CUDA 사용 가능 여부: {torch.cuda.is_available()}")
 reader = easyocr.Reader(['en', 'ko'], gpu=True)
 
 COORDS = {
@@ -55,7 +57,6 @@ def preprocess_for_ocr(crop_img):
     img = np.array(crop_img)
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     h, w = gray.shape[:2]
-    # 4배 -> 2배로 줄이고, 글자 깨지는 이진화 제거 (그레이스케일 유지)
     resized = cv2.resize(gray, (w * 2, h * 2), interpolation=cv2.INTER_CUBIC)
     return resized
 
@@ -164,7 +165,9 @@ def main():
 
             click_pos(*COORDS['next_btn'])
             pydirectinput.moveTo(10, 10)
-            time.sleep(1.2)
+            
+            # 페이지 로딩 대기 시간을 2.0초로 늘려 화면이 완전히 바뀐 후 비교하도록 수정
+            time.sleep(2.0)
 
             current_screen = pyautogui.screenshot()
             curr_img = get_list_region(current_screen)
