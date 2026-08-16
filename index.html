@@ -177,7 +177,7 @@
         let detailChartObj = null;
 
         // data.json에서 데이터를 불러와 렌더링하는 함수
-        async function fetchAndRenderItems() {
+async function fetchAndRenderItems() {
     try {
         const response = await fetch('data.json?t=' + new Date().getTime());
         if (!response.ok) throw new Error('Network response was not ok');
@@ -212,7 +212,6 @@
         console.error('데이터 로드 실패:', error);
     }
 }
-
         // 아이템 이름에서 클래스 추출
         function extractClass(name) {
             if (name.includes('G클래스')) return 'G';
