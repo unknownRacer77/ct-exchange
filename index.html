@@ -9,7 +9,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -113,47 +113,14 @@
             color: #64748b;
         }
 
-        /* 클래스 필터 헤더 */
-        .class-header {
+        /* 상태바 */
+        .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 13px;
             color: #94a3b8;
-        }
-
-        .class-filters {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            margin-bottom: 16px;
-            padding-bottom: 4px;
-        }
-
-        .class-btn {
-            background: #162032;
-            border: 1px solid #28354d;
-            color: #94a3b8;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .class-btn.active {
-            background: #06b6d4;
-            color: #000;
-            border-color: #06b6d4;
-        }
-
-        /* 정렬 선택바 */
-        .control-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 16px;
         }
 
         .select-box {
@@ -187,21 +154,6 @@
             margin-bottom: 8px;
         }
 
-        .item-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .class-badge {
-            background: #202d44;
-            color: #38bdf8;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
         .seller-id {
             font-size: 12px;
             color: #94a3b8;
@@ -213,6 +165,7 @@
             color: #f8fafc;
             margin-bottom: 12px;
             word-break: break-all;
+            letter-spacing: -0.3px;
         }
 
         .item-footer {
@@ -227,26 +180,11 @@
             font-weight: 600;
         }
 
-        .price-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         .price-text {
             font-size: 16px;
             font-weight: 800;
             color: #facc15;
-        }
-
-        .detail-btn {
-            background: #202d44;
-            border: none;
-            color: #38bdf8;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
+            letter-spacing: -0.5px;
         }
 
         .loading {
@@ -275,28 +213,13 @@
         </div>
 
         <!-- 검색창 -->
-        <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 또는 판매자 검색 (예: 듀랄루민, FA엔진)" oninput="applyFilters()">
+        <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 또는 판매자 검색" oninput="applyFilters()">
 
-        <!-- 클래스 필터 헤더 -->
-        <div class="class-header">
-            <span>클래스 구분</span>
+        <!-- 상태바 (총 개수 & 정렬) -->
+        <div class="status-bar">
             <span id="total-count">총 0개 매물</span>
-        </div>
-
-        <!-- 클래스 필터 버튼 -->
-        <div class="class-filters">
-            <button class="class-btn active" onclick="filterClass('전체', this)">전체</button>
-            <button class="class-btn" onclick="filterClass('G클래스', this)">G클래스</button>
-            <button class="class-btn" onclick="filterClass('S클래스', this)">S클래스</button>
-            <button class="class-btn" onclick="filterClass('A클래스', this)">A클래스</button>
-            <button class="class-btn" onclick="filterClass('B클래스', this)">B클래스</button>
-            <button class="class-btn" onclick="filterClass('C클래스', this)">C클래스</button>
-        </div>
-
-        <!-- 정렬 컨트롤 -->
-        <div class="control-bar">
             <select class="select-box" id="sort-select" onchange="applyFilters()">
-                <option value="time">남은시간 임박순</option>
+                <option value="default">기본순</option>
                 <option value="price-asc">가격 낮은순</option>
                 <option value="price-desc">가격 높은순</option>
             </select>
@@ -310,9 +233,7 @@
 
     <script>
         let rawItems = [];
-        let selectedClass = '전체';
 
-        // 1. 데이터 로드 및 렌더링
         async function fetchAndRender() {
             const listEl = document.getElementById('item-list');
             const syncEl = document.getElementById('sync-time');
@@ -336,11 +257,10 @@
                 applyFilters();
             } catch (err) {
                 console.error(err);
-                listEl.innerHTML = `<div class="loading" style="color: #f43f5e;">데이터를 불러올 수 없습니다.<br>(data.json 확인 필요)</div>`;
+                listEl.innerHTML = `<div class="loading" style="color: #f43f5e;">데이터를 불러올 수 없습니다.</div>`;
             }
         }
 
-        // 2. 검색, 클래스, 정렬 필터 적용
         function applyFilters() {
             const query = document.getElementById('search-input').value.toLowerCase();
             const sortVal = document.getElementById('sort-select').value;
@@ -348,11 +268,9 @@
             let filtered = rawItems.filter(item => {
                 const nameMatch = item.name && item.name.toLowerCase().includes(query);
                 const nickMatch = item.nickname && item.nickname.toLowerCase().includes(query);
-                const classMatch = selectedClass === '전체' || (item.name && item.name.includes(selectedClass));
-                return (nameMatch || nickMatch) && classMatch;
+                return nameMatch || nickMatch;
             });
 
-            // 정렬
             if (sortVal === 'price-asc') {
                 filtered.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
             } else if (sortVal === 'price-desc') {
@@ -363,27 +281,38 @@
             renderList(filtered);
         }
 
-        // 금액 정수 변환
         function parsePrice(str) {
             if (!str) return 0;
             return parseInt(str.toString().replace(/[^0-9]/g, '')) || 0;
         }
 
-        // 천단위 콤마 보정 포맷터
+        // 금액 천단위 콤마(,) 및 'CT' 고정 포맷터
         function formatPrice(str) {
             const num = parsePrice(str);
             if (num === 0) return '-';
             return num.toLocaleString() + ' CT';
         }
 
-        function filterClass(cls, btn) {
-            selectedClass = cls;
-            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            applyFilters();
+        // 시간 데이터 정제 포맷터 (숫자만 추출해서 'X일 XX시간' 형태로 강제 보정)
+        function formatTime(str) {
+            if (!str) return '-';
+            
+            // 모든 숫자 단락 추출
+            const numbers = str.match(/\d+/g);
+            if (!numbers) return str;
+
+            const totalHours = parseInt(numbers[0], 10);
+            if (isNaN(totalHours)) return str;
+
+            if (totalHours >= 24) {
+                const days = Math.floor(totalHours / 24);
+                const hours = totalHours % 24;
+                return `${days}일 ${hours.toString().padStart(2, '0')}시간`;
+            } else {
+                return `0일 ${totalHours.toString().padStart(2, '0')}시간`;
+            }
         }
 
-        // 3. 아이템 리스트 HTML 생성
         function renderList(items) {
             const listEl = document.getElementById('item-list');
             
@@ -393,37 +322,21 @@
             }
 
             listEl.innerHTML = items.map(item => {
-                const clsName = getClassName(item.name);
                 const formattedPrice = formatPrice(item.price);
+                const formattedTime = formatTime(item.time);
                 return `
                     <div class="item-card">
                         <div class="item-card-top">
-                            <div class="item-meta">
-                                <span class="class-badge">${clsName}</span>
-                                <span class="seller-id">ID: ${item.nickname || '알 수 없음'}</span>
-                            </div>
+                            <span class="seller-id">ID: ${item.nickname || '알 수 없음'}</span>
                         </div>
                         <div class="item-title">${item.name || '알 수 없음'}</div>
                         <div class="item-footer">
-                            <span class="time-text">⏱ ${item.time || '-'}</span>
-                            <div class="price-area">
-                                <span class="price-text">${formattedPrice}</span>
-                                <button class="detail-btn">상세</button>
-                            </div>
+                            <span class="time-text">⏱ ${formattedTime}</span>
+                            <span class="price-text">${formattedPrice}</span>
                         </div>
                     </div>
                 `;
             }).join('');
-        }
-
-        function getClassName(name) {
-            if (!name) return 'ALL클래스';
-            if (name.includes('G클래스')) return 'G클래스';
-            if (name.includes('S클래스')) return 'S클래스';
-            if (name.includes('A클래스')) return 'A클래스';
-            if (name.includes('B클래스')) return 'B클래스';
-            if (name.includes('C클래스')) return 'C클래스';
-            return 'ALL클래스';
         }
 
         document.addEventListener('DOMContentLoaded', fetchAndRender);
