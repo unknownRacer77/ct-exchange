@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시티거래소 | 시티 거래소 | 시티레이서 거래소 | 시티레이서거래소</title>
+    <meta name="keywords" content="시티거래소, 시티 거래소, 시티레이서 거래소, 시티레이서거래소, 시티레이서">
+    <meta name="description" content="시티거래소, 시티 거래소, 시티레이서 거래소, 시티레이서거래소 - 실시간 거래소 모바일 앱">
+    <meta name="naver-site-verification" content="5a532c8d01ebb8b6d548756c610b8702cb32e2af" />
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts (Noto Sans KR) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    },
+                    colors: {
+                        ctr: {
+                            dark: '#0a0d14',
+                            card: '#121824',
+                            border: '#1e293b',
+                            accent: '#00f0ff',
+                            gold: '#ffb700',
+                            red: '#ff2a5f',
+                            green: '#10b981',
+                            sub: '#94a3b8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0d14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+        .glow-accent {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+        }
+        .glow-gold {
+            box-shadow: 0 0 12px rgba(255, 183, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col items-center justify-center p-0 md:p-4">
+
+    <!-- Mobile Screen Container -->
+    <div id="mobile-frame" class="w-full max-w-md bg-ctr-dark min-h-screen md:min-h-[840px] md:max-h-[880px] md:rounded-3xl border-0 md:border md:border-slate-800 shadow-2xl flex flex-col overflow-hidden relative transition-all duration-300">
+
+        <!-- Top App Bar Header -->
+        <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 p-3.5 sticky top-0 z-30 flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-900 font-black text-sm shadow-md">
+                        CT
+                    </div>
+                    <div>
+                        <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+                            시티레이서 거래소
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-semibold border border-cyan-500/30">LIVE</span>
+                        </h1>
+                        <p class="text-[11px] text-ctr-sub flex items-center gap-1" id="sync-time-text">
+                            <i class="fa-solid fa-arrows-rotate text-[9px] text-cyan-400 animate-spin"></i>
+                            동기화: <span id="last-sync-time">방금 전 (00:02:11)</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="btn-manual-sync" onclick="triggerManualSync()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition active:scale-95 flex items-center gap-1 border border-slate-700">
+                        <i class="fa-solid fa-rotate-right text-cyan-400"></i>
+                        <span>갱신</span>
+                    </button>
+                    <button onclick="toggleMobileFrame()" class="hidden md:flex p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs transition" title="화면 크기 전환">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Crawler Progress Mini Bar -->
+            <div class="bg-slate-950/80 rounded-lg p-2 border border-slate-800/80 flex items-center justify-between text-[11px]">
+                <div class="flex items-center gap-2 w-full">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-slate-300 font-medium truncate" id="crawler-status-label">24시간 크롤러: 1 / 333 페이지 탐색 중...</span>
+                </div>
+                <span class="text-cyan-400 font-bold ml-2 whitespace-nowrap" id="crawler-page-count">1%</span>
+            </div>
+            <div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden -mt-1">
+                <div id="crawler-progress-bar" class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full w-[1%] transition-all duration-300"></div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto pb-20 relative" id="main-scroll-area">
+
+            <!-- TAB 1: EXCHANGE MAIN (Default) -->
+            <section id="tab-exchange" class="p-3.5 space-y-3">
+
+                <!-- Search Box -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="search-input" oninput="handleSearch()" 
+                        placeholder="아이템 이름 또는 판매자 검색 (예: 듀랄루민, FA엔진)" 
+                        class="w-full bg-slate-900 border border-slate-700/80 focus:border-cyan-400 rounded-xl pl-10 pr-9 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition">
+                    <button id="btn-clear-search" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Class Filter Pills -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-semibold text-slate-400">클래스 구분</span>
+                        <span class="text-[11px] text-cyan-400" id="item-count-badge">총 8개 매물</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                        <button onclick="filterClass('ALL')" class="class-filter-btn active font-semibold text-xs px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 transition border border-cyan-400 whitespace-nowrap" data-class="ALL">전체</button>
+                        <button onclick="filterClass('G')" class="class-filter-btn font-semibold text-xs px-3 py-1.5 rounded-lg bg-slate-900 text-purple-400 hover:bg-slate-800 transition border border-purple-500/40 whitespace-nowrap" data-class="G">G클래스</button>
+                        <button onclick="filterClass('S')" class="class-filter-btn font-semibold text-xs px-3 py-1.5 rounded-lg bg-slate-900 text-amber-400 hover:bg-slate-800 transition border border-amber-500/40 whitespace-nowrap" data-class="S">S클래스</button>
+                        <button onclick="filterClass('A')" class="class-filter-btn font-semibold text-xs px-3 py-1.5 rounded-lg bg-slate-900 text-red-400 hover:bg-slate-800 transition border border-red-500/40 whitespace-nowrap" data-class="A">A클래스</button>
+                        <button onclick="filterClass('B')" class="class-filter-btn font-semibold text-xs px-3 py-1.5 rounded-lg bg-slate-900 text-blue-400 hover:bg-slate-800 transition border border-blue-500/40 whitespace-nowrap" data-class="B">B클래스</button>
+                        <button onclick="filterClass('C')" class="class-filter-btn font-semibold text-xs px-3 py-1.5 rounded-lg bg-slate-900 text-emerald-400 hover:bg-slate-800 transition border border-emerald-500/40 whitespace-nowrap" data-class="C">C클래스</button>
+                    </div>
+                </div>
+
+                <!-- Category & Sort Row -->
+                <div class="flex items-center justify-between gap-2 pt-1">
+                    <select id="category-select" onchange="renderItems()" class="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-cyan-500">
+                        <option value="ALL">전체 카테고리</option>
+                        <option value="ENGINE">엔진 / 미션</option>
+                        <option value="PARTS">파츠 / 튜닝</option>
+                        <option value="DROP">드롭 아이템</option>
+                    </select>
+
+                    <select id="sort-select" onchange="renderItems()" class="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-cyan-500">
+                        <option value="TIME_ASC">남은시간 임박순</option>
+                        <option value="PRICE_ASC">가격 낮은순</option>
+                        <option value="PRICE_DESC">가격 높은순</option>
+                        <option value="NEWEST">최신 수집순</option>
+                    </select>
+                </div>
+
+                <!-- Item List Container -->
+                <div id="item-list-container" class="space-y-2.5"></div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden py-12 text-center space-y-3">
+                    <div class="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-slate-500 text-lg">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <p class="text-sm text-slate-400">검색 조건과 일치하는 매물이 없습니다.</p>
+                    <button onclick="resetFilters()" class="text-xs text-cyan-400 underline hover:text-cyan-300">필터 초기화</button>
+                </div>
+
+            </section>
+
+            <!-- TAB 2: WATCHLIST (Bookmarks) -->
+            <section id="tab-watchlist" class="hidden p-3.5 space-y-3">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-star text-amber-400"></i> 관심 매물 리스트
+                        </h2>
+                        <p class="text-[11px] text-slate-400">즐겨찾기한 아이템의 가격 변동을 주시하세요.</p>
+                    </div>
+                    <span id="watchlist-count-badge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/30">0개</span>
+                </div>
+
+                <div id="watchlist-container" class="space-y-2.5"></div>
+
+                <div id="watchlist-empty" class="py-12 text-center space-y-2">
+                    <i class="fa-solid fa-star text-slate-700 text-3xl"></i>
+                    <p class="text-xs text-slate-400">등록된 관심 매물이 없습니다.<br>매물 카드의 별표(<i class="fa-regular fa-star text-amber-400"></i>)를 눌러 추가해보세요.</p>
+                </div>
+            </section>
+
+            <!-- TAB 3: MARKET ANALYTICS -->
+            <section id="tab-analytics" class="hidden p-3.5 space-y-3">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 space-y-2">
+                    <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-line text-cyan-400"></i> 인기 매물 시세 요약
+                    </h2>
+                    <p class="text-[11px] text-slate-400">최근 7일간 실시간 거래소 평균 등록가 추이입니다.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3">
+                    <h3 class="text-xs font-bold text-cyan-400 mb-2">[S클래스] FA-2000 커스텀 엔진</h3>
+                    <div class="h-48 w-full">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl">
+                        <span class="text-[11px] text-slate-400">최저 등록가</span>
+                        <p class="text-sm font-bold text-emerald-400 mt-0.5">380,000,000 CT</p>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl">
+                        <span class="text-[11px] text-slate-400">평균 거래 시세</span>
+                        <p class="text-sm font-bold text-amber-400 mt-0.5">425,000,000 CT</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Bottom Navigation Bar (수집로그 제거 / 3개 버튼 구성) -->
+        <nav class="bg-slate-900/95 backdrop-blur-md border-t border-slate-800 fixed md:absolute bottom-0 left-0 right-0 z-30 flex items-center justify-around py-2 px-1 text-slate-400">
+            <button onclick="switchTab('exchange')" id="nav-exchange" class="nav-btn active flex flex-col items-center gap-0.5 w-1/3 text-cyan-400">
+                <i class="fa-solid fa-store text-base"></i>
+                <span class="text-[10px] font-medium">거래소</span>
+            </button>
+            <button onclick="switchTab('watchlist')" id="nav-watchlist" class="nav-btn flex flex-col items-center gap-0.5 w-1/3 hover:text-slate-200 transition">
+                <i class="fa-solid fa-star text-base"></i>
+                <span class="text-[10px] font-medium">관심매물</span>
+            </button>
+            <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn flex flex-col items-center gap-0.5 w-1/3 hover:text-slate-200 transition">
+                <i class="fa-solid fa-chart-pie text-base"></i>
+                <span class="text-[10px] font-medium">시세분석</span>
+            </button>
+        </nav>
+
+        <!-- Toast Notification Popup -->
+        <div id="toast" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-cyan-500/50 text-white text-xs px-3.5 py-2 rounded-xl shadow-2xl flex items-center gap-2 backdrop-blur-md transition-all duration-300">
+            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span id="toast-message">알림 메시지</span>
+        </div>
+
+        <!-- Item Detail Modal -->
+        <div id="item-modal" class="hidden absolute inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end justify-center p-0 md:p-4">
+            <div class="bg-slate-900 border-t md:border border-slate-800 rounded-t-2xl md:rounded-2xl w-full max-h-[90%] overflow-y-auto p-4 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span id="modal-item-class" class="px-2 py-0.5 rounded font-bold text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30">S클래스</span>
+                        <h3 id="modal-item-name" class="text-base font-bold text-white">FA-2000 커스텀 엔진</h3>
+                    </div>
+                    <button onclick="closeModal()" class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 flex items-center gap-3">
+                    <div id="modal-item-icon" class="w-14 h-14 rounded-xl bg-slate-900 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl shadow-inner flex-shrink-0">
+                        <i class="fa-solid fa-gears"></i>
+                    </div>
+                    <div class="flex-1 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-400">현재 판매가</span>
+                            <span id="modal-item-price" class="text-base font-black text-amber-400">450,000,000 CT</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400">남은 시간</span>
+                            <span id="modal-item-time" class="text-slate-200 font-semibold">01시간 15분</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400">판매자 ID</span>
+                            <span id="modal-item-seller" class="text-cyan-400 font-medium">DownhillKing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-slate-300">최근 시세 트렌드 분석</h4>
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 h-40">
+                        <canvas id="detailChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-cyan-950/30 border border-cyan-500/20 rounded-xl p-3 text-xs text-cyan-300 space-y-1">
+                    <div class="flex items-center gap-1.5 font-bold">
+                        <i class="fa-solid fa-circle-info"></i> 매물 평가 및 구매 가이드
+                    </div>
+                    <p class="text-[11px] text-cyan-200/80">본 매물은 최근 평균가 대비 약 <strong class="text-emerald-400">8.5% 저렴한 편</strong>입니다.</p>
+                </div>
+
+                <div class="flex gap-2">
+                    <button id="modal-bookmark-btn" onclick="toggleModalBookmark()" class="flex-1 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-400 font-bold text-xs hover:bg-amber-500/20 transition flex items-center justify-center gap-1.5">
+                        <i class="fa-regular fa-star"></i> 관심 매물 등록
+                    </button>
+                    <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700 transition">
+                        닫기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Logic Scripts -->
+    <script>
+        const initialItems = [
+            { id: 101, name: "[S클래스] FA-2000 커스텀 엔진", category: "ENGINE", cls: "S", price: 450000000, timeMinutes: 75, seller: "DownhillKing", icon: "fa-gears", isBookmarked: false },
+            { id: 102, name: "[A클래스] 듀랄루민 5단 숏 미션", category: "PARTS", cls: "A", price: 85000000, timeMinutes: 270, seller: "CitySpeed", icon: "fa-sliders", isBookmarked: true },
+            { id: 103, name: "[A클래스] 하이퍼 인터쿨러 R", category: "PARTS", cls: "A", price: 120000000, timeMinutes: 12, seller: "RedZone99", icon: "fa-fan", isBookmarked: false },
+            { id: 104, name: "[B클래스] 레이싱 스포츠 타이어 V2", category: "PARTS", cls: "B", price: 15000000, timeMinutes: 660, seller: "DriftMaster", icon: "fa-circle-notch", isBookmarked: false },
+            { id: 105, name: "[C클래스] 경량화 서스펜션 세트", category: "PARTS", cls: "C", price: 4200000, timeMinutes: 165, seller: "NeonRacer", icon: "fa-car-side", isBookmarked: false },
+            { id: 106, name: "[G클래스] 제우스 EX-Super 브레이크", category: "PARTS", cls: "G", price: 890000000, timeMinutes: 500, seller: "LegendRacer", icon: "fa-compact-disc", isBookmarked: false },
+            { id: 107, name: "[드롭] 황금 상자 열쇠 묶음 (10개)", category: "DROP", cls: "ALL", price: 25000000, timeMinutes: 5, seller: "ItemDealer", icon: "fa-key", isBookmarked: false },
+            { id: 108, name: "[튜닝] 카본 레이싱 스포일러", category: "PARTS", cls: "B", price: 32000000, timeMinutes: 370, seller: "AeroStyle", icon: "fa-wind", isBookmarked: false }
+        ];
+
+        let items = [...initialItems];
+        let activeClassFilter = "ALL";
+        let activeTab = "exchange";
+        let selectedItemForModal = null;
+        
+        // 크롤러 전체 페이지 설정 (333페이지 연동)
+        let crawlerPage = 1;
+        let totalPages = 333; 
+
+        let marketChartObj = null;
+        let detailChartObj = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderItems();
+            startCrawlerLoop();
+            initCharts();
+        });
+
+        function renderItems() {
+            const container = document.getElementById("item-list-container");
+            const emptyState = document.getElementById("empty-state");
+            const searchVal = document.getElementById("search-input").value.trim().toLowerCase();
+            const categoryVal = document.getElementById("category-select").value;
+            const sortVal = document.getElementById("sort-select").value;
+
+            let filtered = items.filter(item => {
+                if (activeClassFilter !== "ALL" && item.cls !== activeClassFilter && item.cls !== "ALL") return false;
+                if (categoryVal !== "ALL" && item.category !== categoryVal) return false;
+                if (searchVal) {
+                    const matchName = item.name.toLowerCase().includes(searchVal);
+                    const matchSeller = item.seller.toLowerCase().includes(searchVal);
+                    if (!matchName && !matchSeller) return false;
+                }
+                return true;
+            });
+
+            filtered.sort((a, b) => {
+                if (sortVal === "TIME_ASC") return a.timeMinutes - b.timeMinutes;
+                if (sortVal === "PRICE_ASC") return a.price - b.price;
+                if (sortVal === "PRICE_DESC") return b.price - a.price;
+                if (sortVal === "NEWEST") return b.id - a.id;
+                return 0;
+            });
+
+            document.getElementById("item-count-badge").innerText = `총 ${filtered.length}개 매물`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                return;
+            } else {
+                emptyState.classList.add("hidden");
+            }
+
+            container.innerHTML = filtered.map(item => createItemCardHTML(item)).join('');
+            renderWatchlist();
+        }
+
+        function formatCT(amount) {
+            return amount.toLocaleString() + " CT";
+        }
+
+        function formatTime(minutes) {
+            if (minutes <= 0) return "만료 임박";
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            if (h === 0) return `${m}분`;
+            return `${String(h).padStart(2, '0')}시간 ${String(m).padStart(2, '0')}분`;
+        }
+
+        function getClassBadge(cls) {
+            switch(cls) {
+                case 'G': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+                case 'S': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                case 'A': return 'bg-red-500/20 text-red-400 border-red-500/30';
+                case 'B': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                case 'C': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                default:  return 'bg-slate-700/50 text-slate-300 border-slate-600';
+            }
+        }
+
+        function createItemCardHTML(item) {
+            const isUrgent = item.timeMinutes <= 30;
+            const classBadge = getClassBadge(item.cls);
+            
+            return `
+                <div class="bg-ctr-card border border-slate-800/90 rounded-2xl p-3 transition hover:border-slate-700 relative flex flex-col gap-2">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                            <div class="w-11 h-11 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 text-lg flex-shrink-0">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 mb-0.5">
+                                    <span class="px-1.5 py-0.2 rounded font-bold text-[10px] border ${classBadge}">${item.cls}클래스</span>
+                                    <span class="text-[11px] text-slate-400 truncate">ID: ${item.seller}</span>
+                                </div>
+                                <h3 class="text-xs font-bold text-white truncate cursor-pointer hover:text-cyan-400" onclick="openModal(${item.id})">
+                                    ${item.name}
+                                </h3>
+                            </div>
+                        </div>
+                        <button onclick="toggleBookmark(${item.id})" class="p-1.5 text-slate-500 hover:text-amber-400 transition">
+                            <i class="${item.isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star text-base"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-800/60 text-xs">
+                        <div class="flex items-center gap-1 ${isUrgent ? 'text-red-400 font-bold' : 'text-slate-400'}">
+                            <i class="fa-regular fa-clock text-[11px]"></i>
+                            <span class="text-[11px]">${formatTime(item.timeMinutes)}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-black text-amber-400">${formatCT(item.price)}</span>
+                            <button onclick="openModal(${item.id})" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-[11px] font-medium border border-slate-700">
+                                상세
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderWatchlist() {
+            const container = document.getElementById("watchlist-container");
+            const empty = document.getElementById("watchlist-empty");
+            const bookmarked = items.filter(i => i.isBookmarked);
+
+            document.getElementById("watchlist-count-badge").innerText = `${bookmarked.length}개`;
+
+            if (bookmarked.length === 0) {
+                container.innerHTML = "";
+                empty.classList.remove("hidden");
+            } else {
+                empty.classList.add("hidden");
+                container.innerHTML = bookmarked.map(item => createItemCardHTML(item)).join('');
+            }
+        }
+
+        function handleSearch() {
+            const input = document.getElementById("search-input");
+            const clearBtn = document.getElementById("btn-clear-search");
+            if (input.value) clearBtn.classList.remove("hidden");
+            else clearBtn.classList.add("hidden");
+            renderItems();
+        }
+
+        function clearSearch() {
+            document.getElementById("search-input").value = "";
+            document.getElementById("btn-clear-search").classList.add("hidden");
+            renderItems();
+        }
+
+        function filterClass(cls) {
+            activeClassFilter = cls;
+            document.querySelectorAll(".class-filter-btn").forEach(btn => {
+                if (btn.dataset.class === cls) {
+                    btn.className = "class-filter-btn active font-semibold text-xs px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 transition border border-cyan-400 whitespace-nowrap";
+                } else {
+                    btn.className = "class-filter-btn font-semibold text-xs px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300 hover:bg-slate-800 transition border border-slate-800 whitespace-nowrap";
+                }
+            });
+            renderItems();
+        }
+
+        function resetFilters() {
+            document.getElementById("search-input").value = "";
+            document.getElementById("category-select").value = "ALL";
+            document.getElementById("sort-select").value = "TIME_ASC";
+            filterClass("ALL");
+        }
+
+        function toggleBookmark(id) {
+            const item = items.find(i => i.id === id);
+            if (item) {
+                item.isBookmarked = !item.isBookmarked;
+                showToast(item.isBookmarked ? `'${item.name}' 관심 매물 추가됨` : `'${item.name}' 관심 매물 해제됨`);
+                renderItems();
+            }
+        }
+
+        // 수집로그 제거 후 3개 탭 전환 로직
+        function switchTab(tab) {
+            activeTab = tab;
+            const tabs = ['exchange', 'watchlist', 'analytics'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`nav-${t}`);
+                if (t === tab) {
+                    el.classList.remove("hidden");
+                    btn.className = "nav-btn active flex flex-col items-center gap-0.5 w-1/3 text-cyan-400 font-bold";
+                } else {
+                    el.classList.add("hidden");
+                    btn.className = "nav-btn flex flex-col items-center gap-0.5 w-1/3 text-slate-400 hover:text-slate-200 transition";
+                }
+            });
+        }
+
+        function openModal(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+            selectedItemForModal = item;
+
+            document.getElementById("modal-item-name").innerText = item.name;
+            document.getElementById("modal-item-class").innerText = `${item.cls}클래스`;
+            document.getElementById("modal-item-class").className = `px-2 py-0.5 rounded font-bold text-xs border ${getClassBadge(item.cls)}`;
+            document.getElementById("modal-item-price").innerText = formatCT(item.price);
+            document.getElementById("modal-item-time").innerText = formatTime(item.timeMinutes);
+            document.getElementById("modal-item-seller").innerText = item.seller;
+            document.getElementById("modal-item-icon").innerHTML = `<i class="fa-solid ${item.icon}"></i>`;
+
+            updateModalBookmarkBtn();
+            document.getElementById("item-modal").classList.remove("hidden");
+            renderDetailChart();
+        }
+
+        function closeModal() {
+            document.getElementById("item-modal").classList.add("hidden");
+        }
+
+        function toggleModalBookmark() {
+            if (!selectedItemForModal) return;
+            toggleBookmark(selectedItemForModal.id);
+            updateModalBookmarkBtn();
+        }
+
+        function updateModalBookmarkBtn() {
+            const bmBtn = document.getElementById("modal-bookmark-btn");
+            if (selectedItemForModal && selectedItemForModal.isBookmarked) {
+                bmBtn.innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> 관심 매물 해제`;
+            } else {
+                bmBtn.innerHTML = `<i class="fa-regular fa-star"></i> 관심 매물 등록`;
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toast-message").innerText = msg;
+            toast.classList.remove("hidden");
+            setTimeout(() => {
+                toast.classList.add("hidden");
+            }, 2000);
+        }
+
+        // 전체 페이지 비율 연동 크롤러 루프
+        function startCrawlerLoop() {
+            setInterval(() => {
+                crawlerPage += 1;
+                if (crawlerPage > totalPages) {
+                    crawlerPage = 1;
+                }
+
+                const progressPercent = Math.round((crawlerPage / totalPages) * 100);
+
+                document.getElementById("crawler-progress-bar").style.width = `${progressPercent}%`;
+                document.getElementById("crawler-page-count").innerText = `${progressPercent}%`;
+                document.getElementById("crawler-status-label").innerText = `24시간 크롤러: ${crawlerPage} / ${totalPages} 페이지 탐색 중...`;
+            }, 800);
+        }
+
+        function triggerManualSync() {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            document.getElementById("last-sync-time").innerText = `방금 전 (${timeStr})`;
+            showToast("실시간 데이터 동기화 완료");
+        }
+
+        function toggleMobileFrame() {
+            const frame = document.getElementById("mobile-frame");
+            if (frame.classList.contains("max-w-md")) {
+                frame.classList.remove("max-w-md", "md:max-h-[880px]");
+                frame.classList.add("max-w-xl");
+            } else {
+                frame.classList.remove("max-w-xl");
+                frame.classList.add("max-w-md", "md:max-h-[880px]");
+            }
+        }
+
+        function initCharts() {
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            marketChartObj = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['6일전', '5일전', '4일전', '3일전', '2일전', '어제', '오늘'],
+                    datasets: [{
+                        label: '평균 시세 (CT)',
+                        data: [480000000, 465000000, 450000000, 430000000, 440000000, 420000000, 425000000],
+                        borderColor: '#00f0ff',
+                        backgroundColor: 'rgba(0, 240, 255, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+                        y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+        }
+
+        function renderDetailChart() {
+            const ctx = document.getElementById('detailChart').getContext('2d');
+            if (detailChartObj) detailChartObj.destroy();
+
+            detailChartObj = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1차 수집', '2차 수집', '3차 수집', '4차 수집', '현재'],
+                    datasets: [{
+                        data: [470000000, 460000000, 455000000, 450000000, selectedItemForModal ? selectedItemForModal.price : 450000000],
+                        borderColor: '#ffb700',
+                        backgroundColor: 'rgba(255, 183, 0, 0.1)',
+                        fill: true,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { display: false } },
+                        y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+        }
+    </script>
+<script>
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => console.log("불러온 데이터:", data));
+    </script>
+</body>
+</html>
