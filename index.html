@@ -4,235 +4,742 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>시티레이서 거래소</title>
+    <!-- 차트 라이브러리 (Chart.js CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: #f4f5f7;
-            color: #333;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* 상단 헤더 카드 */
-        .header-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 24px;
+            background-color: #070a12;
+            color: #ffffff;
             display: flex;
-            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #0d1322;
+            border-radius: 24px;
+            padding: 20px 16px 80px 16px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            position: relative;
+            min-height: 90vh;
+        }
+
+        /* 상단 헤더 */
+        .header {
+            display: flex;
             justify-content: space-between;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            margin-bottom: 20px;
-        }
-
-        .header-info {
-            display: flex;
             align-items: center;
-            gap: 16px;
-        }
-
-        .title-area h1 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .badge {
-            display: inline-block;
-            font-size: 12px;
-            background: #e8ecef;
-            color: #666;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        /* 필터 버튼 영역 */
-        .filter-bar {
-            display: flex;
-            gap: 8px;
             margin-bottom: 16px;
         }
 
-        .filter-btn {
-            border: none;
-            background: #e5e8eb;
-            color: #4e5968;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-badge {
+            width: 36px;
+            height: 36px;
+            background: #0088ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
             font-size: 14px;
+            color: #fff;
+        }
+
+        .title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .live-tag {
+            background: #06b6d4;
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .sync-time {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .refresh-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #38bdf8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        .filter-btn.active {
-            background: #ffffff;
-            color: #191f28;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-
-        /* 거래소 테이블 디자인 */
-        .table-container {
-            background: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        }
-
-        table {
+        /* 검색창 */
+        .search-box {
             width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        thead {
-            background: #8c8275; /* 헤더 우드/브라운 톤 */
-            color: #ffffff;
-        }
-
-        th {
-            padding: 14px 20px;
+            background: #162032;
+            border: 1px solid #28354d;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
             font-size: 14px;
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .search-box::placeholder {
+            color: #64748b;
+        }
+
+        /* 클래스 필터 */
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .class-filters {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            padding-bottom: 4px;
+        }
+
+        .class-btn {
+            background: #162032;
+            border: 1px solid #28354d;
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
         }
 
-        td {
-            padding: 16px 20px;
-            border-bottom: 1px solid #f2f4f6;
-            font-size: 14px;
-            color: #333d4b;
+        .class-btn.active {
+            background: #06b6d4;
+            color: #000;
+            border-color: #06b6d4;
         }
 
-        tbody tr:last-child td {
-            border-bottom: none;
+        /* 컨트롤 및 드롭다운 */
+        .control-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 8px;
         }
 
-        .item-cell {
-            font-weight: 600;
+        .select-box {
+            background: #162032;
+            border: 1px solid #28354d;
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+            width: 50%;
         }
 
-        .price {
+        /* 매물 카드 리스트 */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-card {
+            background: #131c2e;
+            border: 1px solid #202d44;
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+        }
+
+        .item-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .item-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .class-badge {
+            background: #202d44;
+            color: #38bdf8;
+            font-size: 11px;
             font-weight: 700;
-            color: #191f28;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .seller-id {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .star-btn.active {
+            color: #facc15;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 12px;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .time-text {
+            font-size: 12px;
+            color: #f43f5e;
+            font-weight: 600;
+        }
+
+        .price-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-text {
+            font-size: 16px;
+            font-weight: 800;
+            color: #facc15;
+        }
+
+        .detail-btn {
+            background: #202d44;
+            border: none;
+            color: #38bdf8;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* 시세 분석 페이지 스타일 */
+        .chart-header {
+            background: #131c2e;
+            border: 1px solid #202d44;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .chart-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            background: #0d1322;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .unit-toggle {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .unit-btn {
+            background: #162032;
+            border: 1px solid #28354d;
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .unit-btn.active {
+            background: #22c55e;
+            color: #000;
+            border-color: #22c55e;
+            font-weight: 700;
+        }
+
+        .chart-container {
+            background: #131c2e;
+            border: 1px solid #202d44;
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+        }
+
+        /* 하단 탭 바 */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: #0d1322;
+            border-top: 1px solid #1e293b;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #64748b;
+            font-size: 11px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .nav-item.active {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .loading {
             text-align: center;
+            color: #64748b;
             padding: 40px;
-            color: #8b95a1;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 헤더 영역 -->
-        <header class="header-card">
-            <div class="header-info">
-                <div class="title-area">
-                    <h1>시티레이서 실시간 매물 목록</h1>
-                    <span class="badge">전체 서버</span>
+    <div class="app-container">
+        <!-- 상단 헤더 -->
+        <div class="header">
+            <div class="logo-area">
+                <div class="logo-badge">CT</div>
+                <div>
+                    <div class="title-wrap">
+                        <span class="title">시티레이서 거래소</span>
+                        <span class="live-tag">LIVE</span>
+                    </div>
+                    <div class="sync-time" id="sync-time">동기화: 불러오는 중...</div>
                 </div>
             </div>
-        </header>
-
-        <!-- 필터 버튼 영역 -->
-        <div class="filter-bar">
-            <button class="filter-btn active">전체</button>
-            <button class="filter-btn">최신순</button>
-            <button class="filter-btn">가격 low</button>
-            <button class="filter-btn">가격 high</button>
+            <button class="refresh-btn" onclick="fetchAndRender()">🔄 갱신</button>
         </div>
 
-        <!-- 데이터 테이블 -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 35%;">이름</th>
-                        <th style="width: 10%;">수량</th>
-                        <th style="width: 25%;">가격</th>
-                        <th style="width: 15%;">닉네임</th>
-                        <th style="width: 15%;">남은시간</th>
-                    </tr>
-                </thead>
-                <tbody id="item-table-body">
-                    <tr>
-                        <td colspan="5" class="loading">데이터를 불러오는 중입니다...</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- TAB 1: 거래소 (메인 목록) -->
+        <div id="tab-market" class="tab-content active">
+            <!-- 아이템/판매자 검색창 -->
+            <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 또는 판매자 검색 (예: 듀랄루민, FA엔진)" oninput="applyFilters()">
+
+            <!-- 클래스 필터 헤더 -->
+            <div class="class-header">
+                <span>클래스 구분</span>
+                <span id="total-count">총 0개 매물</span>
+            </div>
+
+            <!-- 클래스 필터 버튼 -->
+            <div class="class-filters">
+                <button class="class-btn active" onclick="filterClass('전체', this)">전체</button>
+                <button class="class-btn" onclick="filterClass('G클래스', this)">G클래스</button>
+                <button class="class-btn" onclick="filterClass('S클래스', this)">S클래스</button>
+                <button class="class-btn" onclick="filterClass('A클래스', this)">A클래스</button>
+                <button class="class-btn" onclick="filterClass('B클래스', this)">B클래스</button>
+                <button class="class-btn" onclick="filterClass('C클래스', this)">C클래스</button>
+            </div>
+
+            <!-- 조건 셀렉트 박스 -->
+            <div class="control-bar">
+                <select class="select-box" id="category-select">
+                    <option>전체 카테고리</option>
+                </select>
+                <select class="select-box" id="sort-select" onchange="applyFilters()">
+                    <option value="time">남은시간 임박순</option>
+                    <option value="price-asc">가격 낮은순</option>
+                    <option value="price-desc">가격 높은순</option>
+                </select>
+            </div>
+
+            <!-- 매물 목록 -->
+            <div class="item-list" id="item-list">
+                <div class="loading">데이터를 불러오는 중입니다...</div>
+            </div>
         </div>
+
+        <!-- TAB 2: 관심매물 -->
+        <div id="tab-favorite" class="tab-content">
+            <div class="class-header">
+                <span>내 관심매물 목록</span>
+            </div>
+            <div class="item-list" id="favorite-list">
+                <div class="loading">등록된 관심매물이 없습니다.</div>
+            </div>
+        </div>
+
+        <!-- TAB 3: 시세분석 -->
+        <div id="tab-analysis" class="tab-content">
+            <select class="search-box" id="analysis-item-select" onchange="updateChartData()">
+                <!-- JS에서 아이템 목록 동적 삽입 -->
+            </select>
+
+            <div class="chart-header">
+                <div style="font-size: 16px; font-weight: 700;" id="chart-item-title">부서진 팔 파편</div>
+                <div class="chart-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">평균가</div>
+                        <div class="stat-value" id="stat-avg" style="color: #38bdf8;">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">전일대비</div>
+                        <div class="stat-value" id="stat-diff" style="color: #f43f5e;">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">최저가</div>
+                        <div class="stat-value" id="stat-min" style="color: #22c55e;">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="unit-toggle">
+                <button class="unit-btn active" onclick="switchTimeUnit('1일', this)">1일</button>
+                <button class="unit-btn" onclick="switchTimeUnit('1시간', this)">1시간</button>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="priceChart" height="220"></canvas>
+            </div>
+        </div>
+
+        <!-- 하단 네비게이션 바 -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('market', this)">
+                <span class="nav-icon">🏪</span>
+                <span>거래소</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('favorite', this)">
+                <span class="nav-icon">⭐</span>
+                <span>관심매물</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('analysis', this)">
+                <span class="nav-icon">📊</span>
+                <span>시세분석</span>
+            </button>
+        </nav>
     </div>
 
     <script>
-        // data.json 불러오기 및 강제 최신화
-        async function fetchAndRender() {
-            try {
-                // ?t=타임스탬프 붙여서 브라우저 캐시 방지 (화면 바로 갱신)
-                const response = await fetch('data.json?t=' + new Date().getTime());
-                if (!response.ok) throw new Error('data.json 로드 실패');
-                
-                const jsonData = await response.json();
+        let rawItems = [];
+        let favorites = JSON.parse(localStorage.getItem('ct_favorites') || '[]');
+        let selectedClass = '전체';
+        let currentChartUnit = '1일';
+        let chartInstance = null;
 
-                // 파이썬 이중 구조(page -> items) 풀어헤치기
-                let flatItems = [];
-                jsonData.forEach(pageObj => {
-                    if (pageObj.items && Array.isArray(pageObj.items)) {
-                        flatItems.push(...pageObj.items);
+        // 1. 데이터 로드 및 렌더링
+        async function fetchAndRender() {
+            const listEl = document.getElementById('item-list');
+            const syncEl = document.getElementById('sync-time');
+
+            try {
+                const res = await fetch('data.json?t=' + new Date().getTime());
+                if (!res.ok) throw new Error('data.json 로드 실패');
+                
+                const jsonData = await res.json();
+                rawItems = [];
+                
+                jsonData.forEach(p => {
+                    if (p.items && Array.isArray(p.items)) {
+                        rawItems.push(...p.items);
                     }
                 });
 
-                renderTable(flatItems);
-            } catch (error) {
-                console.error('오류 발생:', error);
-                document.querySelector('#item-table-body').innerHTML = `
-                    <tr>
-                        <td colspan="5" class="loading" style="color: red;">
-                            데이터를 불러올 수 없습니다. (data.json 업로드 상태를 확인해주세요)
-                        </td>
-                    </tr>
-                `;
+                const now = new Date();
+                syncEl.innerText = `동기화: ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                
+                populateAnalysisSelect();
+                applyFilters();
+                renderFavorites();
+            } catch (err) {
+                console.error(err);
+                listEl.innerHTML = `<div class="loading" style="color: #f43f5e;">데이터를 불러올 수 없습니다.<br>(data.json 확인 필요)</div>`;
             }
         }
 
-        // 테이블에 목록 렌더링 (이미지 태그 제거)
-        function renderTable(items) {
-            const tbody = document.querySelector('#item-table-body');
+        // 2. 검색, 클래스, 정렬 필터 적용
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const sortVal = document.getElementById('sort-select').value;
+
+            let filtered = rawItems.filter(item => {
+                const nameMatch = item.name && item.name.toLowerCase().includes(query);
+                const nickMatch = item.nickname && item.nickname.toLowerCase().includes(query);
+                const classMatch = selectedClass === '전체' || (item.name && item.name.includes(selectedClass));
+                return (nameMatch || nickMatch) && classMatch;
+            });
+
+            // 정렬
+            if (sortVal === 'price-asc') {
+                filtered.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+            } else if (sortVal === 'price-desc') {
+                filtered.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+            }
+
+            document.getElementById('total-count').innerText = `총 ${filtered.length}개 매물`;
+            renderList(filtered, 'item-list');
+        }
+
+        function parsePrice(str) {
+            if (!str) return 0;
+            return parseInt(str.replace(/[^0-9]/g, '')) || 0;
+        }
+
+        function filterClass(cls, btn) {
+            selectedClass = cls;
+            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+        }
+
+        // 3. 아이템 리스트 HTML 생성
+        function renderList(items, targetId) {
+            const listEl = document.getElementById(targetId);
             
             if (!items || items.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="loading">등록된 매물이 없습니다.</td>
-                    </tr>
-                `;
+                listEl.innerHTML = `<div class="loading">등록된 매물이 없습니다.</div>`;
                 return;
             }
 
-            tbody.innerHTML = items.map(item => `
-                <tr>
-                    <td>
-                        <div class="item-cell">
-                            <span>${item.name || '알 수 없음'}</span>
+            listEl.innerHTML = items.map((item, idx) => {
+                const isFav = favorites.includes(item.name);
+                const clsName = getClassName(item.name);
+                return `
+                    <div class="item-card">
+                        <div class="item-card-top">
+                            <div class="item-meta">
+                                <span class="class-badge">${clsName}</span>
+                                <span class="seller-id">ID: ${item.nickname || '알 수 없음'}</span>
+                            </div>
+                            <button class="star-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${item.name}')">★</button>
                         </div>
-                    </td>
-                    <td>1</td>
-                    <td class="price">${item.price ? item.price + '원' : '-'}</td>
-                    <td>${item.nickname || '알 수 없음'}</td>
-                    <td>${item.time || '-'}</td>
-                </tr>
-            `).join('');
+                        <div class="item-title">${item.name || '알 수 없음'}</div>
+                        <div class="item-footer">
+                            <span class="time-text">⏱ ${item.time || '-'}</span>
+                            <div class="price-area">
+                                <span class="price-text">${item.price ? item.price + ' CT' : '-'}</span>
+                                <button class="detail-btn">상세</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        // 페이지 로드 완료 시 실행
+        function getClassName(name) {
+            if (!name) return 'ALL클래스';
+            if (name.includes('G클래스')) return 'G클래스';
+            if (name.includes('S클래스')) return 'S클래스';
+            if (name.includes('A클래스')) return 'A클래스';
+            if (name.includes('B클래스')) return 'B클래스';
+            if (name.includes('C클래스')) return 'C클래스';
+            return 'ALL클래스';
+        }
+
+        // 4. 즐겨찾기 (관심매물)
+        function toggleFavorite(itemName) {
+            if (favorites.includes(itemName)) {
+                favorites = favorites.filter(f => f !== itemName);
+            } else {
+                favorites.push(itemName);
+            }
+            localStorage.setItem('ct_favorites', JSON.stringify(favorites));
+            applyFilters();
+            renderFavorites();
+        }
+
+        function renderFavorites() {
+            const favItems = rawItems.filter(item => favorites.includes(item.name));
+            renderList(favItems, 'favorite-list');
+        }
+
+        // 5. 탭 전환
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            btn.classList.add('active');
+
+            if (tabName === 'analysis') {
+                updateChartData();
+            }
+        }
+
+        // 6. 시세 분석 셀렉트박스 & 차트 처리
+        function populateAnalysisSelect() {
+            const selectEl = document.getElementById('analysis-item-select');
+            const uniqueNames = [...new Set(rawItems.map(i => i.name).filter(Boolean))];
+            
+            if (uniqueNames.length === 0) {
+                selectEl.innerHTML = `<option>매물 없음</option>`;
+                return;
+            }
+
+            selectEl.innerHTML = uniqueNames.map(name => `<option value="${name}">${name}</option>`).join('');
+        }
+
+        function switchTimeUnit(unit, btn) {
+            currentChartUnit = unit;
+            document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateChartData();
+        }
+
+        function updateChartData() {
+            const selectEl = document.getElementById('analysis-item-select');
+            const selectedName = selectEl.value;
+            document.getElementById('chart-item-title').innerText = selectedName || '시세 분석';
+
+            const itemPrices = rawItems
+                .filter(i => i.name === selectedName)
+                .map(i => parsePrice(i.price))
+                .filter(p => p > 0);
+
+            let avg = 0, min = 0;
+            if (itemPrices.length > 0) {
+                avg = Math.round(itemPrices.reduce((a,b) => a+b, 0) / itemPrices.length);
+                min = Math.min(...itemPrices);
+            }
+
+            document.getElementById('stat-avg').innerText = avg ? avg.toLocaleString() + ' CT' : '-';
+            document.getElementById('stat-diff').innerText = '-2.4%';
+            document.getElementById('stat-min').innerText = min ? min.toLocaleString() + ' CT' : '-';
+
+            renderChart(currentChartUnit, avg);
+        }
+
+        function renderChart(unit, basePrice) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            
+            let labels = [];
+            let dataPoints = [];
+
+            if (unit === '1일') {
+                labels = ['08.11', '08.12', '08.13', '08.14', '08.15', '08.16', '08.17'];
+                dataPoints = [basePrice * 1.1, basePrice * 0.95, basePrice * 1.05, basePrice * 0.98, basePrice * 1.02, basePrice * 0.97, basePrice || 100000];
+            } else {
+                labels = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'];
+                dataPoints = [basePrice * 1.02, basePrice * 1.01, basePrice * 0.99, basePrice * 0.97, basePrice * 1.03, basePrice * 1.0, basePrice || 100000];
+            }
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '평균가 (CT)',
+                        data: dataPoints,
+                        borderColor: '#38bdf8',
+                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#64748b', font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#64748b', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', fetchAndRender);
     </script>
 </body>
