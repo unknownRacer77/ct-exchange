@@ -65,12 +65,10 @@ def get_game_screenshot(win):
 
 def get_item_list_screenshot(win):
     full_img = get_game_screenshot(win)
-    # 거래소 박스 영역만 자르기 (좌상단: 436, 167 / 우하단: 1831, 1218)
     crop_img = full_img.crop((436, 167, 1831, 1218))
     return crop_img
 
 def is_same_screen(img1, img2, threshold=3.0):
-    # 타이머 및 잔상 오차 허용 (평균 픽셀 차이가 threshold 미만이면 동일 화면 처리)
     arr1 = np.array(img1.convert('L'), dtype=np.float32)
     arr2 = np.array(img2.convert('L'), dtype=np.float32)
     diff = np.mean(np.abs(arr1 - arr2))
@@ -125,12 +123,15 @@ def extract_current_page_items(win):
             price_text = ""
 
         if name_text or price_text:
-            page_items.append({
+            item_data = {
                 'name': name_text,
                 'nickname': nickname_text,
                 'time': time_text,
                 'price': price_text
-            })
+            }
+            page_items.append(item_data)
+            # 터미널에 인식된 결과 실시간 출력
+            print(f"  └ [{i+1}번 슬롯] 이름: '{name_text}' | 판매자: '{nickname_text}' | 가격: '{price_text}' | 시간: '{time_text}'")
 
     return page_items
 
@@ -180,7 +181,7 @@ def run_crawler():
 
         page = 1
         while is_running:
-            print(f'[{page} 페이지] 수집 중...')
+            print(f'\n[{page} 페이지] 수집 중...')
             items = extract_current_page_items(win)
             all_items_data.append({
                 'page': page,
@@ -200,7 +201,7 @@ def run_crawler():
                 time.sleep(0.8)
                 retry_screen = get_item_list_screenshot(win)
                 if is_same_screen(prev_screen, retry_screen):
-                    print(">> 마지막 페이지 도달 확인!")
+                    print("\n>> 마지막 페이지 도달 확인!")
                     upload_to_domain()
                     break
 
