@@ -12,7 +12,7 @@ import easyocr
 import cv2
 import numpy as np
 
-# Windows DPI 배율 오차 방지 (전체화면 좌표 틀어짐 방지)
+# Windows DPI 배율 오차 방지
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(2)
 except Exception:
@@ -24,7 +24,7 @@ except Exception:
 # CPU만 사용하도록 설정 (gpu=False)
 reader = easyocr.Reader(['en', 'ko'], gpu=False)
 
-# 전체화면 기준 버튼 및 UI 좌표
+# 4K 전체화면 기준 버튼 좌표
 COORDS = {
     'buy_tab': (953, 388),
     'sell_tab': (1316, 386),
@@ -91,15 +91,16 @@ def check_last_page_pixel():
         pass
     return False
 
-# 이미지 전처리 (CLAHE 적용)
-def preprocess_crop(crop_img, scale=2.5):
+# 이미지 전처리 최적화 (배율 왜곡 방지를 위해 스케일 축소 및 이진화 적용)
+def preprocess_crop(crop_img):
     img = np.array(crop_img)
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    # 이미지 확대 배율을 낮추어 글자 깨짐 현상 방지
     h, w = img.shape[:2]
-    img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
-    return clahe.apply(gray)
+    img = cv2.resize(img, (int(w * 1.5), int(h * 1.5)), interpolation=cv2.INTER_LINEAR)
+    # Otsu 이진화로 글자와 배경을 선명하게 분리
+    _, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    return thresh
 
 # 아이템명 보정 및 대문자 변환
 def clean_item_name(text):
@@ -118,14 +119,15 @@ def clean_item_name(text):
 def extract_current_page_items(win):
     screenshot = get_game_screenshot(win)
     page_items = []
-    row_height = 193  # 전체화면 기준 슬롯 간격
+    
+    # 6개 슬롯의 Y축 오프셋을 개별 지정하여 밀림 현상 원천 차이 차단
+    # (기존 간격 오차 누적 문제 해결)
+    slot_y_offsets = [0, 193, 386, 579, 772, 965]
 
     os.makedirs('item_images', exist_ok=True)
 
-    for i in range(6):
-        dy = i * row_height
-
-        # 1. 아이템 썸네일 이미지 저장 (웹사이트 연동용)
+    for i, dy in enumerate(slot_y_offsets):
+        # 1. 아이템 썸네일 이미지 저장
         try:
             img_box = (822, 559 + dy, 1010, 730 + dy)
             img_crop = screenshot.crop(img_box)
