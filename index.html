@@ -144,13 +144,13 @@
             background: #131c2e;
             border: 1px solid #202d44;
             border-radius: 16px;
-            padding: 16px;
+            padding: 14px 16px;
         }
 
         .item-card-top {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 8px;
         }
 
@@ -159,11 +159,28 @@
             color: #94a3b8;
         }
 
+        /* 아이템 정보 영역 (이미지 + 이름) */
+        .item-middle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .item-thumbnail {
+            width: 75px;
+            height: 60px;
+            object-fit: contain;
+            background: #0a0f1d;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+            flex-shrink: 0;
+        }
+
         .item-title {
             font-size: 15px;
             font-weight: 700;
             color: #f8fafc;
-            margin-bottom: 12px;
             word-break: break-all;
             letter-spacing: -0.3px;
         }
@@ -286,18 +303,14 @@
             return parseInt(str.toString().replace(/[^0-9]/g, '')) || 0;
         }
 
-        // 금액 천단위 콤마(,) 및 'CT' 고정 포맷터
         function formatPrice(str) {
             const num = parsePrice(str);
             if (num === 0) return '-';
             return num.toLocaleString() + ' CT';
         }
 
-        // 시간 데이터 정제 포맷터 (숫자만 추출해서 'X일 XX시간' 형태로 강제 보정)
         function formatTime(str) {
             if (!str) return '-';
-            
-            // 모든 숫자 단락 추출
             const numbers = str.match(/\d+/g);
             if (!numbers) return str;
 
@@ -324,12 +337,17 @@
             listEl.innerHTML = items.map(item => {
                 const formattedPrice = formatPrice(item.price);
                 const formattedTime = formatTime(item.time);
+                const imagePath = item.image_path ? item.image_path + '?t=' + new Date().getTime() : '';
+
                 return `
                     <div class="item-card">
                         <div class="item-card-top">
                             <span class="seller-id">ID: ${item.nickname || '알 수 없음'}</span>
                         </div>
-                        <div class="item-title">${item.name || '알 수 없음'}</div>
+                        <div class="item-middle">
+                            <img src="${imagePath}" class="item-thumbnail" alt="아이템" onerror="this.style.display='none'">
+                            <div class="item-title">${item.name || '알 수 없음'}</div>
+                        </div>
                         <div class="item-footer">
                             <span class="time-text">⏱ ${formattedTime}</span>
                             <span class="price-text">${formattedPrice}</span>
