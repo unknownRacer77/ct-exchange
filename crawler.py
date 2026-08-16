@@ -12,15 +12,19 @@ import easyocr
 import cv2
 import numpy as np
 
-# Windows DPI 배율 오차 방지
+# Windows DPI 배율 오차 방지 (전체화면 좌표 틀어짐 방지)
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(2)
 except Exception:
-    ctypes.windll.user32.SetProcessDPIAware()
+    try:
+        ctypes.windll.user32.SetProcessDPIAware()
+    except Exception:
+        pass
 
 # CPU만 사용하도록 설정 (gpu=False)
 reader = easyocr.Reader(['en', 'ko'], gpu=False)
 
+# 전체화면 기준 버튼 및 UI 좌표
 COORDS = {
     'buy_tab': (953, 388),
     'sell_tab': (1316, 386),
@@ -87,7 +91,7 @@ def check_last_page_pixel():
         pass
     return False
 
-# 1. 아이템/가격/시간용 전처리 (CLAHE 대비 강화)
+# 이미지 전처리 (CLAHE 적용)
 def preprocess_crop(crop_img, scale=2.5):
     img = np.array(crop_img)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -97,17 +101,7 @@ def preprocess_crop(crop_img, scale=2.5):
     clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
     return clahe.apply(gray)
 
-# 2. 닉네임용 전처리 (CLAHE 대비 강화)
-def preprocess_nickname(crop_img, scale=2.5):
-    img = np.array(crop_img)
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    h, w = img.shape[:2]
-    img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
-    return clahe.apply(gray)
-
-# 3. 아이템명 보정 및 대문자 변환
+# 아이템명 보정 및 대문자 변환
 def clean_item_name(text):
     if not text: 
         return ""
@@ -124,47 +118,59 @@ def clean_item_name(text):
 def extract_current_page_items(win):
     screenshot = get_game_screenshot(win)
     page_items = []
-    row_height = 121
+    row_height = 193  # 전체화면 기준 슬롯 간격
+
+    os.makedirs('item_images', exist_ok=True)
 
     for i in range(6):
         dy = i * row_height
 
-        # 아이템 이름
+        # 1. 아이템 썸네일 이미지 저장 (웹사이트 연동용)
         try:
-            name_crop = screenshot.crop((612, 383 + dy, 952, 407 + dy))
+            img_box = (822, 559 + dy, 1010, 730 + dy)
+            img_crop = screenshot.crop(img_box)
+            image_filename = f'item_images/item_{i+1}.png'
+            img_crop.save(image_filename)
+        except Exception:
+            image_filename = ''
+
+        # 2. 아이템 이름
+        try:
+            name_crop = screenshot.crop((1015, 561 + dy, 1614, 608 + dy))
             name_text = clean_item_name(" ".join(reader.readtext(preprocess_crop(name_crop), detail=0)))
         except Exception:
             name_text = ""
 
-        # 판매자 닉네임
+        # 3. 판매자 닉네임
         try:
-            nick_crop = screenshot.crop((976, 382 + dy, 1202, 405 + dy))
-            nickname_text = " ".join(reader.readtext(preprocess_nickname(nick_crop), detail=0)).strip()
+            nick_crop = screenshot.crop((1676, 563 + dy, 2038, 608 + dy))
+            nickname_text = " ".join(reader.readtext(preprocess_crop(nick_crop), detail=0)).strip()
         except Exception:
             nickname_text = ""
 
-        # 남은 시간
+        # 4. 남은 시간
         try:
-            time_crop = screenshot.crop((767, 421 + dy, 867, 442 + dy))
+            time_crop = screenshot.crop((1279, 626 + dy, 1461, 665 + dy))
             raw_time = " ".join(reader.readtext(preprocess_crop(time_crop), allowlist='0123456789시간분초 ', detail=0)).strip()
             time_text = raw_time.replace('간', '시간').replace(' ', '')
         except Exception:
             time_text = ""
 
-        # 가격
+        # 5. 가격
         try:
-            price_crop = screenshot.crop((659, 459 + dy, 864, 480 + dy))
+            price_crop = screenshot.crop((1116, 680 + dy, 1457, 720 + dy))
             raw_price = " ".join(reader.readtext(preprocess_crop(price_crop), allowlist='0123456789,CTO', detail=0)).strip()
             price_text = raw_price.replace('O', '0').replace('o', '0').replace(' ', '')
         except Exception:
             price_text = ""
 
-        if name_text or price_text:
+        if name_text or price_text or nickname_text:
             item_data = {
                 'name': name_text,
                 'nickname': nickname_text,
                 'time': time_text,
-                'price': price_text
+                'price': price_text,
+                'image_path': image_filename
             }
             page_items.append(item_data)
             print(f"  └ [{i+1}번 슬롯] 이름: '{name_text}' | 판매자: '{nickname_text}' | 가격: '{price_text}' | 시간: '{time_text}'")
