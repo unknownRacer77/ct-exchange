@@ -9,6 +9,7 @@ import pyautogui
 import pydirectinput
 import pygetwindow as gw
 import easyocr
+import cv2
 import numpy as np
 
 # Windows DPI 배율 오차 방지
@@ -86,6 +87,28 @@ def check_last_page_pixel():
         pass
     return False
 
+def preprocess_crop(crop_img, scale=2.5, adaptive=False):
+    img = np.array(crop_img)
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    h, w = img.shape[:2]
+    img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    if adaptive:
+        # 어두운 배경의 게임 UI 글자를 선명하게 따기 위한 적응형 이진화
+        gray = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+    else:
+        gray = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
+        
+    return gray
+
+def clean_ocr_text(text):
+    if not text:
+        return ""
+    # 자주 틀리는 OCR 오인식 강제 보정
+    text = text.replace('<', 'S').replace(';', 'r').replace('  ', ' ')
+    return text.strip()
+
 def extract_current_page_items(win):
     screenshot = get_game_screenshot(win)
     page_items = []
@@ -97,28 +120,32 @@ def extract_current_page_items(win):
         # 아이템 이름
         try:
             name_crop = screenshot.crop((612, 383 + dy, 952, 407 + dy))
-            name_text = " ".join(reader.readtext(np.array(name_crop), detail=0)).strip()
+            processed_name = preprocess_crop(name_crop, scale=2.5, adaptive=False)
+            name_text = clean_ocr_text(" ".join(reader.readtext(processed_name, detail=0)))
         except Exception:
             name_text = ""
 
         # 판매자 닉네임
         try:
             nick_crop = screenshot.crop((976, 382 + dy, 1202, 405 + dy))
-            nickname_text = " ".join(reader.readtext(np.array(nick_crop), detail=0)).strip()
+            processed_nick = preprocess_crop(nick_crop, scale=2.5, adaptive=False)
+            nickname_text = clean_ocr_text(" ".join(reader.readtext(processed_nick, detail=0)))
         except Exception:
             nickname_text = ""
 
         # 남은 시간
         try:
             time_crop = screenshot.crop((767, 421 + dy, 867, 442 + dy))
-            time_text = " ".join(reader.readtext(np.array(time_crop), detail=0)).strip()
+            processed_time = preprocess_crop(time_crop, scale=2.5, adaptive=True)
+            time_text = " ".join(reader.readtext(processed_time, allowlist='0123456789시간분초 ', detail=0)).strip()
         except Exception:
             time_text = ""
 
         # 가격
         try:
             price_crop = screenshot.crop((659, 459 + dy, 864, 480 + dy))
-            price_text = " ".join(reader.readtext(np.array(price_crop), detail=0)).strip()
+            processed_price = preprocess_crop(price_crop, scale=2.5, adaptive=True)
+            price_text = " ".join(reader.readtext(processed_price, allowlist='0123456789,CT', detail=0)).strip()
         except Exception:
             price_text = ""
 
@@ -130,7 +157,6 @@ def extract_current_page_items(win):
                 'price': price_text
             }
             page_items.append(item_data)
-            # 터미널에 인식된 결과 실시간 출력
             print(f"  └ [{i+1}번 슬롯] 이름: '{name_text}' | 판매자: '{nickname_text}' | 가격: '{price_text}' | 시간: '{time_text}'")
 
     return page_items
