@@ -67,14 +67,25 @@ def is_same_image(img1, img2):
 
 def read_text(crop_img):
     img_np = np.array(crop_img)
+    # 1. 흑백 변환
     gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
-    h, w = gray.shape[:2]
-    resized = cv2.resize(gray, (w * 2, h * 2), interpolation=cv2.INTER_CUBIC)
     
-    result = ocr.ocr(resized, cls=False)
+    # 2. 이미지 선명도 향상 (3배 확대 및 이진화)
+    h, w = gray.shape[:2]
+    resized = cv2.resize(gray, (w * 3, h * 3), interpolation=cv2.INTER_CUBIC)
+    
+    # Threshold로 글씨 윤곽명확화 (배경과 글자 분리)
+    _, thresh = cv2.threshold(resized, 150, 255, cv2.THRESH_BINARY)
+    
+    # 3. 인식률 향상을 위한 외곽 여백(Padding) 추가
+    bordered = cv2.copyMakeBorder(thresh, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=[255, 255, 255])
+    
+    result = ocr.ocr(bordered, cls=False)
     if not result or not result[0]:
         return ""
     
+    texts = [line[1][0] for line in result[0]]
+    return " ".join(texts).strip()
     texts = [line[1][0] for line in result[0]]
     return " ".join(texts).strip()
 

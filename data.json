@@ -1,47 +1,47 @@
 [
     {
         "page": 1,
-        "timestamp": "2026-08-17 17:37:54",
+        "timestamp": "2026-08-17 17:40:47",
         "items": [
             {
                 "name": "에어클리너 SP1B",
-                "nickname": "BOTTEGA",
-                "time": "7일0시시간",
-                "price": "00000CT",
+                "nickname": "3ORTEGA",
+                "time": "0시시간7일",
+                "price": "00000C",
                 "image_path": "item_images/item_1.png"
             },
             {
                 "name": "독립쓰로틀 SP2B",
-                "nickname": "BOTTEGA",
+                "nickname": "3OTTEGA",
                 "time": "7일0시시간",
-                "price": "00000CT",
+                "price": "L00000C",
                 "image_path": "item_images/item_2.png"
             },
             {
                 "name": "인터쿨러 SP1C",
-                "nickname": "BOTTEGA",
+                "nickname": "3OTLEGA",
                 "time": "7일0시시간",
-                "price": "",
+                "price": "00000-",
                 "image_path": "item_images/item_3.png"
             },
             {
-                "name": "빌보어 Sp2c",
-                "nickname": "BOTTEGA",
-                "time": "6일23시긴",
+                "name": "빌보어 SP2[",
+                "nickname": "30化r_스",
+                "time": "6일23시시간",
                 "price": "",
                 "image_path": "item_images/item_4.png"
             },
             {
-                "name": "오임쿠러 SP2B",
-                "nickname": "",
-                "time": "5의",
+                "name": "O이쿠고 SD2?",
+                "nickname": "3_史r__스",
+                "time": "'이23시가",
                 "price": "",
                 "image_path": "item_images/item_5.png"
             },
             {
-                "name": "보보",
-                "nickname": "더 네상FO",
-                "time": "50",
+                "name": "___",
+                "nickname": "S__ularol",
+                "time": "-0",
                 "price": "",
                 "image_path": "item_images/item_6.png"
             }
