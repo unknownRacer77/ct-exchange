@@ -5,6 +5,7 @@ import sys
 import time
 import subprocess
 import asyncio
+import re
 
 import keyboard
 import pyautogui
@@ -53,7 +54,7 @@ SLOTS = {
         "item_name": (1017, 954, 1616, 1009),
         "nickname": (1648, 954, 2027, 1007),
         "time_remaining": (1017, 1022, 1465, 1073),
-        "price": (1019, 875, 1460, 925),
+        "price": (1019, 1076, 1460, 1125),
     },
     4: {
         "item_image": (817, 1149, 1013, 1336),
@@ -67,7 +68,7 @@ SLOTS = {
         "item_name": (1018, 1356, 1613, 1409),
         "nickname": (1647, 1354, 2036, 1408),
         "time_remaining": (1017, 1422, 1461, 1473),
-        "price": (1018, 1276, 1461, 1524),
+        "price": (1018, 1476, 1461, 1524),
     },
     6: {
         "item_image": (817, 1549, 1012, 1737),
@@ -88,11 +89,11 @@ def stop_program():
     sys.exit(0)
 
 def click_pos(x, y):
-    pydirectinput.moveTo(x, y)
-    time.sleep(0.05)
-    pydirectinput.mouseDown()
-    time.sleep(0.05)
-    pydirectinput.mouseUp()
+    pyautogui.moveTo(x, y, duration=0.1)
+    time.sleep(0.1)
+    pyautogui.mouseDown()
+    time.sleep(0.1)
+    pyautogui.mouseUp()
 
 def get_name_region(screen):
     return screen.crop((1018, 556, 1613, 604))
@@ -121,15 +122,37 @@ def read_text(crop_img):
     else:
         gray = img_np
         
-    resized = cv2.resize(gray, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    # 고품질 확대 및 이진화 전처리 적용
+    resized = cv2.resize(gray, None, fx=3, fy=3, interpolation=cv2.INTER_LANCZOS4)
+    _, thresh = cv2.threshold(resized, 170, 255, cv2.THRESH_BINARY)
+    padded = cv2.copyMakeBorder(thresh, 15, 15, 15, 15, cv2.BORDER_CONSTANT, value=255)
     
     temp_path = "temp_ocr.png"
-    cv2.imwrite(temp_path, resized)
+    cv2.imwrite(temp_path, padded)
     
     try:
         return asyncio.run(_extract_text_winocr(temp_path))
     except Exception:
         return ""
+
+def clean_item_name(name):
+    name = name.replace('UCIS', 'UC1S').replace('SPIF', 'SP1F').replace('UCI', 'UC1')
+    name = name.replace('아EI쿡바', '안티롤바').replace('아EI', '안티')
+    return name
+
+def clean_price(raw_text):
+    text = raw_text.replace('가격', '').replace('CT', '').replace(',', '').replace(' ', '')
+    text = text.replace('이', '0').replace('O', '0').replace('o', '0')
+    numbers = re.findall(r'\d+', text)
+    if numbers:
+        val = "".join(numbers)
+        return f"{int(val):,}" + "CT"
+    return raw_text
+
+def clean_time(raw_text):
+    text = raw_text.replace('남은시간', '').replace(' ', '')
+    text = text.replace('빕', '일').replace('간', '시간')
+    return text
 
 def parse_slots(screen, page_num):
     page_items = []
@@ -143,7 +166,8 @@ def parse_slots(screen, page_num):
             thumb_path = ''
 
         try:
-            name_text = read_text(screen.crop(pos["item_name"]))
+            raw_name = read_text(screen.crop(pos["item_name"]))
+            name_text = clean_item_name(raw_name)
         except Exception:
             name_text = ""
 
@@ -154,13 +178,13 @@ def parse_slots(screen, page_num):
 
         try:
             time_raw = read_text(screen.crop(pos["time_remaining"]))
-            time_text = time_raw.replace('간', '시간').replace(' ', '')
+            time_text = clean_time(time_raw)
         except Exception:
             time_text = ""
 
         try:
             price_raw = read_text(screen.crop(pos["price"]))
-            price_text = price_raw.replace('O', '0').replace('o', '0').replace(' ', '')
+            price_text = clean_price(price_raw)
         except Exception:
             price_text = ""
 
@@ -184,7 +208,7 @@ def save_and_push():
 
     try:
         subprocess.run(['git', 'add', '.'], check=True)
-        subprocess.run(['git', 'commit', '-m', 'Update market crawling data'], check=True)
+        subprocess.run(['git', 'commit', '-m', 'Update market crawling data'], check=True)  # 따옴표(-m) 반영 완료
         subprocess.run(['git', 'pull', '--rebase', 'origin', 'main'], check=True)
         subprocess.run(['git', 'push', 'origin', 'main'], check=True)
         print('>> 웹사이트 업로드(Git Push) 완료!')
@@ -195,6 +219,12 @@ def save_and_push():
 
 def main():
     print('=== 시티레이서 거래소 데이터 크롤러 실행 (종료: Ctrl + 5) ===')
+    print('⏳ 5초 뒤에 시작됩니다. 시티레이서 창을 맨 앞으로 가져다 놓으세요!')
+    
+    for i in range(5, 0, -1):
+        print(f'  {i}초 전...')
+        time.sleep(1)
+        
     keyboard.add_hotkey('ctrl+5', stop_program)
 
     cycle = 1
@@ -227,13 +257,13 @@ def main():
 
             click_pos(*COORDS['next_btn'])
             pydirectinput.moveTo(10, 10)
-            time.sleep(1.5)
+            time.sleep(3.5)  # 렉으로 인한 조기 종료 방지를 위해 3.5초로 연장
 
             current_screen = pyautogui.screenshot()
             curr_name_img = get_name_region(current_screen)
 
             if is_same_image(prev_name_img, curr_name_img):
-                time.sleep(0.5)
+                time.sleep(1.0)  # 한 번 더 여유를 두고 확인
                 retry_screen = pyautogui.screenshot()
                 if is_same_image(curr_name_img, get_name_region(retry_screen)):
                     print('\n>> 마지막 페이지 도달 확인')

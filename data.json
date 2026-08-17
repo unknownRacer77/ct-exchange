@@ -1,21 +1,2209 @@
 [
     {
         "page": 1,
-        "timestamp": "2026-08-17 18:44:53",
+        "timestamp": "2026-08-17 19:30:34",
         "items": [
             {
-                "name": "",
-                "nickname": "",
-                "time": "",
-                "price": "PIPil",
+                "name": "TSC-270L DR엔진",
+                "nickname": "v료스커`v",
+                "time": "6일23시시간",
+                "price": "30,000CT",
+                "image_path": "item_images/p1_s1.png"
+            },
+            {
+                "name": "타이어 Type SP2",
+                "nickname": "현왕자l",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p1_s2.png"
+            },
+            {
+                "name": "타이어 Type SPI R",
+                "nickname": "현왕자",
+                "time": "6일23시시간",
+                "price": "500,000CT",
                 "image_path": "item_images/p1_s3.png"
             },
             {
-                "name": "",
-                "nickname": "HA",
-                "time": "",
-                "price": "",
+                "name": "타이어 Type SPI",
+                "nickname": "현왕자",
+                "time": "l남온시시간6일23시시간",
+                "price": "500,000CT",
                 "image_path": "item_images/p1_s4.png"
+            },
+            {
+                "name": "타이어 Type SPI",
+                "nickname": "현왕자",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p1_s5.png"
+            },
+            {
+                "name": "하이캠 EX2 설계도S",
+                "nickname": "herhoony",
+                "time": "6일23시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p1_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 2,
+        "timestamp": "2026-08-17 19:30:39",
+        "items": [
+            {
+                "name": "대용량라디에이터 EX3 설계도A",
+                "nickname": "herhoony",
+                "time": "6일23시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p2_s1.png"
+            },
+            {
+                "name": "트윈 터보 Type EX3A",
+                "nickname": "반포폭주족",
+                "time": "6일23시시간",
+                "price": "가격",
+                "image_path": "item_images/p2_s2.png"
+            },
+            {
+                "name": "마이티파워",
+                "nickname": "lstory",
+                "time": "6일23시시간",
+                "price": "90,000CT",
+                "image_path": "item_images/p2_s3.png"
+            },
+            {
+                "name": "미스원샷",
+                "nickname": "lstoryl",
+                "time": "l남온시시간6일23시시간",
+                "price": "340,000CT",
+                "image_path": "item_images/p2_s4.png"
+            },
+            {
+                "name": "패드 Type UC1 R",
+                "nickname": "lstoryl",
+                "time": "6일23시시간",
+                "price": "50,000CT",
+                "image_path": "item_images/p2_s5.png"
+            },
+            {
+                "name": "LC5-1 60 DR엔진",
+                "nickname": "BunGee",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p2_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 3,
+        "timestamp": "2026-08-17 19:30:45",
+        "items": [
+            {
+                "name": "트윈 터보 Type EX3B",
+                "nickname": "m0m3838",
+                "time": "6일23시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p3_s1.png"
+            },
+            {
+                "name": "인테이크파이프 UC1 G",
+                "nickname": "m0m3838",
+                "time": "6일23시시간",
+                "price": "60,000CT",
+                "image_path": "item_images/p3_s2.png"
+            },
+            {
+                "name": "안티롤바 Type SPI",
+                "nickname": "m0m383",
+                "time": "6일23시시간",
+                "price": "700,000CT",
+                "image_path": "item_images/p3_s3.png"
+            },
+            {
+                "name": "대용량라디에이터 SPIA",
+                "nickname": "m0m3838",
+                "time": "l남온시시간6일23시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p3_s4.png"
+            },
+            {
+                "name": "미스읰A들",
+                "nickname": "빠르고느림",
+                "time": "6일23시시간",
+                "price": "350,000CT",
+                "image_path": "item_images/p3_s5.png"
+            },
+            {
+                "name": "익스원삿",
+                "nickname": "빠르고느림",
+                "time": "6일23시시간",
+                "price": "350,000CT",
+                "image_path": "item_images/p3_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 4,
+        "timestamp": "2026-08-17 19:30:50",
+        "items": [
+            {
+                "name": "독립쓰로틀 EXI R",
+                "nickname": "",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p4_s1.png"
+            },
+            {
+                "name": "인터쿨러 EXIR",
+                "nickname": "",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p4_s2.png"
+            },
+            {
+                "name": "인테이크파이프 EXI R",
+                "nickname": "",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p4_s3.png"
+            },
+            {
+                "name": "바디강성화 듀랄루민SP3",
+                "nickname": "빠르고느림",
+                "time": "l남온시시간6일23시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p4_s4.png"
+            },
+            {
+                "name": "빅보어 EXIR",
+                "nickname": "",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p4_s5.png"
+            },
+            {
+                "name": "에어클리너 EXIR",
+                "nickname": "",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p4_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 5,
+        "timestamp": "2026-08-17 19:30:55",
+        "items": [
+            {
+                "name": "오일쿨러 EXI R",
+                "nickname": "",
+                "time": "6일23시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p5_s1.png"
+            },
+            {
+                "name": "트윈 터보 Type EX3A",
+                "nickname": "",
+                "time": "6일23시시간",
+                "price": "4,100,001CT",
+                "image_path": "item_images/p5_s2.png"
+            },
+            {
+                "name": "TOS-200 FA엔진",
+                "nickname": "m0m383",
+                "time": "6일23시시간",
+                "price": "650,000CT",
+                "image_path": "item_images/p5_s3.png"
+            },
+            {
+                "name": "오일쿨러 UC1S",
+                "nickname": "m0m3838",
+                "time": "l남온시시간6일23시시간",
+                "price": "280,000CT",
+                "image_path": "item_images/p5_s4.png"
+            },
+            {
+                "name": "하이캠 SP2B",
+                "nickname": "BiRyu",
+                "time": "6일23시시간",
+                "price": "220,000CT",
+                "image_path": "item_images/p5_s5.png"
+            },
+            {
+                "name": "AC5-TF HAN엔진",
+                "nickname": "빠르고느림",
+                "time": "6일23시시간",
+                "price": "가격",
+                "image_path": "item_images/p5_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 6,
+        "timestamp": "2026-08-17 19:31:00",
+        "items": [
+            {
+                "name": "안티롤바 Type UC1",
+                "nickname": "m0m3838",
+                "time": "6일23시시간",
+                "price": "340,000CT",
+                "image_path": "item_images/p6_s1.png"
+            },
+            {
+                "name": "에어클리너 EXIB",
+                "nickname": "m0m3838",
+                "time": "6일23시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p6_s2.png"
+            },
+            {
+                "name": "PRS-PA FA엔진",
+                "nickname": "QUEST설",
+                "time": "6일23시시간",
+                "price": "가격",
+                "image_path": "item_images/p6_s3.png"
+            },
+            {
+                "name": "PRS-PA FA엔진",
+                "nickname": "QUEST설꿩",
+                "time": "l남온시시간6일23시시간",
+                "price": "1,500,000CT",
+                "image_path": "item_images/p6_s4.png"
+            },
+            {
+                "name": "GNS-70 DR엔진",
+                "nickname": "m0m3838",
+                "time": "6일23시시간",
+                "price": "90,000CT",
+                "image_path": "item_images/p6_s5.png"
+            },
+            {
+                "name": "GNS-70 DR엔진",
+                "nickname": "m0m3838",
+                "time": "6일23시시간",
+                "price": "90,000CT",
+                "image_path": "item_images/p6_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 7,
+        "timestamp": "2026-08-17 19:31:05",
+        "items": [
+            {
+                "name": "LP-650 FA엔진",
+                "nickname": "QUEST설꿩",
+                "time": "6일23시시간",
+                "price": "1,000,000CT",
+                "image_path": "item_images/p7_s1.png"
+            },
+            {
+                "name": "LP-650 FA엔진",
+                "nickname": "QUEST설꿩",
+                "time": "6일23시시간",
+                "price": "가격",
+                "image_path": "item_images/p7_s2.png"
+            },
+            {
+                "name": "LP-650 FA엔진",
+                "nickname": "QUEST설",
+                "time": "6일23시시간",
+                "price": "가격",
+                "image_path": "item_images/p7_s3.png"
+            },
+            {
+                "name": "LP-650 FA엔진",
+                "nickname": "QUEST설꿩",
+                "time": "l남온시시간6일23시시간",
+                "price": "1,000,000CT",
+                "image_path": "item_images/p7_s4.png"
+            },
+            {
+                "name": "하이캠 SP2S",
+                "nickname": "Socrates",
+                "time": "6일23시시간",
+                "price": "550,000CT",
+                "image_path": "item_images/p7_s5.png"
+            },
+            {
+                "name": "GNS-380 FA엔진(T4)",
+                "nickname": "QUEST설꿩",
+                "time": "6일23시시간",
+                "price": "2,500,000CT",
+                "image_path": "item_images/p7_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 8,
+        "timestamp": "2026-08-17 19:31:10",
+        "items": [
+            {
+                "name": "독립쓰로틀 SP2S",
+                "nickname": "Socrates",
+                "time": "6일23시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p8_s1.png"
+            },
+            {
+                "name": "LCR-EVX FA엔진 1",
+                "nickname": "QUEST설꿩",
+                "time": "6일23시시간",
+                "price": "2,500CT",
+                "image_path": "item_images/p8_s2.png"
+            },
+            {
+                "name": "트윈 터보 Type SP2S",
+                "nickname": "Socrate",
+                "time": "6일23시시간",
+                "price": "750,000CT",
+                "image_path": "item_images/p8_s3.png"
+            },
+            {
+                "name": "FRl-800 FA엔진",
+                "nickname": "QUEST설꿩",
+                "time": "l남온시시간6일23시시간",
+                "price": "29,000,000CT",
+                "image_path": "item_images/p8_s4.png"
+            },
+            {
+                "name": "NZ-350 FA엔진",
+                "nickname": "고약한개구",
+                "time": "6일23시시간",
+                "price": "14,000,000CT",
+                "image_path": "item_images/p8_s5.png"
+            },
+            {
+                "name": "타이어 Type EXI F",
+                "nickname": "v료스커ⅳ",
+                "time": "6일22시시간",
+                "price": "6,500,000CT",
+                "image_path": "item_images/p8_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 9,
+        "timestamp": "2026-08-17 19:31:15",
+        "items": [
+            {
+                "name": "하이캠 EX3B",
+                "nickname": "BLAZER사장",
+                "time": "6일22시시간",
+                "price": "1,000,000CT",
+                "image_path": "item_images/p9_s1.png"
+            },
+            {
+                "name": "하이캠 SP3S",
+                "nickname": "Lionking",
+                "time": "6일22시시간",
+                "price": "가격",
+                "image_path": "item_images/p9_s2.png"
+            },
+            {
+                "name": "독립쓰로틀 SP3 설계도c",
+                "nickname": "WLine기트",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p9_s3.png"
+            },
+            {
+                "name": "인터쿨러 SP3 설계도S",
+                "nickname": "WLine기트",
+                "time": "l남온시시간6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p9_s4.png"
+            },
+            {
+                "name": "하이캠 EX3C",
+                "nickname": "지연n민호",
+                "time": "6일22시시간",
+                "price": "24,000CT",
+                "image_path": "item_images/p9_s5.png"
+            },
+            {
+                "name": "타이어 Type SPI F",
+                "nickname": "64왕자",
+                "time": "6일22시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p9_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 10,
+        "timestamp": "2026-08-17 19:31:20",
+        "items": [
+            {
+                "name": "타이어 Type SP2",
+                "nickname": "현왕자`",
+                "time": "6일22시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p10_s1.png"
+            },
+            {
+                "name": "타이어 Type SPI R",
+                "nickname": "현왕자l",
+                "time": "6일22시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p10_s2.png"
+            },
+            {
+                "name": "FRK-300 DR엔진",
+                "nickname": "WLine기트",
+                "time": "6일22시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p10_s3.png"
+            },
+            {
+                "name": "독립쓰로틀 SPI 설계도S",
+                "nickname": "폼화G",
+                "time": "l남온시시간6일22시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p10_s4.png"
+            },
+            {
+                "name": "하이캠 DT설계도",
+                "nickname": "로잉",
+                "time": "6일22시시간",
+                "price": "가격",
+                "image_path": "item_images/p10_s5.png"
+            },
+            {
+                "name": "트원터보 EX3 설계도S",
+                "nickname": "프로 리스트",
+                "time": "6일22시시간",
+                "price": "4,500,000CT",
+                "image_path": "item_images/p10_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 11,
+        "timestamp": "2026-08-17 19:31:25",
+        "items": [
+            {
+                "name": "NEF-200 DR엔진",
+                "nickname": "WLine카트",
+                "time": "6일22시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p11_s1.png"
+            },
+            {
+                "name": "오일쿨러 EX3C",
+                "nickname": "",
+                "time": "6일22시시간",
+                "price": "가격",
+                "image_path": "item_images/p11_s2.png"
+            },
+            {
+                "name": "대용량라디에이터 SP3 설계도A",
+                "nickname": "부산아재",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p11_s3.png"
+            },
+            {
+                "name": "바디 경량화 듀랄루민S",
+                "nickname": "프로 리스트",
+                "time": "l남온시시간6일22시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p11_s4.png"
+            },
+            {
+                "name": "제작실패 에어클리너 G3",
+                "nickname": "던갈",
+                "time": "6일22시시간",
+                "price": "1,500,000CT",
+                "image_path": "item_images/p11_s5.png"
+            },
+            {
+                "name": "대용량라디에이터 SPI 설계도S",
+                "nickname": "폼황GT",
+                "time": "6일22시시간",
+                "price": "200,000CT",
+                "image_path": "item_images/p11_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 12,
+        "timestamp": "2026-08-17 19:31:31",
+        "items": [
+            {
+                "name": "에어클리너 SCI C",
+                "nickname": "치매할머니",
+                "time": "6일22시시간",
+                "price": "46,500CT",
+                "image_path": "item_images/p12_s1.png"
+            },
+            {
+                "name": "TSC-270L DR엔진",
+                "nickname": "치매할머니",
+                "time": "6일22시시간",
+                "price": "69,000CT",
+                "image_path": "item_images/p12_s2.png"
+            },
+            {
+                "name": "빅보어 SP3 설계도A",
+                "nickname": "폼화G",
+                "time": "6일22시시간",
+                "price": "180,000CT",
+                "image_path": "item_images/p12_s3.png"
+            },
+            {
+                "name": "오일쿨러 EX3 설계도S",
+                "nickname": "폼화G",
+                "time": "l남온시시간6일22시시간",
+                "price": "170,000CT",
+                "image_path": "item_images/p12_s4.png"
+            },
+            {
+                "name": "오일쿨러 UC1G",
+                "nickname": "WLine카트",
+                "time": "6일22시시간",
+                "price": "120,000CT",
+                "image_path": "item_images/p12_s5.png"
+            },
+            {
+                "name": "독립쓰로틀 SP3 설계도S",
+                "nickname": "폼황GT",
+                "time": "6일22시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p12_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 13,
+        "timestamp": "2026-08-17 19:31:36",
+        "items": [
+            {
+                "name": "Genesis-CP Dragon",
+                "nickname": "타러",
+                "time": "6일22시시간",
+                "price": "700,000CT",
+                "image_path": "item_images/p13_s1.png"
+            },
+            {
+                "name": "캠리퍼 Type SPI",
+                "nickname": "방향제줘라l",
+                "time": "6일22시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p13_s2.png"
+            },
+            {
+                "name": "대용량라디에이터 UC1 G",
+                "nickname": "weoifhnons",
+                "time": "6일22시시간",
+                "price": "140,000CT",
+                "image_path": "item_images/p13_s3.png"
+            },
+            {
+                "name": "LP-560G HAN엔진",
+                "nickname": "이토록이나",
+                "time": "l남온시시간6일22시시간",
+                "price": "1,000,000CT",
+                "image_path": "item_images/p13_s4.png"
+            },
+            {
+                "name": "오일쿨러 SP3 설계도S",
+                "nickname": "타용",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p13_s5.png"
+            },
+            {
+                "name": "강화엔진 고급설계도A",
+                "nickname": "fewirovnoi",
+                "time": "6일22시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p13_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 14,
+        "timestamp": "2026-08-17 19:31:41",
+        "items": [
+            {
+                "name": "대용량라디에이터 SP3 설계도S",
+                "nickname": "폼황GT",
+                "time": "6일22시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p14_s1.png"
+            },
+            {
+                "name": "인터쿨러 SPIA",
+                "nickname": "『C卜c다 (다",
+                "time": "6일22시시간",
+                "price": "180,000CT",
+                "image_path": "item_images/p14_s2.png"
+            },
+            {
+                "name": "ELN-180H DR엔진",
+                "nickname": "FrieND노0",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p14_s3.png"
+            },
+            {
+                "name": "인테이크파이프 SP3 설계도S",
+                "nickname": "폼화G",
+                "time": "l남온시시간6일22시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p14_s4.png"
+            },
+            {
+                "name": "FDS-200 DR엔진",
+                "nickname": "화성시연합",
+                "time": "6일22시시간",
+                "price": "550,000CT",
+                "image_path": "item_images/p14_s5.png"
+            },
+            {
+                "name": "TUB-200 DR엔진",
+                "nickname": "FrieND노아",
+                "time": "6일22시시간",
+                "price": "110,000CT",
+                "image_path": "item_images/p14_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 15,
+        "timestamp": "2026-08-17 19:31:46",
+        "items": [
+            {
+                "name": "안티롤바 Type SPI",
+                "nickname": "King환전",
+                "time": "6일22시시간",
+                "price": "750,000CT",
+                "image_path": "item_images/p15_s1.png"
+            },
+            {
+                "name": "오일쿨러 SP2A",
+                "nickname": "『C卜c다 (다",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p15_s2.png"
+            },
+            {
+                "name": "브레이크호스 Type UC1",
+                "nickname": "규행일기",
+                "time": "6일22시시간",
+                "price": "499,999CT",
+                "image_path": "item_images/p15_s3.png"
+            },
+            {
+                "name": "D-2X DR엔진",
+                "nickname": "FrieND노아",
+                "time": "l남온시시간6일22시시간",
+                "price": "80,000CT",
+                "image_path": "item_images/p15_s4.png"
+            },
+            {
+                "name": "하이캠 EX3 설계도A",
+                "nickname": "폼황GT",
+                "time": "6일22시시간",
+                "price": "190,000CT",
+                "image_path": "item_images/p15_s5.png"
+            },
+            {
+                "name": "인테이크파이프 SP3 설계도A",
+                "nickname": "폼황GT",
+                "time": "6일22시시간",
+                "price": "140,000CT",
+                "image_path": "item_images/p15_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 16,
+        "timestamp": "2026-08-17 19:31:51",
+        "items": [
+            {
+                "name": "빅보어 SP3 설계도S",
+                "nickname": "폼황GT",
+                "time": "6일22시시간",
+                "price": "170,000CT",
+                "image_path": "item_images/p16_s1.png"
+            },
+            {
+                "name": "쇼버 Soft Type UC1",
+                "nickname": "King환전",
+                "time": "6일22시시간",
+                "price": "700,000CT",
+                "image_path": "item_images/p16_s2.png"
+            },
+            {
+                "name": "인테이크파이프 E)(3A",
+                "nickname": "레이크포E",
+                "time": "6일22시시간",
+                "price": "1CT",
+                "image_path": "item_images/p16_s3.png"
+            },
+            {
+                "name": "에어클리너 SPIB",
+                "nickname": "BOTTEGA",
+                "time": "l남온시시간6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p16_s4.png"
+            },
+            {
+                "name": "독립쓰로틀 SP2B",
+                "nickname": "BOTTEGA",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p16_s5.png"
+            },
+            {
+                "name": "인터쿨러 SPIC",
+                "nickname": "BOTTEG시",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p16_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 17,
+        "timestamp": "2026-08-17 19:31:56",
+        "items": [
+            {
+                "name": "빅보어 SP2C",
+                "nickname": "BOTTEG시",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p17_s1.png"
+            },
+            {
+                "name": "오일쿨러 SP2B",
+                "nickname": "BOTTEG시",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p17_s2.png"
+            },
+            {
+                "name": "빅보어 EX3C",
+                "nickname": "덤벼세상0",
+                "time": "6일22시시간",
+                "price": "290,100CT",
+                "image_path": "item_images/p17_s3.png"
+            },
+            {
+                "name": "하이캠 SPIB",
+                "nickname": "BOTTEGA",
+                "time": "l남온시시간6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p17_s4.png"
+            },
+            {
+                "name": "에어클리너 SP2S",
+                "nickname": "BOTTEGA",
+                "time": "6일22시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p17_s5.png"
+            },
+            {
+                "name": "트윈 터보 Type SP2C",
+                "nickname": "BOTTEG시",
+                "time": "6일22시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p17_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 18,
+        "timestamp": "2026-08-17 19:32:01",
+        "items": [
+            {
+                "name": "바디 강성 화 듀랄루민A-SP(MAX)",
+                "nickname": "덤벼세상아",
+                "time": "6일22시시간",
+                "price": "21,000,000CT",
+                "image_path": "item_images/p18_s1.png"
+            },
+            {
+                "name": "인터쿨러 SP2S",
+                "nickname": "BOTTEG시",
+                "time": "6일22시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p18_s2.png"
+            },
+            {
+                "name": "Genesis-CP HAN엔진",
+                "nickname": "BOTTEG",
+                "time": "6일21시시간",
+                "price": "가격",
+                "image_path": "item_images/p18_s3.png"
+            },
+            {
+                "name": "KFV-T26 HAN엔진",
+                "nickname": "WLine케이",
+                "time": "l남온시시간6일21시시간",
+                "price": "200,000CT",
+                "image_path": "item_images/p18_s4.png"
+            },
+            {
+                "name": "KFV-T26 HAN엔진",
+                "nickname": "WLine*il이",
+                "time": "6일21시시간",
+                "price": "200,000CT",
+                "image_path": "item_images/p18_s5.png"
+            },
+            {
+                "name": "CTR-SL HAN엔진",
+                "nickname": "WLine케이",
+                "time": "6일21시시간",
+                "price": "700,000CT",
+                "image_path": "item_images/p18_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 19,
+        "timestamp": "2026-08-17 19:32:06",
+        "items": [
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "BMBCO",
+                "time": "6일21시시간",
+                "price": "3,630,000CT",
+                "image_path": "item_images/p19_s1.png"
+            },
+            {
+                "name": "강화엔진 설계도",
+                "nickname": "BMBCO",
+                "time": "6일21시시간",
+                "price": "가격",
+                "image_path": "item_images/p19_s2.png"
+            },
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "BMBC",
+                "time": "6일21시시간",
+                "price": "가격",
+                "image_path": "item_images/p19_s3.png"
+            },
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "BMBCO",
+                "time": "l남온시시간6일21시시간",
+                "price": "368,000CT",
+                "image_path": "item_images/p19_s4.png"
+            },
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "BMBCO",
+                "time": "6일21시시간",
+                "price": "가격",
+                "image_path": "item_images/p19_s5.png"
+            },
+            {
+                "name": "OPR-270 DR엔진",
+                "nickname": "WLine케이",
+                "time": "6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p19_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 20,
+        "timestamp": "2026-08-17 19:32:12",
+        "items": [
+            {
+                "name": "TUB-200 DR엔진",
+                "nickname": "WLine케이",
+                "time": "6일21시시간",
+                "price": "1,000,000CT",
+                "image_path": "item_images/p20_s1.png"
+            },
+            {
+                "name": "CTR-RI DR엔진",
+                "nickname": "WLine케이",
+                "time": "6일21시시간",
+                "price": "720,000CT",
+                "image_path": "item_images/p20_s2.png"
+            },
+            {
+                "name": "LFS-200 DR엔진",
+                "nickname": "WLin&dl이",
+                "time": "6일21시시간",
+                "price": "160,000CT",
+                "image_path": "item_images/p20_s3.png"
+            },
+            {
+                "name": "PS4-420 DR엔진",
+                "nickname": "WLine케이",
+                "time": "l남온시시간6일21시시간",
+                "price": "200,000CT",
+                "image_path": "item_images/p20_s4.png"
+            },
+            {
+                "name": "NFS-200 FA엔진+3",
+                "nickname": "WLine*il이",
+                "time": "6일21시시간",
+                "price": "11,000,000CT",
+                "image_path": "item_images/p20_s5.png"
+            },
+            {
+                "name": "안티롤바 Type SP2",
+                "nickname": "VicDU",
+                "time": "6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p20_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 21,
+        "timestamp": "2026-08-17 19:32:17",
+        "items": [
+            {
+                "name": "에어클리너 EX2A",
+                "nickname": "FrieND*자",
+                "time": "6일21시시간",
+                "price": "550,000CT",
+                "image_path": "item_images/p21_s1.png"
+            },
+            {
+                "name": "인테이크파이프 EX2A",
+                "nickname": "FrieND*자",
+                "time": "6일21시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p21_s2.png"
+            },
+            {
+                "name": "빅보어 SP3A",
+                "nickname": "예리한눈0",
+                "time": "6일21시시간",
+                "price": "1CT",
+                "image_path": "item_images/p21_s3.png"
+            },
+            {
+                "name": "대용량라디에이터 UC1 5",
+                "nickname": "FrieND*자",
+                "time": "l남온시시간6일21시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p21_s4.png"
+            },
+            {
+                "name": "오일쿨러 UC1G",
+                "nickname": "FrieND*자",
+                "time": "6일21시시간",
+                "price": "120,000CT",
+                "image_path": "item_images/p21_s5.png"
+            },
+            {
+                "name": "트원터보 EX3 설계도A",
+                "nickname": "N30해치백",
+                "time": "6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p21_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 22,
+        "timestamp": "2026-08-17 19:32:22",
+        "items": [
+            {
+                "name": "인테이크파이프 UC1A",
+                "nickname": "FrieND*자",
+                "time": "6일21시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p22_s1.png"
+            },
+            {
+                "name": "에어클리너 SP3S",
+                "nickname": "예리한눈매",
+                "time": "6일21시시간",
+                "price": "1CT",
+                "image_path": "item_images/p22_s2.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민B",
+                "nickname": "심리학하",
+                "time": "6일21시시간",
+                "price": "30,000CT",
+                "image_path": "item_images/p22_s3.png"
+            },
+            {
+                "name": "바디 강성화 듀랄루민B",
+                "nickname": "심리학과",
+                "time": "l남온시시간6일21시시간",
+                "price": "30,000CT",
+                "image_path": "item_images/p22_s4.png"
+            },
+            {
+                "name": "빅보어 UC1S",
+                "nickname": "FrieND*자",
+                "time": "6일21시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p22_s5.png"
+            },
+            {
+                "name": "인터쿨러 SP3S",
+                "nickname": "예리한눈매l",
+                "time": "6일21시시간",
+                "price": "1CT",
+                "image_path": "item_images/p22_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 23,
+        "timestamp": "2026-08-17 19:32:27",
+        "items": [
+            {
+                "name": "하이캠 EX2 설계도B",
+                "nickname": "타러",
+                "time": "6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p23_s1.png"
+            },
+            {
+                "name": "하이캠 E)(2 설계도A",
+                "nickname": "타용",
+                "time": "6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p23_s2.png"
+            },
+            {
+                "name": "하이캠 SP3 설계도S",
+                "nickname": "",
+                "time": "6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p23_s3.png"
+            },
+            {
+                "name": "인터쿨러 SP3 설계도S",
+                "nickname": "타용",
+                "time": "l남온시시간6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p23_s4.png"
+            },
+            {
+                "name": "에어클리너 SPIB",
+                "nickname": "언더스타어",
+                "time": "6일21시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p23_s5.png"
+            },
+            {
+                "name": "오일쿨러 EXIA",
+                "nickname": "언더스타에",
+                "time": "6일21시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p23_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 24,
+        "timestamp": "2026-08-17 19:32:32",
+        "items": [
+            {
+                "name": "c5-TF Dragon",
+                "nickname": "언더스타에",
+                "time": "6일21시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p24_s1.png"
+            },
+            {
+                "name": "쇼버 Soft Type UC1",
+                "nickname": "예리한눈매",
+                "time": "6일21시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p24_s2.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민R",
+                "nickname": "예리한눈0",
+                "time": "6일21시시간",
+                "price": "750,000CT",
+                "image_path": "item_images/p24_s3.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민R",
+                "nickname": "예리한눈매",
+                "time": "l남온시시간6일21시시간",
+                "price": "750,000CT",
+                "image_path": "item_images/p24_s4.png"
+            },
+            {
+                "name": "바디 경량화 듀랄루민R",
+                "nickname": "예리한눈매",
+                "time": "6일21시시간",
+                "price": "750,000CT",
+                "image_path": "item_images/p24_s5.png"
+            },
+            {
+                "name": "제작실패 오일쿨러 G2",
+                "nickname": "king코브라",
+                "time": "6일21시시간",
+                "price": "80,000CT",
+                "image_path": "item_images/p24_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 25,
+        "timestamp": "2026-08-17 19:32:37",
+        "items": [
+            {
+                "name": "제작실패 빅보어 G2",
+                "nickname": "king코브라",
+                "time": "6일21시시간",
+                "price": "80,000CT",
+                "image_path": "item_images/p25_s1.png"
+            },
+            {
+                "name": "제작실패 독립쓰로틀 G2",
+                "nickname": "king코브라",
+                "time": "6일21시시간",
+                "price": "80,000CT",
+                "image_path": "item_images/p25_s2.png"
+            },
+            {
+                "name": "타이어 Type EXI F",
+                "nickname": "FrieND#æ",
+                "time": "6일21시시간",
+                "price": "가격",
+                "image_path": "item_images/p25_s3.png"
+            },
+            {
+                "name": "제작실패 인터쿨러 GI",
+                "nickname": "king코브라",
+                "time": "l남온시시간6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p25_s4.png"
+            },
+            {
+                "name": "NSV-200 FA엔진+3",
+                "nickname": "QUEST소다",
+                "time": "6일21시시간",
+                "price": "20,000,000CT",
+                "image_path": "item_images/p25_s5.png"
+            },
+            {
+                "name": "대용량라디에이터 SP2B",
+                "nickname": "경금하트",
+                "time": "6일21시시간",
+                "price": "60,000CT",
+                "image_path": "item_images/p25_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 26,
+        "timestamp": "2026-08-17 19:32:42",
+        "items": [
+            {
+                "name": "바디 경량화 듀랄루민 SPI",
+                "nickname": "RAiN",
+                "time": "6일21시시간",
+                "price": "1,400,000CT",
+                "image_path": "item_images/p26_s1.png"
+            },
+            {
+                "name": "TBR-200 FA엔진",
+                "nickname": "삼동이",
+                "time": "6일21시시간",
+                "price": "20,000CT",
+                "image_path": "item_images/p26_s2.png"
+            },
+            {
+                "name": "트원터보 SPI 설계도B",
+                "nickname": "나부랭이c",
+                "time": "6일21시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p26_s3.png"
+            },
+            {
+                "name": "에어클리너 EX2 설계도A",
+                "nickname": "나부랭이다",
+                "time": "l남온시시간6일21시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p26_s4.png"
+            },
+            {
+                "name": "AVAN- 1 50 FA엔진+2",
+                "nickname": "QUEST뉴카",
+                "time": "6일21시시간",
+                "price": "64,000,000CT",
+                "image_path": "item_images/p26_s5.png"
+            },
+            {
+                "name": "오일쿨러 EXI R",
+                "nickname": "나부랭이다",
+                "time": "6일21시시간",
+                "price": "170,000CT",
+                "image_path": "item_images/p26_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 27,
+        "timestamp": "2026-08-17 19:32:47",
+        "items": [
+            {
+                "name": "인터쿨러 EXIR",
+                "nickname": "나부랭이다",
+                "time": "6일21시시간",
+                "price": "900,000CT",
+                "image_path": "item_images/p27_s1.png"
+            },
+            {
+                "name": "대용량라디에이터 EXI R",
+                "nickname": "나부랭이다",
+                "time": "6일21시시간",
+                "price": "900,000CT",
+                "image_path": "item_images/p27_s2.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민c",
+                "nickname": "EHB",
+                "time": "6일21시시간",
+                "price": "21,212CT",
+                "image_path": "item_images/p27_s3.png"
+            },
+            {
+                "name": "TCO-80 FA엔진",
+                "nickname": "이토록이나",
+                "time": "l남온시시간6일21시시간",
+                "price": "800,000CT",
+                "image_path": "item_images/p27_s4.png"
+            },
+            {
+                "name": "ATO-80 FA엔진",
+                "nickname": "이토록이나",
+                "time": "6일21시시간",
+                "price": "700,000CT",
+                "image_path": "item_images/p27_s5.png"
+            },
+            {
+                "name": "인터쿨러 EX2S",
+                "nickname": "",
+                "time": "6일21시시간",
+                "price": "654,321CT",
+                "image_path": "item_images/p27_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 28,
+        "timestamp": "2026-08-17 19:32:52",
+        "items": [
+            {
+                "name": "트윈 터보 Type EX2C",
+                "nickname": "",
+                "time": "6일21시시간",
+                "price": "543,210CT",
+                "image_path": "item_images/p28_s1.png"
+            },
+            {
+                "name": "NSII卜1 60 FA엔진",
+                "nickname": "BiRYlJ",
+                "time": "6일21시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p28_s2.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민R",
+                "nickname": "Space",
+                "time": "6일21시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p28_s3.png"
+            },
+            {
+                "name": "하이캠 EX2",
+                "nickname": "나부랭이다",
+                "time": "l남온시시간6일20시시간",
+                "price": "305,000CT",
+                "image_path": "item_images/p28_s4.png"
+            },
+            {
+                "name": "오일쿨러 SPIA",
+                "nickname": "타용",
+                "time": "6일20시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p28_s5.png"
+            },
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "TheSTG사도",
+                "time": "6일20시시간",
+                "price": "가격",
+                "image_path": "item_images/p28_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 29,
+        "timestamp": "2026-08-17 19:32:57",
+        "items": [
+            {
+                "name": "미스원샷",
+                "nickname": "현왕자`",
+                "time": "6일20시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p29_s1.png"
+            },
+            {
+                "name": "빅보어 EXIR",
+                "nickname": "QUEST만두",
+                "time": "6일20시시간",
+                "price": "700,000CT",
+                "image_path": "item_images/p29_s2.png"
+            },
+            {
+                "name": "XG-250 Dragon",
+                "nickname": "319라539",
+                "time": "6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p29_s3.png"
+            },
+            {
+                "name": "KFV-T26 Dragon",
+                "nickname": "319라5399",
+                "time": "l남온시시간6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p29_s4.png"
+            },
+            {
+                "name": "CTR-RX Dragon",
+                "nickname": "319라5399",
+                "time": "6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p29_s5.png"
+            },
+            {
+                "name": "S-SP Dragon",
+                "nickname": "319라5399",
+                "time": "6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p29_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 30,
+        "timestamp": "2026-08-17 19:33:02",
+        "items": [
+            {
+                "name": "대용량라디에이터 SP2 설계도c",
+                "nickname": "S20nelove",
+                "time": "6일20시시간",
+                "price": "15,000CT",
+                "image_path": "item_images/p30_s1.png"
+            },
+            {
+                "name": "대용량라디에이터 SCI",
+                "nickname": "S20nelove",
+                "time": "6일20시시간",
+                "price": "35,000CT",
+                "image_path": "item_images/p30_s2.png"
+            },
+            {
+                "name": "대용량라디에이터 SP2A",
+                "nickname": "규행일기",
+                "time": "6일20시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p30_s3.png"
+            },
+            {
+                "name": "PRS-918 DR엔진",
+                "nickname": "야구르지",
+                "time": "l남온시시간6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p30_s4.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민A",
+                "nickname": "야구르지",
+                "time": "6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p30_s5.png"
+            },
+            {
+                "name": "바디강성화 듀랄루민c",
+                "nickname": "BLAZER서리",
+                "time": "6일20시시간",
+                "price": "40,000CT",
+                "image_path": "item_images/p30_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 31,
+        "timestamp": "2026-08-17 19:33:07",
+        "items": [
+            {
+                "name": "바디 경량화 듀랄루민B",
+                "nickname": "BLAZER서리",
+                "time": "6일20시시간",
+                "price": "80,000CT",
+                "image_path": "item_images/p31_s1.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민A",
+                "nickname": "BLAZER서리",
+                "time": "6일20시시간",
+                "price": "450,000CT",
+                "image_path": "item_images/p31_s2.png"
+            },
+            {
+                "name": "마이티파워",
+                "nickname": "",
+                "time": "6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p31_s3.png"
+            },
+            {
+                "name": "하이캠 SP2A",
+                "nickname": "santafesm",
+                "time": "l남온시시간6일20시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p31_s4.png"
+            },
+            {
+                "name": "오일쿨러 EXIA",
+                "nickname": "TheSTG사도",
+                "time": "6일20시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p31_s5.png"
+            },
+            {
+                "name": "강화엔진 설계도",
+                "nickname": "DerriBar",
+                "time": "6일20시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p31_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 32,
+        "timestamp": "2026-08-17 19:33:12",
+        "items": [
+            {
+                "name": "강화엔진 고급설계도B",
+                "nickname": "DerriBar",
+                "time": "6일20시시간",
+                "price": "760,000CT",
+                "image_path": "item_images/p32_s1.png"
+            },
+            {
+                "name": "대용량라디에이터 SP2C",
+                "nickname": "타용",
+                "time": "6일20시시간",
+                "price": "200,000CT",
+                "image_path": "item_images/p32_s2.png"
+            },
+            {
+                "name": "대용량라디에이터 EX3 설계도B",
+                "nickname": "DerriBar",
+                "time": "6일20시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p32_s3.png"
+            },
+            {
+                "name": "바디 경량화 듀랄루민 SP3",
+                "nickname": "QU EST하트",
+                "time": "l남온시시간6일20시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p32_s4.png"
+            },
+            {
+                "name": "바디 경량화 알루미늄 SP2",
+                "nickname": "QU EST하트",
+                "time": "6일20시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p32_s5.png"
+            },
+            {
+                "name": "바디 경량화 알루미늄 SP2",
+                "nickname": "QU EST하트",
+                "time": "6일20시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p32_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 33,
+        "timestamp": "2026-08-17 19:33:18",
+        "items": [
+            {
+                "name": "하이캠 SPIS",
+                "nickname": "DerriBar",
+                "time": "6일20시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p33_s1.png"
+            },
+            {
+                "name": "바디 경량화 알루미늄 SP2",
+                "nickname": "QU EST하트",
+                "time": "6일20시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p33_s2.png"
+            },
+            {
+                "name": "NEF-200 DR엔진",
+                "nickname": "QUEST만=",
+                "time": "6일20시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p33_s3.png"
+            },
+            {
+                "name": "바디 경량화 알루미늄 SP2",
+                "nickname": "QU EST하트",
+                "time": "l남온시시간6일20시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p33_s4.png"
+            },
+            {
+                "name": "바디 경량화 알루미늄 SP2",
+                "nickname": "QU EST하트",
+                "time": "6일20시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p33_s5.png"
+            },
+            {
+                "name": "오일쿨러 EX2A",
+                "nickname": "0칼날0",
+                "time": "6일20시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p33_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 34,
+        "timestamp": "2026-08-17 19:33:23",
+        "items": [
+            {
+                "name": "인테이크파이프 EXI",
+                "nickname": "프로 리스트",
+                "time": "6일20시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p34_s1.png"
+            },
+            {
+                "name": "독립쓰로틀 EX2C",
+                "nickname": "프로 리스트",
+                "time": "6일20시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p34_s2.png"
+            },
+            {
+                "name": "빅보어 EX3A",
+                "nickname": "",
+                "time": "6일20시시간",
+                "price": "2,070,201CT",
+                "image_path": "item_images/p34_s3.png"
+            },
+            {
+                "name": "에어클리너 EX2S",
+                "nickname": "RedMi4",
+                "time": "l남온시시간6일20시시간",
+                "price": "1,000,000CT",
+                "image_path": "item_images/p34_s4.png"
+            },
+            {
+                "name": "트윈 터보 Type EX2S",
+                "nickname": "RedMi4",
+                "time": "6일20시시간",
+                "price": "가격",
+                "image_path": "item_images/p34_s5.png"
+            },
+            {
+                "name": "LP-560G HAN엔진",
+                "nickname": "프로 리스트",
+                "time": "6일20시시간",
+                "price": "2,500,000CT",
+                "image_path": "item_images/p34_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 35,
+        "timestamp": "2026-08-17 19:33:28",
+        "items": [
+            {
+                "name": "CAPU-SP 오일쿨러",
+                "nickname": "사리플",
+                "time": "6일20시시간",
+                "price": "90,000CT",
+                "image_path": "item_images/p35_s1.png"
+            },
+            {
+                "name": "CAPU-SP 인터쿨러",
+                "nickname": "사리플",
+                "time": "6일20시시간",
+                "price": "95,000CT",
+                "image_path": "item_images/p35_s2.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민S",
+                "nickname": "HybriD미L",
+                "time": "6일20시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p35_s3.png"
+            },
+            {
+                "name": "바디 경량화 듀랄루민S",
+                "nickname": "HYbriD미니",
+                "time": "l남온시시간6일20시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p35_s4.png"
+            },
+            {
+                "name": "바디 경량화 듀랄루민S",
+                "nickname": "HybriD미니",
+                "time": "6일20시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p35_s5.png"
+            },
+            {
+                "name": "바디 경량화 듀랄루민S",
+                "nickname": "HYbriD미니",
+                "time": "6일20시시간",
+                "price": "250,000CT",
+                "image_path": "item_images/p35_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 36,
+        "timestamp": "2026-08-17 19:33:33",
+        "items": [
+            {
+                "name": "강화브레이크 SP설계도",
+                "nickname": "santafesm",
+                "time": "6일20시시간",
+                "price": "20,000CT",
+                "image_path": "item_images/p36_s1.png"
+            },
+            {
+                "name": "오일쿨러 EX2S",
+                "nickname": "MeeG0",
+                "time": "6일20시시간",
+                "price": "가격",
+                "image_path": "item_images/p36_s2.png"
+            },
+            {
+                "name": "강화엔진 설계도 8",
+                "nickname": "santafes",
+                "time": "6일20시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p36_s3.png"
+            },
+            {
+                "name": "강화엔진 설계도 c",
+                "nickname": "santafesm",
+                "time": "l남온시시간6일20시시간",
+                "price": "350,000CT",
+                "image_path": "item_images/p36_s4.png"
+            },
+            {
+                "name": "빅보어 SP3 설계도A",
+                "nickname": "santafesm",
+                "time": "6일20시시간",
+                "price": "190,000CT",
+                "image_path": "item_images/p36_s5.png"
+            },
+            {
+                "name": "인터쿨러 SP2 설계도B",
+                "nickname": "santafesm",
+                "time": "6일20시시간",
+                "price": "15,000CT",
+                "image_path": "item_images/p36_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 37,
+        "timestamp": "2026-08-17 19:33:38",
+        "items": [
+            {
+                "name": "빅보어 EX2A",
+                "nickname": "DaWnl",
+                "time": "6일20시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p37_s1.png"
+            },
+            {
+                "name": "인터쿨러 EX3 설계도B",
+                "nickname": "santafesm",
+                "time": "6일20시시간",
+                "price": "400,000CT",
+                "image_path": "item_images/p37_s2.png"
+            },
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "DaW",
+                "time": "6일20시시간",
+                "price": "4CT",
+                "image_path": "item_images/p37_s3.png"
+            },
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "DaWnl",
+                "time": "l남온시시간6일20시시간",
+                "price": "41,400,000CT",
+                "image_path": "item_images/p37_s4.png"
+            },
+            {
+                "name": "오일쿨러 EX2 설계도B",
+                "nickname": "santafesm",
+                "time": "6일20시시간",
+                "price": "150,000CT",
+                "image_path": "item_images/p37_s5.png"
+            },
+            {
+                "name": "인테이크파이프 UC1",
+                "nickname": "NoKia",
+                "time": "6일20시시간",
+                "price": "200,000CT",
+                "image_path": "item_images/p37_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 38,
+        "timestamp": "2026-08-17 19:33:43",
+        "items": [
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "NoKia",
+                "time": "6일20시시간",
+                "price": "가격",
+                "image_path": "item_images/p38_s1.png"
+            },
+            {
+                "name": "커플지옥 솔로해골B",
+                "nickname": "SyeLoveHtt",
+                "time": "6일20시시간",
+                "price": "1CT",
+                "image_path": "item_images/p38_s2.png"
+            },
+            {
+                "name": "강화엔진 설계도 5",
+                "nickname": "NoKi",
+                "time": "6일20시시간",
+                "price": "가격",
+                "image_path": "item_images/p38_s3.png"
+            },
+            {
+                "name": "에어클리너 EX2S",
+                "nickname": "NoKia",
+                "time": "l남온시시간6일20시시간",
+                "price": "1,800,000CT",
+                "image_path": "item_images/p38_s4.png"
+            },
+            {
+                "name": "인터쿨러 UC1S",
+                "nickname": "SyeLoveHtt",
+                "time": "6일20시시간",
+                "price": "240,000CT",
+                "image_path": "item_images/p38_s5.png"
+            },
+            {
+                "name": "MNG-100 FA엔진",
+                "nickname": "RAiN",
+                "time": "6일20시시간",
+                "price": "700,000CT",
+                "image_path": "item_images/p38_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 39,
+        "timestamp": "2026-08-17 19:33:48",
+        "items": [
+            {
+                "name": "인터쿨러 UC1S",
+                "nickname": "KAGE",
+                "time": "6일19시시간",
+                "price": "200,000CT",
+                "image_path": "item_images/p39_s1.png"
+            },
+            {
+                "name": "중고 브레이크호스 Type2A",
+                "nickname": "oCTRACER0",
+                "time": "6일19시시간",
+                "price": "10,000CT",
+                "image_path": "item_images/p39_s2.png"
+            },
+            {
+                "name": "중고 패드 F Type3B",
+                "nickname": "oCTRACER",
+                "time": "6일19시시간",
+                "price": "10,000CT",
+                "image_path": "item_images/p39_s3.png"
+            },
+            {
+                "name": "오일쿨러 EX3S",
+                "nickname": "LimsSam",
+                "time": "l남온시시간6일19시시간",
+                "price": "가격",
+                "image_path": "item_images/p39_s4.png"
+            },
+            {
+                "name": "빅보어 EX3S",
+                "nickname": "LimsSam",
+                "time": "6일19시시간",
+                "price": "628,000CT",
+                "image_path": "item_images/p39_s5.png"
+            },
+            {
+                "name": "패드 Type UC1 R",
+                "nickname": "oCTRACER0",
+                "time": "6일19시시간",
+                "price": "70,000CT",
+                "image_path": "item_images/p39_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 40,
+        "timestamp": "2026-08-17 19:33:53",
+        "items": [
+            {
+                "name": "CTR-S6 Dragon",
+                "nickname": "oCTRACER0",
+                "time": "6일19시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p40_s1.png"
+            },
+            {
+                "name": "MNG-100 FA엔진",
+                "nickname": "oCTRACER0",
+                "time": "6일19시시간",
+                "price": "800,000CT",
+                "image_path": "item_images/p40_s2.png"
+            },
+            {
+                "name": "대용량라디에이터 EX3S",
+                "nickname": "LimsSa",
+                "time": "6일19시시간",
+                "price": "520,200CT",
+                "image_path": "item_images/p40_s3.png"
+            },
+            {
+                "name": "인테이크파이프 EX3S",
+                "nickname": "LimsSam",
+                "time": "l남온시시간6일19시시간",
+                "price": "가격",
+                "image_path": "item_images/p40_s4.png"
+            },
+            {
+                "name": "독립쓰로틀 EX3S",
+                "nickname": "LimsSam",
+                "time": "6일19시시간",
+                "price": "628,000CT",
+                "image_path": "item_images/p40_s5.png"
+            },
+            {
+                "name": "트윈터보 Type EX3S",
+                "nickname": "LimsSam",
+                "time": "6일19시시간",
+                "price": "6,230,000CT",
+                "image_path": "item_images/p40_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 41,
+        "timestamp": "2026-08-17 19:33:58",
+        "items": [
+            {
+                "name": "에어클리너 EXIR",
+                "nickname": "화려한드랩",
+                "time": "6일19시시간",
+                "price": "900,000CT",
+                "image_path": "item_images/p41_s1.png"
+            },
+            {
+                "name": "하이캠 E)(2",
+                "nickname": "TheTiger",
+                "time": "6일19시시간",
+                "price": "가격",
+                "image_path": "item_images/p41_s2.png"
+            },
+            {
+                "name": "타이어 Type SP2",
+                "nickname": "YoonA",
+                "time": "6일19시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p41_s3.png"
+            },
+            {
+                "name": "바디 경 량화 듀랄루민c",
+                "nickname": "SOna",
+                "time": "l남온시시간6일19시시간",
+                "price": "26,000CT",
+                "image_path": "item_images/p41_s4.png"
+            },
+            {
+                "name": "KFV-T26 DR엔진",
+                "nickname": "",
+                "time": "6일19시시간",
+                "price": "2,800,000CT",
+                "image_path": "item_images/p41_s5.png"
+            },
+            {
+                "name": "BS-200K FA엔진",
+                "nickname": "",
+                "time": "6일19시시간",
+                "price": "4,000,000CT",
+                "image_path": "item_images/p41_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 42,
+        "timestamp": "2026-08-17 19:34:03",
+        "items": [
+            {
+                "name": "오일쿨러 UC1S",
+                "nickname": "규행일기",
+                "time": "6일19시시간",
+                "price": "299,999CT",
+                "image_path": "item_images/p42_s1.png"
+            },
+            {
+                "name": "브레이크호스 Type SP2",
+                "nickname": "티샷",
+                "time": "6일19시시간",
+                "price": "370,000CT",
+                "image_path": "item_images/p42_s2.png"
+            },
+            {
+                "name": "독립쓰로틀 SPI",
+                "nickname": "규행일기",
+                "time": "6일19시시간",
+                "price": "299,999CT",
+                "image_path": "item_images/p42_s3.png"
+            },
+            {
+                "name": "타이어 Type SPI R",
+                "nickname": "존은!",
+                "time": "l남온시시간6일19시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p42_s4.png"
+            },
+            {
+                "name": "YFS-200 HAN엔진",
+                "nickname": "무지개스타",
+                "time": "6일19시시간",
+                "price": "1,500,000CT",
+                "image_path": "item_images/p42_s5.png"
+            },
+            {
+                "name": "쇼버 Soft Type UC1",
+                "nickname": "규행일기",
+                "time": "6일19시시간",
+                "price": "777,777CT",
+                "image_path": "item_images/p42_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 43,
+        "timestamp": "2026-08-17 19:34:08",
+        "items": [
+            {
+                "name": "인테이크파이프 SP3A",
+                "nickname": "Nieckname",
+                "time": "6일19시시간",
+                "price": "990,000CT",
+                "image_path": "item_images/p43_s1.png"
+            },
+            {
+                "name": "트윈 터보 Type SP3S",
+                "nickname": "Nieckname",
+                "time": "6일19시시간",
+                "price": "가격",
+                "image_path": "item_images/p43_s2.png"
+            },
+            {
+                "name": "타이어 TypeF SP3",
+                "nickname": "",
+                "time": "6일19시시간",
+                "price": "780,000CT",
+                "image_path": "item_images/p43_s3.png"
+            },
+            {
+                "name": "LP-560G HAN엔진",
+                "nickname": "DerriBar",
+                "time": "l남온시시간6일19시시간",
+                "price": "2,500,000CT",
+                "image_path": "item_images/p43_s4.png"
+            },
+            {
+                "name": "독립쓰로틀 SP3C",
+                "nickname": "Nieckname",
+                "time": "6일19시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p43_s5.png"
+            },
+            {
+                "name": "타이어 Type SPI F",
+                "nickname": "QUEST타운",
+                "time": "6일19시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p43_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 44,
+        "timestamp": "2026-08-17 19:34:14",
+        "items": [
+            {
+                "name": "강화바디 경량화 Eⅹ설계도",
+                "nickname": "NA등달",
+                "time": "6일19시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p44_s1.png"
+            },
+            {
+                "name": "강화바디 경량화 E)(설계도",
+                "nickname": "NA등달",
+                "time": "6일19시시간",
+                "price": "500,000CT",
+                "image_path": "item_images/p44_s2.png"
+            },
+            {
+                "name": "타이어 Type SPI F",
+                "nickname": "",
+                "time": "6일19시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p44_s3.png"
+            },
+            {
+                "name": "타이어 Type SP2",
+                "nickname": "존은!",
+                "time": "l남온시시간6일19시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p44_s4.png"
+            },
+            {
+                "name": "바디 경량화 듀랄루민 SP2",
+                "nickname": "오징카라숍",
+                "time": "6일19시시간",
+                "price": "100,000CT",
+                "image_path": "item_images/p44_s5.png"
+            },
+            {
+                "name": "타이어 Type SPI R",
+                "nickname": "",
+                "time": "6일19시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p44_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 45,
+        "timestamp": "2026-08-17 19:34:19",
+        "items": [
+            {
+                "name": "타이어 Type SPI R",
+                "nickname": "",
+                "time": "6일19시시간",
+                "price": "600,000CT",
+                "image_path": "item_images/p45_s1.png"
+            },
+            {
+                "name": "바디 강성화 듀랄루민B",
+                "nickname": "날씨의아이",
+                "time": "6일19시시간",
+                "price": "22,500CT",
+                "image_path": "item_images/p45_s2.png"
+            },
+            {
+                "name": "TRN-GPX DR엔진86",
+                "nickname": "아일리A",
+                "time": "6일19시시간",
+                "price": "300,000CT",
+                "image_path": "item_images/p45_s3.png"
+            },
+            {
+                "name": "하이캠 EX3A",
+                "nickname": "RedMaxim",
+                "time": "l남온시시간6일19시시간",
+                "price": "1,670,000CT",
+                "image_path": "item_images/p45_s4.png"
+            },
+            {
+                "name": "OPTI-200 HAN엔진",
+                "nickname": "RedMaxim",
+                "time": "6일19시시간",
+                "price": "1,800,000CT",
+                "image_path": "item_images/p45_s5.png"
+            },
+            {
+                "name": "트원터보 SPI G",
+                "nickname": "지연n민호",
+                "time": "6일19시시간",
+                "price": "2,050,000CT",
+                "image_path": "item_images/p45_s6.png"
+            }
+        ]
+    },
+    {
+        "page": 46,
+        "timestamp": "2026-08-17 19:34:24",
+        "items": [
+            {
+                "name": "미스원샷",
+                "nickname": "fgwpqwd",
+                "time": "6일19시시간",
+                "price": "450,000CT",
+                "image_path": "item_images/p46_s1.png"
+            },
+            {
+                "name": "강화바디 경량화 E)(설계도",
+                "nickname": "WLine*?4",
+                "time": "6일19시시간",
+                "price": "450,000CT",
+                "image_path": "item_images/p46_s2.png"
+            },
+            {
+                "name": "미스원샷",
+                "nickname": "fgwpqw",
+                "time": "6일19시시간",
+                "price": "450,000CT",
+                "image_path": "item_images/p46_s3.png"
+            },
+            {
+                "name": "미스원샷",
+                "nickname": "fgwpqwd",
+                "time": "l남온시시간6일19시시간",
+                "price": "450,000CT",
+                "image_path": "item_images/p46_s4.png"
+            },
+            {
+                "name": "미스읰A들",
+                "nickname": "fgwpqwd",
+                "time": "6일19시시간",
+                "price": "450,000CT",
+                "image_path": "item_images/p46_s5.png"
+            },
+            {
+                "name": "익스원삿",
+                "nickname": "fgwpqwd",
+                "time": "6일19시시간",
+                "price": "450,000CT",
+                "image_path": "item_images/p46_s6.png"
             }
         ]
     }
