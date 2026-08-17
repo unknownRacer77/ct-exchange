@@ -1,47 +1,47 @@
 [
     {
         "page": 1,
-        "timestamp": "2026-08-17 03:33:30",
+        "timestamp": "2026-08-17 17:37:54",
         "items": [
             {
-                "name": "LM-0O3S FA엔진",
-                "nickname": "RedMaxim",
-                "time": "6923시시간",
-                "price": "29000000CT",
+                "name": "에어클리너 SP1B",
+                "nickname": "BOTTEGA",
+                "time": "7일0시시간",
+                "price": "00000CT",
                 "image_path": "item_images/item_1.png"
             },
             {
-                "name": "트위터보 SPIG",
-                "nickname": "임비씨청콩",
-                "time": "6920시시간",
-                "price": "3650000CT",
+                "name": "독립쓰로틀 SP2B",
+                "nickname": "BOTTEGA",
+                "time": "7일0시시간",
+                "price": "00000CT",
                 "image_path": "item_images/item_2.png"
             },
             {
-                "name": "이테이크파이프 SPIG",
-                "nickname": "IILEDII",
-                "time": "6920시시간",
-                "price": "1500,00CT",
+                "name": "인터쿨러 SP1C",
+                "nickname": "BOTTEGA",
+                "time": "7일0시시간",
+                "price": "",
                 "image_path": "item_images/item_3.png"
             },
             {
-                "name": "에어크리너 IIC'G",
-                "nickname": "IIlI FDII",
-                "time": "6920시시간",
-                "price": "1000T",
+                "name": "빌보어 Sp2c",
+                "nickname": "BOTTEGA",
+                "time": "6일23시긴",
+                "price": "",
                 "image_path": "item_images/item_4.png"
             },
             {
-                "name": "하근의 동바 <",
-                "nickname": "f+n",
-                "time": "6910시시간",
-                "price": "T",
+                "name": "오임쿠러 SP2B",
+                "nickname": "",
+                "time": "5의",
+                "price": "",
                 "image_path": "item_images/item_5.png"
             },
             {
-                "name": "Fn?C '",
-                "nickname": "rcz",
-                "time": "6917시시간",
+                "name": "보보",
+                "nickname": "더 네상FO",
+                "time": "50",
                 "price": "",
                 "image_path": "item_images/item_6.png"
             }

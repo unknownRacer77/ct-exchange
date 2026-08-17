@@ -1,16 +1,18 @@
+import os
+# 한글 계정명 경로 문제 해결을 위해 모델 저장 경로를 C드라이브로 지정
+os.environ['PPOCR_HOME'] = 'C:/paddle_models'
+
 import ctypes
 import json
-import os
 import sys
 import time
 import subprocess
 import keyboard
 import pyautogui
 import pydirectinput
-import easyocr
+from paddleocr import PaddleOCR
 import cv2
 import numpy as np
-import torch
 from PIL import Image
 
 try:
@@ -18,9 +20,19 @@ try:
 except Exception:
     pass
 
-# GPU 사용 가능 여부 확인 및 출력
-print(f">> PyTorch CUDA 사용 가능 여부: {torch.cuda.is_available()}")
-reader = easyocr.Reader(['en', 'ko'], gpu=True)
+# CPU 모드로 PaddleOCR 초기화
+print(">> PaddleOCR 모델 로딩 중 (CPU 모드)...")
+# 모델이 저장될 영문 전용 경로 지정 (한글 계정명 에러 방지)
+MODEL_DIR = "C:/paddle_models"
+
+print(">> PaddleOCR 모델 로딩 중 (CPU 모드)...")
+ocr = PaddleOCR(
+    lang='korean', 
+    use_gpu=False,
+    det_model_dir=f"{MODEL_DIR}/det",
+    rec_model_dir=f"{MODEL_DIR}/rec",
+    cls_model_dir=f"{MODEL_DIR}/cls"
+)
 
 COORDS = {
     'buy_tab': (946, 361),
@@ -45,20 +57,26 @@ def click_pos(x, y):
     time.sleep(0.05)
     pydirectinput.mouseUp()
 
-def get_list_region(screen):
-    return screen.crop((870, 330, 3660, 2430))
+def get_name_region(screen):
+    return screen.crop((1018, 556, 1613, 604))
 
 def is_same_image(img1, img2):
     arr1 = np.array(img1.convert('L'), dtype=np.float32)
     arr2 = np.array(img2.convert('L'), dtype=np.float32)
-    return np.mean(np.abs(arr1 - arr2)) < 3.0
+    return np.mean(np.abs(arr1 - arr2)) < 2.0
 
-def preprocess_for_ocr(crop_img):
-    img = np.array(crop_img)
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+def read_text(crop_img):
+    img_np = np.array(crop_img)
+    gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
     h, w = gray.shape[:2]
     resized = cv2.resize(gray, (w * 2, h * 2), interpolation=cv2.INTER_CUBIC)
-    return resized
+    
+    result = ocr.ocr(resized, cls=False)
+    if not result or not result[0]:
+        return ""
+    
+    texts = [line[1][0] for line in result[0]]
+    return " ".join(texts).strip()
 
 def parse_slots(screen):
     page_items = []
@@ -78,26 +96,26 @@ def parse_slots(screen):
 
         try:
             name_box = (1018, 556 + dy, 1613, 604 + dy)
-            name_text = " ".join(reader.readtext(preprocess_for_ocr(screen.crop(name_box)), detail=0)).strip()
+            name_text = read_text(screen.crop(name_box))
         except Exception:
             name_text = ""
 
         try:
             nick_box = (1649, 557 + dy, 2037, 605 + dy)
-            nick_text = " ".join(reader.readtext(preprocess_for_ocr(screen.crop(nick_box)), detail=0)).strip()
+            nick_text = read_text(screen.crop(nick_box))
         except Exception:
             nick_text = ""
 
         try:
             time_box = (1260, 625 + dy, 1459, 667 + dy)
-            time_raw = " ".join(reader.readtext(preprocess_for_ocr(screen.crop(time_box)), allowlist='0123456789시간분초 ', detail=0)).strip()
+            time_raw = read_text(screen.crop(time_box))
             time_text = time_raw.replace('간', '시간').replace(' ', '')
         except Exception:
             time_text = ""
 
         try:
             price_box = (1146, 677 + dy, 1459, 717 + dy)
-            price_raw = " ".join(reader.readtext(preprocess_for_ocr(screen.crop(price_box)), allowlist='0123456789,CTO', detail=0)).strip()
+            price_raw = read_text(screen.crop(price_box))
             price_text = price_raw.replace('O', '0').replace('o', '0').replace(' ', '')
         except Exception:
             price_text = ""
@@ -161,21 +179,19 @@ def main():
                 'items': items
             })
 
-            prev_img = get_list_region(screen)
+            prev_name_img = get_name_region(screen)
 
             click_pos(*COORDS['next_btn'])
             pydirectinput.moveTo(10, 10)
-            
-            # 페이지 로딩 대기 시간을 2.0초로 늘려 화면이 완전히 바뀐 후 비교하도록 수정
-            time.sleep(2.0)
+            time.sleep(1.5)
 
             current_screen = pyautogui.screenshot()
-            curr_img = get_list_region(current_screen)
+            curr_name_img = get_name_region(current_screen)
 
-            if is_same_image(prev_img, curr_img):
+            if is_same_image(prev_name_img, curr_name_img):
                 time.sleep(0.5)
                 retry_screen = pyautogui.screenshot()
-                if is_same_image(curr_img, get_list_region(retry_screen)):
+                if is_same_image(curr_name_img, get_name_region(retry_screen)):
                     print('\n>> 마지막 페이지 도달 확인')
                     save_and_push()
                     break
