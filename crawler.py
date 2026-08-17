@@ -6,6 +6,7 @@ import time
 import subprocess
 import asyncio
 import re
+import difflib
 
 import keyboard
 import pyautogui
@@ -25,7 +26,15 @@ try:
 except Exception:
     pass
 
-# 거래소 버튼 좌표
+# 거래소 주요 아이템 DB (items.txt 파일에서 자동 로드)
+def load_item_db():
+    if os.path.exists("items.txt"):
+        with open("items.txt", "r", encoding="utf-8") as f:
+            return [line.strip() for line in f if line.strip()]
+    return []
+
+ITEM_DB = load_item_db()
+
 COORDS = {
     'buy_tab': (946, 361),
     'sell_tab': (1299, 361),
@@ -33,7 +42,6 @@ COORDS = {
     'next_btn': (1594, 1798),
 }
 
-# 1~6번 슬롯 전체 개별 좌표
 SLOTS = {
     1: {
         "item_image": (817, 550, 1012, 738),
@@ -95,14 +103,6 @@ def click_pos(x, y):
     time.sleep(0.1)
     pyautogui.mouseUp()
 
-def get_name_region(screen):
-    return screen.crop((1018, 556, 1613, 604))
-
-def is_same_image(img1, img2):
-    arr1 = np.array(img1.convert('L'), dtype=np.float32)
-    arr2 = np.array(img2.convert('L'), dtype=np.float32)
-    return np.mean(np.abs(arr1 - arr2)) < 2.0
-
 async def _extract_text_winocr(image_path):
     lang = Language("ko-KR")
     engine = OcrEngine.try_create_from_language(lang)
@@ -122,7 +122,6 @@ def read_text(crop_img):
     else:
         gray = img_np
         
-    # 고품질 확대 및 이진화 전처리 적용
     resized = cv2.resize(gray, None, fx=3, fy=3, interpolation=cv2.INTER_LANCZOS4)
     _, thresh = cv2.threshold(resized, 170, 255, cv2.THRESH_BINARY)
     padded = cv2.copyMakeBorder(thresh, 15, 15, 15, 15, cv2.BORDER_CONSTANT, value=255)
@@ -136,13 +135,28 @@ def read_text(crop_img):
         return ""
 
 def clean_item_name(name):
+    if not name:
+        return ""
+    
+    # 1. 고정 정규 치환
     name = name.replace('UCIS', 'UC1S').replace('SPIF', 'SP1F').replace('UCI', 'UC1')
-    name = name.replace('아EI쿡바', '안티롤바').replace('아EI', '안티')
+    name = name.replace('아EI쿡바', '안티롤바').replace('아EI', '안티').replace('EX1 R', 'EX1R')
+    
+    # 2. DB 내 단어와 유사도 비교 (자동 교정)
+    matches = difflib.get_close_matches(name, ITEM_DB, n=1, cutoff=0.55)
+    if matches:
+        return matches[0]
+    
+    # 3. DB에 없는 단어는 unknown_items.txt에 자동 기록
+    if name and len(name) > 1:
+        with open("unknown_items.txt", "a", encoding="utf-8") as f:
+            f.write(f"{name}\n")
+            
     return name
 
 def clean_price(raw_text):
-    text = raw_text.replace('가격', '').replace('CT', '').replace(',', '').replace(' ', '')
-    text = text.replace('이', '0').replace('O', '0').replace('o', '0')
+    text = raw_text.replace('가격', '').replace('간격', '').replace('CT', '').replace(',', '').replace(' ', '')
+    text = text.replace('이', '0').replace('O', '0').replace('o', '0').replace('Q', '0')
     numbers = re.findall(r'\d+', text)
     if numbers:
         val = "".join(numbers)
@@ -197,7 +211,7 @@ def parse_slots(screen, page_num):
                 'image_path': thumb_path
             }
             page_items.append(item_data)
-            print(f"  [슬롯 {slot_num}] 이름: {name_text} | 가격: {price_text} | 남은시간: {time_text}")
+            print(f"  [슬롯 {slot_num}] 이름: {name_text} | 닉네임: {nick_text} | 가격: {price_text} | 남은시간: {time_text}")
 
     return page_items
 
@@ -208,7 +222,7 @@ def save_and_push():
 
     try:
         subprocess.run(['git', 'add', '.'], check=True)
-        subprocess.run(['git', 'commit', '-m', 'Update market crawling data'], check=True)  # 따옴표(-m) 반영 완료
+        subprocess.run(['git', 'commit', '-m', 'Update market crawling data'], check=True)
         subprocess.run(['git', 'pull', '--rebase', 'origin', 'main'], check=True)
         subprocess.run(['git', 'push', 'origin', 'main'], check=True)
         print('>> 웹사이트 업로드(Git Push) 완료!')
@@ -242,34 +256,37 @@ def main():
             time.sleep(0.2)
 
         page = 1
+        prev_page_signature = ""
+        same_page_count = 0
+
         while is_running:
             print(f'\n[{page} 페이지 크롤링 중]')
             screen = pyautogui.screenshot()
             items = parse_slots(screen, page)
             
+            # 6개 슬롯 전체 데이터 조합으로 고유 시그니처 생성
+            current_signature = "".join([f"{item['name']}_{item['price']}_{item['nickname']}" for item in items])
+
             all_items_data.append({
                 'page': page,
                 'timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
                 'items': items
             })
 
-            prev_name_img = get_name_region(screen)
-
             click_pos(*COORDS['next_btn'])
             pydirectinput.moveTo(10, 10)
-            time.sleep(3.5)  # 렉으로 인한 조기 종료 방지를 위해 3.5초로 연장
+            time.sleep(3.5)
 
-            current_screen = pyautogui.screenshot()
-            curr_name_img = get_name_region(current_screen)
-
-            if is_same_image(prev_name_img, curr_name_img):
-                time.sleep(1.0)  # 한 번 더 여유를 두고 확인
-                retry_screen = pyautogui.screenshot()
-                if is_same_image(curr_name_img, get_name_region(retry_screen)):
+            if current_signature and current_signature == prev_page_signature:
+                same_page_count += 1
+                if same_page_count >= 2:
                     print('\n>> 마지막 페이지 도달 확인')
                     save_and_push()
                     break
+            else:
+                same_page_count = 0
 
+            prev_page_signature = current_signature
             page += 1
 
         cycle += 1
