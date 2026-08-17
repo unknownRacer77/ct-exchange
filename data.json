@@ -1,49 +1,103 @@
 [
     {
         "page": 1,
-        "timestamp": "2026-08-17 17:41:49",
+        "timestamp": "2026-08-17 18:43:52",
         "items": [
             {
-                "name": "에어클리너 SP1B",
-                "nickname": "3ORTEGA",
-                "time": "0시시간7일",
-                "price": "00000C",
-                "image_path": "item_images/item_1.png"
+                "name": "",
+                "nickname": "",
+                "time": "",
+                "price": "PIP1",
+                "image_path": "item_images/p1_s3.png"
             },
             {
-                "name": "독립쓰로틀 SP2B",
-                "nickname": "3OTTEGA",
-                "time": "7일0시시간",
-                "price": "L00000C",
-                "image_path": "item_images/item_2.png"
-            },
-            {
-                "name": "인터쿨러 SP1C",
-                "nickname": "3OTLEGA",
-                "time": "7일0시시간",
-                "price": "00000-",
-                "image_path": "item_images/item_3.png"
-            },
-            {
-                "name": "빌보어 SP2[",
-                "nickname": "30化r_스",
-                "time": "6일23시시간",
+                "name": "",
+                "nickname": "HA",
+                "time": "",
                 "price": "",
-                "image_path": "item_images/item_4.png"
+                "image_path": "item_images/p1_s4.png"
+            }
+        ]
+    },
+    {
+        "page": 2,
+        "timestamp": "2026-08-17 18:43:54",
+        "items": [
+            {
+                "name": "230 231 time.sIeep(I.5)",
+                "nickname": "GPT-I 지상",
+                "time": "234235ifissame_image(pr",
+                "price": "236237238time.sleep(0.5retry_screenifiSsameima",
+                "image_path": "item_images/p2_s1.png"
             },
             {
-                "name": "O이쿠고 SD2?",
-                "nickname": "3_史r__스",
-                "time": "'이23시가",
-                "price": "",
-                "image_path": "item_images/item_5.png"
+                "name": "241 242 break",
+                "nickname": "오十 6•17",
+                "time": "244245cycle+=1",
+                "price": "247248namema1n",
+                "image_path": "item_images/p2_s2.png"
             },
             {
-                "name": "___",
-                "nickname": "S__ularol",
-                "time": "-0",
+                "name": "",
+                "nickname": "",
+                "time": "PROBLEMSOUTPUTDEBUGCONSOLETERMII",
+                "price": "247248namema1n",
+                "image_path": "item_images/p2_s3.png"
+            },
+            {
+                "name": "[1 페이지 크를링 중] [슬롯 3] 이름: I 가격: PIPI I 남은시간: [슬롯 4] 이름: | 가격: I 남은시간:",
+                "nickname": "",
+                "time": "",
                 "price": "",
-                "image_path": "item_images/item_6.png"
+                "image_path": "item_images/p2_s4.png"
+            }
+        ]
+    },
+    {
+        "page": 3,
+        "timestamp": "2026-08-17 18:43:57",
+        "items": [
+            {
+                "name": "에어클리너 SPIB",
+                "nickname": "BOTTEGA",
+                "time": "남은시시간6일23시시간",
+                "price": "가격100,000CT",
+                "image_path": "item_images/p3_s1.png"
+            },
+            {
+                "name": "독립쓰로를 SP2B",
+                "nickname": "BOTTEGA",
+                "time": "남은시시간6일23시시간",
+                "price": "가격100.000CT",
+                "image_path": "item_images/p3_s2.png"
+            },
+            {
+                "name": "인터쿨러 SPIC",
+                "nickname": "BOTTEGA",
+                "time": "남은시시간6일23시시간",
+                "price": "[가격10이000CT",
+                "image_path": "item_images/p3_s3.png"
+            },
+            {
+                "name": "빅보어 SP2C",
+                "nickname": "BOTTEGA",
+                "time": "남은시시간6일23시시간",
+                "price": "가격10이000CT",
+                "image_path": "item_images/p3_s4.png"
+            },
+            {
+                "name": "오일쿨러 SP2B",
+                "nickname": "BOTTEGA",
+                "time": "남은시시간6일23시시간",
+                "price": "가격10이000CT오일쿨러SP2B남은시간6일23시간가격10이000CT",
+                "image_path": "item_images/p3_s5.png"
+            },
+            {
+                "name": "빅보어 EX3C",
+                "nickname": "덤벼세상아",
+                "time": "남은시시간6일23시시간",
+                "price": "가격2,950,000CT",
+                "image_path": "item_images/p3_s6.png"
             }
         ]
     }

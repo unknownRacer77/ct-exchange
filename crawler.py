@@ -1,39 +1,30 @@
 import os
-# 한글 계정명 경로 문제 해결을 위해 모델 저장 경로를 C드라이브로 지정
-os.environ['PPOCR_HOME'] = 'C:/paddle_models'
-
 import ctypes
 import json
 import sys
 import time
 import subprocess
+import asyncio
+
 import keyboard
 import pyautogui
 import pydirectinput
-from paddleocr import PaddleOCR
 import cv2
 import numpy as np
 from PIL import Image
+
+# Windows OCR 모듈
+from winsdk.windows.media.ocr import OcrEngine
+from winsdk.windows.globalization import Language
+from winsdk.windows.storage import StorageFile
+from winsdk.windows.graphics.imaging import BitmapDecoder
 
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(2)
 except Exception:
     pass
 
-# CPU 모드로 PaddleOCR 초기화
-print(">> PaddleOCR 모델 로딩 중 (CPU 모드)...")
-# 모델이 저장될 영문 전용 경로 지정 (한글 계정명 에러 방지)
-MODEL_DIR = "C:/paddle_models"
-
-print(">> PaddleOCR 모델 로딩 중 (CPU 모드)...")
-ocr = PaddleOCR(
-    lang='korean', 
-    use_gpu=False,
-    det_model_dir=f"{MODEL_DIR}/det",
-    rec_model_dir=f"{MODEL_DIR}/rec",
-    cls_model_dir=f"{MODEL_DIR}/cls"
-)
-
+# 거래소 버튼 좌표
 COORDS = {
     'buy_tab': (946, 361),
     'sell_tab': (1299, 361),
@@ -41,12 +32,58 @@ COORDS = {
     'next_btn': (1594, 1798),
 }
 
+# 1~6번 슬롯 전체 개별 좌표
+SLOTS = {
+    1: {
+        "item_image": (817, 550, 1012, 738),
+        "item_name": (1016, 555, 1616, 608),
+        "nickname": (1648, 556, 2034, 608),
+        "time_remaining": (1017, 622, 1462, 672),
+        "price": (1018, 676, 1458, 726),
+    },
+    2: {
+        "item_image": (817, 750, 1012, 938),
+        "item_name": (1016, 755, 1616, 808),
+        "nickname": (1648, 756, 2034, 808),
+        "time_remaining": (1017, 822, 1462, 872),
+        "price": (1018, 876, 1458, 926),
+    },
+    3: {
+        "item_image": (819, 948, 1012, 1138),
+        "item_name": (1017, 954, 1616, 1009),
+        "nickname": (1648, 954, 2027, 1007),
+        "time_remaining": (1017, 1022, 1465, 1073),
+        "price": (1019, 875, 1460, 925),
+    },
+    4: {
+        "item_image": (817, 1149, 1013, 1336),
+        "item_name": (1016, 1155, 1617, 1208),
+        "nickname": (1646, 1153, 2035, 1206),
+        "time_remaining": (1018, 1221, 1461, 1270),
+        "price": (1018, 1276, 1459, 1322),
+    },
+    5: {
+        "item_image": (820, 1351, 1012, 1537),
+        "item_name": (1018, 1356, 1613, 1409),
+        "nickname": (1647, 1354, 2036, 1408),
+        "time_remaining": (1017, 1422, 1461, 1473),
+        "price": (1018, 1276, 1461, 1524),
+    },
+    6: {
+        "item_image": (817, 1549, 1012, 1737),
+        "item_name": (1016, 1555, 1616, 1608),
+        "nickname": (1648, 1556, 2034, 1608),
+        "time_remaining": (1017, 1622, 1462, 1672),
+        "price": (1018, 1676, 1458, 1726),
+    },
+}
+
 all_items_data = []
 is_running = True
 
 def stop_program():
     global is_running
-    print('\n[!!] 프로그램 종료 (Ctrl + 5)')
+    print('\n[!!] 크롤링 중단 (Ctrl + 5)')
     is_running = False
     sys.exit(0)
 
@@ -65,68 +102,64 @@ def is_same_image(img1, img2):
     arr2 = np.array(img2.convert('L'), dtype=np.float32)
     return np.mean(np.abs(arr1 - arr2)) < 2.0
 
+async def _extract_text_winocr(image_path):
+    lang = Language("ko-KR")
+    engine = OcrEngine.try_create_from_language(lang)
+    
+    file = await StorageFile.get_file_from_path_async(os.path.abspath(image_path))
+    stream = await file.open_async(0)
+    decoder = await BitmapDecoder.create_async(stream)
+    bitmap = await decoder.get_software_bitmap_async()
+    
+    result = await engine.recognize_async(bitmap)
+    return result.text.strip()
+
 def read_text(crop_img):
     img_np = np.array(crop_img)
-    # 1. 흑백 변환
-    gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
+    if len(img_np.shape) == 3:
+        gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
+    else:
+        gray = img_np
+        
+    resized = cv2.resize(gray, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
     
-    # 2. 이미지 선명도 향상 (3배 확대 및 이진화)
-    h, w = gray.shape[:2]
-    resized = cv2.resize(gray, (w * 3, h * 3), interpolation=cv2.INTER_CUBIC)
+    temp_path = "temp_ocr.png"
+    cv2.imwrite(temp_path, resized)
     
-    # Threshold로 글씨 윤곽명확화 (배경과 글자 분리)
-    _, thresh = cv2.threshold(resized, 150, 255, cv2.THRESH_BINARY)
-    
-    # 3. 인식률 향상을 위한 외곽 여백(Padding) 추가
-    bordered = cv2.copyMakeBorder(thresh, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=[255, 255, 255])
-    
-    result = ocr.ocr(bordered, cls=False)
-    if not result or not result[0]:
+    try:
+        return asyncio.run(_extract_text_winocr(temp_path))
+    except Exception:
         return ""
-    
-    texts = [line[1][0] for line in result[0]]
-    return " ".join(texts).strip()
-    texts = [line[1][0] for line in result[0]]
-    return " ".join(texts).strip()
 
-def parse_slots(screen):
+def parse_slots(screen, page_num):
     page_items = []
-    slot_offsets = [0, 196, 392, 588, 784, 980]
-
     os.makedirs('item_images', exist_ok=True)
 
-    for idx, dy in enumerate(slot_offsets):
-        slot_num = idx + 1
-        
+    for slot_num, pos in SLOTS.items():
+        thumb_path = f'item_images/p{page_num}_s{slot_num}.png'
         try:
-            thumb_box = (824, 556 + dy, 1009, 725 + dy)
-            thumb_path = f'item_images/item_{slot_num}.png'
-            screen.crop(thumb_box).save(thumb_path)
+            screen.crop(pos["item_image"]).save(thumb_path)
         except Exception:
             thumb_path = ''
 
         try:
-            name_box = (1018, 556 + dy, 1613, 604 + dy)
-            name_text = read_text(screen.crop(name_box))
+            name_text = read_text(screen.crop(pos["item_name"]))
         except Exception:
             name_text = ""
 
         try:
-            nick_box = (1649, 557 + dy, 2037, 605 + dy)
-            nick_text = read_text(screen.crop(nick_box))
+            nick_text = read_text(screen.crop(pos["nickname"]))
         except Exception:
             nick_text = ""
 
         try:
-            time_box = (1260, 625 + dy, 1459, 667 + dy)
-            time_raw = read_text(screen.crop(time_box))
+            time_raw = read_text(screen.crop(pos["time_remaining"]))
             time_text = time_raw.replace('간', '시간').replace(' ', '')
         except Exception:
             time_text = ""
 
         try:
-            price_box = (1146, 677 + dy, 1459, 717 + dy)
-            price_raw = read_text(screen.crop(price_box))
+            price_raw = read_text(screen.crop(pos["price"]))
             price_text = price_raw.replace('O', '0').replace('o', '0').replace(' ', '')
         except Exception:
             price_text = ""
@@ -140,33 +173,33 @@ def parse_slots(screen):
                 'image_path': thumb_path
             }
             page_items.append(item_data)
-            print(f"  [슬롯 {slot_num}] 이름: {name_text} | 가격: {price_text}")
+            print(f"  [슬롯 {slot_num}] 이름: {name_text} | 가격: {price_text} | 남은시간: {time_text}")
 
     return page_items
 
 def save_and_push():
-    print('\n>> 데이터 저장 및 GitHub 업로드 진행...')
+    print('\n>> 크롤링 완료: json 저장 및 웹 전송(Git Push) 진행...')
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(all_items_data, f, ensure_ascii=False, indent=4)
 
     try:
         subprocess.run(['git', 'add', '.'], check=True)
-        subprocess.run(['git', 'commit', '-m', 'Auto data update'], check=True)
+        subprocess.run(['git', 'commit', '-m', 'Update market crawling data'], check=True)
         subprocess.run(['git', 'pull', '--rebase', 'origin', 'main'], check=True)
         subprocess.run(['git', 'push', 'origin', 'main'], check=True)
-        print('>> GitHub 업로드 완료!')
+        print('>> 웹사이트 업로드(Git Push) 완료!')
     except subprocess.CalledProcessError as e:
         print(f'>> Git 업로드 실패: {e}')
 
     all_items_data.clear()
 
 def main():
-    print('=== 시티레이서 크롤러 실행 (종료: Ctrl + 5) ===')
+    print('=== 시티레이서 거래소 데이터 크롤러 실행 (종료: Ctrl + 5) ===')
     keyboard.add_hotkey('ctrl+5', stop_program)
 
     cycle = 1
     while is_running:
-        print(f'\n--- [사이클 {cycle}] 시작 ---')
+        print(f'\n--- [크롤링 사이클 {cycle}] 시작 ---')
 
         click_pos(*COORDS['sell_tab'])
         time.sleep(0.3)
@@ -180,9 +213,9 @@ def main():
 
         page = 1
         while is_running:
-            print(f'\n[{page} 페이지 수집 중]')
+            print(f'\n[{page} 페이지 크롤링 중]')
             screen = pyautogui.screenshot()
-            items = parse_slots(screen)
+            items = parse_slots(screen, page)
             
             all_items_data.append({
                 'page': page,
