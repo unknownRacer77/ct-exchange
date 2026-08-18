@@ -122,9 +122,14 @@ def read_text(crop_img):
     else:
         gray = img_np
         
-    resized = cv2.resize(gray, None, fx=3, fy=3, interpolation=cv2.INTER_LANCZOS4)
-    _, thresh = cv2.threshold(resized, 170, 255, cv2.THRESH_BINARY)
-    padded = cv2.copyMakeBorder(thresh, 15, 15, 15, 15, cv2.BORDER_CONSTANT, value=255)
+    # 1. 색상 반전 (글자 테두리 안티앨리어싱 유지)
+    inverted = cv2.bitwise_not(gray)
+    
+    # 2. 4배 CUBIC 부드러운 확대 (이진화 제거로 글자 깨짐 방지)
+    resized = cv2.resize(inverted, None, fx=4, fy=4, interpolation=cv2.INTER_CUBIC)
+    
+    # 3. 여백 추가
+    padded = cv2.copyMakeBorder(resized, 15, 15, 15, 15, cv2.BORDER_CONSTANT, value=255)
     
     temp_path = "temp_ocr.png"
     cv2.imwrite(temp_path, padded)
@@ -138,8 +143,10 @@ def clean_item_name(name):
     if not name:
         return ""
     
-    # 1. 고정 정규 치환
+    # 1. 고정 정규 치환 및 깨짐 패턴 보정
+    name = re.sub(r'([A-Za-z0-9]+)[I!\|Li]*진', r'\1엔진', name)
     name = name.replace('UCIS', 'UC1S').replace('SPIF', 'SP1F').replace('UCI', 'UC1')
+    name = name.replace('SPI', 'SP1').replace('SPl', 'SP1').replace('EXl', 'EX1')
     name = name.replace('아EI쿡바', '안티롤바').replace('아EI', '안티').replace('EX1 R', 'EX1R')
     
     # 2. DB 내 단어와 유사도 비교 (자동 교정)
@@ -264,7 +271,6 @@ def main():
             screen = pyautogui.screenshot()
             items = parse_slots(screen, page)
             
-            # 6개 슬롯 전체 데이터 조합으로 고유 시그니처 생성
             current_signature = "".join([f"{item['name']}_{item['price']}_{item['nickname']}" for item in items])
 
             all_items_data.append({
@@ -275,7 +281,9 @@ def main():
 
             click_pos(*COORDS['next_btn'])
             pydirectinput.moveTo(10, 10)
-            time.sleep(3.5)
+            
+            # 다음 페이지 넘어갈 때 대기시간 1초로 단축
+            time.sleep(1)
 
             if current_signature and current_signature == prev_page_signature:
                 same_page_count += 1
