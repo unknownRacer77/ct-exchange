@@ -310,22 +310,10 @@
             return num.toLocaleString() + ' CT';
         }
 
-        function formatTime(str) {
-            if (!str) return '-';
-            const numbers = str.match(/\d+/g);
-            if (!numbers) return str;
-
-            const totalHours = parseInt(numbers[0], 10);
-            if (isNaN(totalHours)) return str;
-
-            if (totalHours >= 24) {
-                const days = Math.floor(totalHours / 24);
-                const hours = totalHours % 24;
-                return `${days}일 ${hours.toString().padStart(2, '0')}시간`;
-            } else {
-                return `0일 ${totalHours.toString().padStart(2, '0')}시간`;
-            }
-        }
+      function formatTime(str) {
+    if (!str) return '-';
+    return str;
+}
 
         function renderList(items) {
             const listEl = document.getElementById('item-list');
