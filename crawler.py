@@ -35,6 +35,75 @@ def load_item_db():
 
 ITEM_DB = load_item_db()
 
+# ==========================================
+# 사용자 정의 오답 노트 (1:1 강제 교정)
+# ==========================================
+REPLACEMENTS = {
+    "SCI c": "SC1C",
+    "SCI B": "SC1B",
+    "SCIB": "SC1B",
+    "EXI F": "EX1F",
+    "로터 EXIG": "로터 EX1G",
+    "제작실피1 바디경량화 GI": "제작실패 바디경량화 G1",
+    "제작실표H 바디경량화 GI": "제작실패 바디경량화 G1",
+    "바디 강성화 듀랄루민c": "바디 강성화 듀랄루민C",
+    "오일쿨러 EX3 설계도c": "오일쿨러 EX3 설계도C",
+    "로터 Type UC1 F": "로터 Type UC1F",
+    "인테이크파이프 UC1": "인테이크파이프 UC1S",
+    "바디 경량화 듀랄루민s": "바디 경량화 듀랄루민S",
+    "타이어 Type SP1 R": "타이어 Type SP1R",
+    "CTR-S5 DR엔진S5": "CTR-S5 DR엔진",
+    "독립쓰로틀 SP1": "독립쓰로틀 SP1S",
+    "오일쿨러 C": "오일쿨러 SC1C",
+    "인터쿨러 SCIC": "오일쿨러 SC1C",
+    "에어클리너 SCI c": "에어클리너 SC1C",
+    "인테이크파이프 SCI B": "인테이크파이프 SC1B",
+    "인테이크파이프 SCI": "인테이크파이프 SC1S",
+    "인터쿨러 SCIB": "인터쿨러 SC1B",
+    "인터쿨러 SCIA": "인터쿨러 SC1A",
+    "독립쓰로를 SCI A": "독립쓰로틀 SC1A",
+    "트윈터보 EXI R": "트윈터보 EX1R",
+    "오일쿨러 UC1": "오일쿨러 UC1S",
+    "패드 Type UC1 R": "패드 Type UC1R",
+    "패드 Type UC1 F": "패드 Type UC1F",
+    "오일쿨러 SCIS": "오일쿨러 SC1S",
+    "에어클리너 SCI B": "에어클리너 SC1B",
+    "0`7幽 EX2A": "하이캠 EX2A",
+    "타이어 Type SP1 F": "타이어 Type SP1F",
+    "0`캣 SCIB": "하이캠 SC1B",
+    "하이캠 SCIB": "하이캠 SC1B",
+    "오일쿨러 SCI B": "오일쿨러 SC1B",
+    "독립쓰로를 EXI R": "독립쓰로틀 EX1R",
+    "로터 Type SP1 F": "로터 Type SP1F",
+    "제작실피1 트윈터보 G3": "제작실패 트윈터보 G3",
+    "제작실표H 트윈터보 G3": "제작실패 트윈터보 G3",
+    "제작실패 트윈터보 GI": "제작실패 트윈터보 G1",
+    "바디경량화듀랄루민 SP1": "바디경량화 듀랄루민 SP1",
+    "트윈터보 Type SCI": "트윈터보 Type SC1S",
+    "트윈터보 Type SCI A": "트윈터보 Type SC1A",
+    "하이캠 EXIR": "하이캠 EX1R",
+    "대용량라디에이터 EXI R": "대용량라디에이터 EX1R",
+    "커플지옥 솔로해골s": "커플지옥 솔로해골S",
+    "독립쓰로틀 EXI R": "독립쓰로틀 EX1R",
+    "빅보어 EXIR": "빅보어 EX1R",
+    "오일쿨러 EXI R": "오일쿨러 EX1R",
+    "TRN-G PX 트윈 터보(T4)": "TRN-GPX 트윈터보 (T4)",
+    "마이 티 파워": "마이티파워",
+    "빅보어": "빅보어 UC1S",
+    "어 SCIA": "빅보어 SC1A",
+    "량화 듀랄루민A": "바디 경량화 듀랄루민A",
+    "독립쓰로들 EXI A": "독립쓰로틀 EX1A",
+    "인터쿨러 EXIA": "인터쿨러 EX1A",
+    "하이캠 EXIA": "하이캠 EX1A",
+    "트윈터보 Type SP1 5": "트윈터보 Type SP1S",
+    "익스원샷": "믹스원샷",
+    "인테이크파이프 UC1 G": "인테이크파이프 UC1G",
+    "타이어 Type EXI": "타이어 Type EX1",
+    "안티를바 Type UC1": "안티롤바 Type UC1",
+    "쇼비 Soft Type UC1": "쇼바 Soft Type UC1",
+    "CTR-RI DR엔진": "CTR-R1 DR엔진"
+}
+
 COORDS = {
     'buy_tab': (946, 361),
     'sell_tab': (1299, 361),
@@ -42,47 +111,48 @@ COORDS = {
     'next_btn': (1594, 1798),
 }
 
+# time_remaining: 남은시간 글자를 제외한 새로운 좌표 적용
 SLOTS = {
     1: {
         "item_image": (817, 550, 1012, 738),
         "item_name": (1016, 555, 1616, 608),
         "nickname": (1648, 556, 2034, 608),
-        "time_remaining": (1017, 622, 1462, 672),
+        "time_remaining": (1295, 621, 1463, 670),
         "price": (1018, 676, 1458, 726),
     },
     2: {
         "item_image": (817, 750, 1012, 938),
         "item_name": (1016, 755, 1616, 808),
         "nickname": (1648, 756, 2034, 808),
-        "time_remaining": (1017, 822, 1462, 872),
+        "time_remaining": (1271, 823, 1461, 870),
         "price": (1018, 876, 1458, 926),
     },
     3: {
         "item_image": (819, 948, 1012, 1138),
         "item_name": (1017, 954, 1616, 1009),
         "nickname": (1648, 954, 2027, 1007),
-        "time_remaining": (1017, 1022, 1465, 1073),
+        "time_remaining": (1274, 1024, 1461, 1070),
         "price": (1019, 1076, 1460, 1125),
     },
     4: {
         "item_image": (817, 1149, 1013, 1336),
         "item_name": (1016, 1155, 1617, 1208),
         "nickname": (1646, 1153, 2035, 1206),
-        "time_remaining": (1018, 1221, 1461, 1270),
+        "time_remaining": (1275, 1223, 1461, 1272),
         "price": (1018, 1276, 1459, 1322),
     },
     5: {
         "item_image": (820, 1351, 1012, 1537),
         "item_name": (1018, 1356, 1613, 1409),
         "nickname": (1647, 1354, 2036, 1408),
-        "time_remaining": (1017, 1422, 1461, 1473),
+        "time_remaining": (1271, 1423, 1461, 1470),
         "price": (1018, 1476, 1461, 1524),
     },
     6: {
         "item_image": (817, 1549, 1012, 1737),
         "item_name": (1016, 1555, 1616, 1608),
         "nickname": (1648, 1556, 2034, 1608),
-        "time_remaining": (1017, 1622, 1462, 1672),
+        "time_remaining": (1269, 1625, 1462, 1672),
         "price": (1018, 1676, 1458, 1726),
     },
 }
@@ -122,13 +192,8 @@ def read_text(crop_img):
     else:
         gray = img_np
         
-    # 1. 색상 반전 (글자 테두리 안티앨리어싱 유지)
     inverted = cv2.bitwise_not(gray)
-    
-    # 2. 4배 CUBIC 부드러운 확대 (이진화 제거로 글자 깨짐 방지)
     resized = cv2.resize(inverted, None, fx=4, fy=4, interpolation=cv2.INTER_CUBIC)
-    
-    # 3. 여백 추가
     padded = cv2.copyMakeBorder(resized, 15, 15, 15, 15, cv2.BORDER_CONSTANT, value=255)
     
     temp_path = "temp_ocr.png"
@@ -143,18 +208,21 @@ def clean_item_name(name):
     if not name:
         return ""
     
-    # 1. 고정 정규 치환 및 깨짐 패턴 보정
+    # 1. 사용자가 등록한 오답 노트로 1:1 강제 교정
+    name = REPLACEMENTS.get(name, name)
+    
+    # 2. 정규식 및 일반 치환으로 부분 오타 2차 교정
     name = re.sub(r'([A-Za-z0-9]+)[I!\|Li]*진', r'\1엔진', name)
     name = name.replace('UCIS', 'UC1S').replace('SPIF', 'SP1F').replace('UCI', 'UC1')
     name = name.replace('SPI', 'SP1').replace('SPl', 'SP1').replace('EXl', 'EX1')
     name = name.replace('아EI쿡바', '안티롤바').replace('아EI', '안티').replace('EX1 R', 'EX1R')
     
-    # 2. DB 내 단어와 유사도 비교 (자동 교정)
-    matches = difflib.get_close_matches(name, ITEM_DB, n=1, cutoff=0.55)
+    # 3. 정답 DB 기반 유사도 검사 (기준치를 45%로 완화)
+    matches = difflib.get_close_matches(name, ITEM_DB, n=1, cutoff=0.45)
     if matches:
         return matches[0]
     
-    # 3. DB에 없는 단어는 unknown_items.txt에 자동 기록
+    # DB에도 없고 보정도 실패한 항목은 파일로 기록
     if name and len(name) > 1:
         with open("unknown_items.txt", "a", encoding="utf-8") as f:
             f.write(f"{name}\n")
@@ -171,8 +239,26 @@ def clean_price(raw_text):
     return raw_text
 
 def clean_time(raw_text):
+    if not raw_text:
+        return ""
+    
     text = raw_text.replace('남은시간', '').replace(' ', '')
-    text = text.replace('빕', '일').replace('간', '시간')
+    
+    # 1. 'X일 Y시간' 형태 (예: 7일 0시간)
+    day_match = re.search(r'(\d+)\s*일\s*(\d+)', text)
+    if day_match:
+        return f"{day_match.group(1)}일 {int(day_match.group(2)):02d}시간"
+        
+    # 2. 'X시간 Y분' 형태
+    hour_match = re.search(r'(\d+)\s*시[간각]*\s*(\d+)\s*분', text)
+    if hour_match:
+        return f"{hour_match.group(1)}시간 {int(hour_match.group(2)):02d}분"
+        
+    # 3. 'X시간' 단독 형태
+    only_hour_match = re.search(r'(\d+)\s*시[간각]*', text)
+    if only_hour_match:
+        return f"{only_hour_match.group(1)}시간 00분"
+        
     return text
 
 def parse_slots(screen, page_num):
@@ -282,7 +368,6 @@ def main():
             click_pos(*COORDS['next_btn'])
             pydirectinput.moveTo(10, 10)
             
-            # 다음 페이지 넘어갈 때 대기시간 1초로 단축
             time.sleep(1)
 
             if current_signature and current_signature == prev_page_signature:
