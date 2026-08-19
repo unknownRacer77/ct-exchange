@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>시티거래소</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1e1e1e; }
+        th, td { padding: 10px; border: 1px solid #333; text-align: center; }
+        th { background: #252525; }
+        tr:hover { background: #2a2a2a; cursor: pointer; }
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+        .modal-content { background: #222; padding: 20px; border-radius: 8px; width: 400px; max-height: 80vh; overflow-y: auto; }
+        .modal-details { width: 100%; margin-top: 10px; font-size: 14px; }
+        .modal-details th, .modal-details td { padding: 6px; text-align: left; }
+        .close-btn { float: right; cursor: pointer; color: #aaa; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <h2>📦 시티거래소 아이템 목록</h2>
+    
+    <!-- 검색창 및 드롭다운 필터 -->
+    <div style="margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="search" placeholder="아이템 이름 검색..." onkeyup="filterTable()" style="padding: 8px; width: 220px; background: #222; color: #fff; border: 1px solid #444;">
+        
+        <select id="filter-parts" onchange="filterTable()" style="padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+            <option value="">모든 파츠</option>
+        </select>
+
+        <select id="filter-class" onchange="filterTable()" style="padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+            <option value="">모든 클래스</option>
+        </select>
+
+        <select id="filter-shop" onchange="filterTable()" style="padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+            <option value="">모든 상점그룹</option>
+        </select>
+    </div>
+
+    <table id="item-table">
+        <thead>
+            <tr>
+                <th>아이콘</th>
+                <th>이름</th>
+                <th>파츠</th>
+                <th>상점그룹</th>
+                <th>클래스</th>
+                <th>TP</th>
+                <th>가격</th>
+            </tr>
+        </thead>
+        <tbody id="item-list"></tbody>
+    </thead>
+    </table>
+
+    <!-- 상세 모달창 -->
+    <div id="modal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title" style="margin-top:0;"></h3>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        let itemData = [];
+
+        fetch('ctr_items_db.json')
+            .then(res => res.json())
+            .then(data => {
+                itemData = data;
+                initDropdowns(itemData);
+                renderTable(itemData);
+            });
+
+        // 드롭다운 옵션 자동 생성
+        function initDropdowns(data) {
+            const partsSet = [...new Set(data.map(i => i.parts))].filter(Boolean);
+            const classSet = [...new Set(data.map(i => i.carclass))].filter(Boolean);
+            const shopSet = [...new Set(data.map(i => i.shopgroup))].filter(Boolean);
+
+            const partsSelect = document.getElementById('filter-parts');
+            partsSet.forEach(p => { partsSelect.innerHTML += `<option value="${p}">${p}</option>`; });
+
+            const classSelect = document.getElementById('filter-class');
+            classSet.forEach(c => { classSelect.innerHTML += `<option value="${c}">클래스 ${c}</option>`; });
+
+            const shopSelect = document.getElementById('filter-shop');
+            shopSet.forEach(s => { shopSelect.innerHTML += `<option value="${s}">${s}</option>`; });
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('item-list');
+            tbody.innerHTML = '';
+            data.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.onclick = () => showModal(item);
+                tr.innerHTML = `
+                    <td><img src="${item.image}" width="32" height="32" onerror="this.style.display='none'"></td>
+                    <td style="text-align:left; padding-left:15px;">${item.name}</td>
+                    <td>${item.parts}</td>
+                    <td>${item.shopgroup}</td>
+                    <td><b>${item.carclass}</b></td>
+                    <td>${item.tp}</td>
+                    <td>${item.price}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 검색어 + 파츠 + 클래스 + 상점그룹 복합 필터링
+        function filterTable() {
+            const keyword = document.getElementById('search').value.toLowerCase();
+            const selectedPart = document.getElementById('filter-parts').value;
+            const selectedClass = document.getElementById('filter-class').value;
+            const selectedShop = document.getElementById('filter-shop').value;
+
+            const filtered = itemData.filter(item => {
+                const matchName = item.name.toLowerCase().includes(keyword);
+                const matchPart = !selectedPart || item.parts === selectedPart;
+                const matchClass = !selectedClass || item.carclass === selectedClass;
+                const matchShop = !selectedShop || item.shopgroup === selectedShop;
+                return matchName && matchPart && matchClass && matchShop;
+            });
+            renderTable(filtered);
+        }
+
+        function showModal(item) {
+            document.getElementById('modal-title').innerText = item.name;
+            const body = document.getElementById('modal-body');
+            
+            let html = `<div style="text-align:center; margin-bottom:10px;"><img src="${item.image}" width="64" height="64" onerror="this.style.display='none'"></div>`;
+            html += `<table class="modal-details">`;
+            html += `<tr><th>파츠</th><td>${item.parts}</td></tr>`;
+            html += `<tr><th>상점그룹</th><td>${item.shopgroup}</td></tr>`;
+            html += `<tr><th>차량클래스</th><td>${item.carclass}</td></tr>`;
+            html += `<tr><th>TP수치</th><td>${item.tp}</td></tr>`;
+            html += `<tr><th>가격</th><td>${item.price}</td></tr>`;
+            
+            if (item.details) {
+                for (let [k, v] of Object.entries(item.details)) {
+                    html += `<tr><th>${k}</th><td>${v}</td></tr>`;
+                }
+            }
+            html += `</table>`;
+            
+            body.innerHTML = html;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
