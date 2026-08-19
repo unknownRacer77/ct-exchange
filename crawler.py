@@ -305,6 +305,12 @@ def parse_slots(screen, page_num):
 
 def save_and_push():
     print('\n>> 크롤링 완료: json 저장 및 웹 전송(Git Push) 진행...')
+    
+    # 크롤링 완주 시점의 시각으로 timestamp 전체 갱신
+    now_time = time.strftime('%Y-%m-%d %H:%M:%S')
+    for page_data in all_items_data:
+        page_data['timestamp'] = now_time
+
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(all_items_data, f, ensure_ascii=False, indent=4)
 
