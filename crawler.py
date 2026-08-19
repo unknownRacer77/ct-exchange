@@ -104,7 +104,6 @@ REPLACEMENTS = {
     "QUESTZ이": "QUEST훈이",
     "1 QUESTE이": "QUEST훈이"
 }
-
 COORDS = {
     'buy_tab': (946, 361),
     'sell_tab': (1299, 361),
@@ -116,42 +115,42 @@ SLOTS = {
     1: {
         "item_image": (817, 550, 1012, 738),
         "item_name": (1016, 555, 1616, 608),
-        "nickname": (1650, 556, 2031, 608),
+        "nickname": (1650, 556, 2036, 608),
         "time_remaining": (1274, 621, 1463, 670),
         "price": (1018, 676, 1458, 726),
     },
     2: {
         "item_image": (817, 750, 1012, 938),
         "item_name": (1016, 755, 1616, 808),
-        "nickname": (1650, 756, 2031, 808),
+        "nickname": (1650, 756, 2036, 808),
         "time_remaining": (1271, 823, 1461, 870),
         "price": (1018, 876, 1458, 926),
     },
     3: {
         "item_image": (819, 948, 1012, 1138),
         "item_name": (1017, 954, 1616, 1009),
-        "nickname": (1650, 954, 2031, 1007),
+        "nickname": (1650, 954, 2036, 1007),
         "time_remaining": (1274, 1024, 1461, 1070),
         "price": (1019, 1076, 1460, 1125),
     },
     4: {
         "item_image": (817, 1149, 1013, 1336),
         "item_name": (1016, 1155, 1617, 1208),
-        "nickname": (1650, 1153, 2031, 1206),
+        "nickname": (1650, 1153, 2036, 1206),
         "time_remaining": (1275, 1223, 1461, 1272),
         "price": (1018, 1276, 1459, 1322),
     },
     5: {
         "item_image": (820, 1351, 1012, 1537),
         "item_name": (1018, 1356, 1613, 1409),
-        "nickname": (1650, 1354, 2031, 1408),
+        "nickname": (1650, 1354, 2036, 1408),
         "time_remaining": (1271, 1423, 1461, 1470),
         "price": (1018, 1476, 1461, 1524),
     },
     6: {
         "item_image": (817, 1549, 1012, 1737),
         "item_name": (1016, 1555, 1616, 1608),
-        "nickname": (1648, 1556, 2029, 1608),
+        "nickname": (1648, 1556, 2036, 1608),
         "time_remaining": (1269, 1625, 1462, 1672),
         "price": (1018, 1676, 1458, 1726),
     },
@@ -259,6 +258,8 @@ def clean_time(raw_text):
 def parse_slots(screen, page_num):
     page_items = []
     os.makedirs('item_images', exist_ok=True)
+    os.makedirs('nick_dataset', exist_ok=True)
+    os.makedirs('item_dataset', exist_ok=True)
 
     for slot_num, pos in SLOTS.items():
         thumb_path = f'item_images/p{page_num}_s{slot_num}.png'
@@ -268,13 +269,17 @@ def parse_slots(screen, page_num):
             thumb_path = ''
 
         try:
-            raw_name = read_text(screen.crop(pos["item_name"]))
+            item_crop = screen.crop(pos["item_name"])
+            item_crop.save(f"item_dataset/item_{time.time()}.png")
+            raw_name = read_text(item_crop)
             name_text = clean_item_name(raw_name)
         except Exception:
             name_text = ""
 
         try:
-            nick_text = clean_nickname(read_text(screen.crop(pos["nickname"])))
+            nick_crop = screen.crop(pos["nickname"])
+            nick_crop.save(f"nick_dataset/nick_{time.time()}.png")
+            nick_text = clean_nickname(read_text(nick_crop))
         except Exception:
             nick_text = ""
 
