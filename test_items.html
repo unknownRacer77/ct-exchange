@@ -164,7 +164,7 @@
                 const tr = document.createElement('tr');
                 tr.onclick = () => showModal(item);
                 tr.innerHTML = `
-                    <td><img src="${item.image}" width="32" height="32" onerror="this.style.display='none'"></td>
+                    <td><img src="https://ctr.domi.kr${item.image}" width="32" height="32" onerror="this.style.display='none'"></td>
                     <td style="text-align:left; padding-left:15px;">${item.name}</td>
                     <td>${item.parts || '-'}</td>
                     <td>${item.shopgroup || '-'}</td>
@@ -253,7 +253,7 @@
 
             let html = `
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-                    <img src="${item.image}" width="48" height="48" onerror="this.style.display='none'" style="border:1px solid #334155; border-radius:4px; padding:2px; background:#0f172a;">
+                    <img src="https://ctr.domi.kr${item.image}" width="48" height="48" onerror="this.style.display='none'" style="border:1px solid #334155; border-radius:4px; padding:2px; background:#0f172a;">
                     <div>
                         <div style="font-size:16px; font-weight:bold; color:#fff;">${item.name}</div>
                     </div>
