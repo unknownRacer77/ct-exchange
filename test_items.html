@@ -2,37 +2,83 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>시티거래소</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시티거래소 - 아이템 정보</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1e1e1e; }
-        th, td { padding: 10px; border: 1px solid #333; text-align: center; }
-        th { background: #252525; }
-        tr:hover { background: #2a2a2a; cursor: pointer; }
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
-        .modal-content { background: #222; padding: 20px; border-radius: 8px; width: 400px; max-height: 80vh; overflow-y: auto; }
-        .modal-details { width: 100%; margin-top: 10px; font-size: 14px; }
-        .modal-details th, .modal-details td { padding: 6px; text-align: left; }
-        .close-btn { float: right; cursor: pointer; color: #aaa; font-size: 18px; }
+        body { font-family: '맑은 고딕', Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; }
+        
+        /* 공통 네비게이션 버튼 스타일 */
+        .top-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        .nav-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 6px; text-decoration: none; font-size: 15px; font-weight: bold; transition: 0.2s; }
+        .nav-btn:hover { background: #334155; color: #fff; }
+        .nav-btn.active { background: #2563eb; color: #fff; border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #1e293b; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 10px; border: 1px solid #334155; text-align: center; }
+        th { background: #0f172a; }
+        tr:hover { background: #334155; cursor: pointer; }
+        
+        /* 모달 스타일 */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #1e293b; padding: 20px; border-radius: 8px; width: 420px; max-height: 85vh; overflow-y: auto; border: 1px solid #334155; }
+        .close-btn { float: right; cursor: pointer; color: #aaa; font-size: 20px; font-weight: bold; }
+        .close-btn:hover { color: #fff; }
+
+        /* 게임 원본 클래스 배지 스타일 */
+        .class-badge { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; font-weight: bold; font-size: 13px; border-radius: 2px; }
+        .class-badge.C { background-color: #e2e8f0; color: #0f172a; }
+        .class-badge.B { background-color: #a3e635; color: #0f172a; }
+        .class-badge.A { background-color: #06b6d4; color: #ffffff; }
+        .class-badge.S { background-color: #facc15; color: #0f172a; }
+        .class-badge.G { background-color: #b91c1c; color: #ffffff; }
+        .class-badge.R { background-color: #a855f7; color: #ffffff; }
+
+        /* 툴팁 박스 */
+        .tooltip-card { background: #111827; border: 1px solid #374151; padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.6; margin-bottom: 15px; text-align: left; }
+        .stat-green { color: #00ff66; font-weight: bold; }
+        .stat-red { color: #ff5555; font-weight: bold; }
+        .stat-yellow { color: #eab308; }
+
+        /* 상세 테이블 */
+        .modal-details { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .modal-details th { background: #0f172a; color: #94a3b8; font-weight: normal; }
+        .modal-details td, .modal-details th { padding: 8px; text-align: center; border: 1px solid #334155; }
+        
+        .pagination { margin-top: 20px; display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+        .page-btn { padding: 6px 12px; background: #1e293b; color: #fff; border: 1px solid #334155; border-radius: 4px; cursor: pointer; }
+        .page-btn.active { background: #3b82f6; color: #fff; font-weight: bold; border-color: #3b82f6; }
+        .page-btn:hover:not(.active) { background: #334155; }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            #search { width: 100% !important; }
+            select { flex: 1 1 calc(33.33% - 8px); }
+            table { font-size: 12px; }
+            th, td { padding: 8px 4px; }
+            .modal-content { width: 92% !important; }
+        }
     </style>
 </head>
 <body>
 
-    <h2>📦 시티거래소 아이템 목록</h2>
+    <!-- 상단 네비게이션 메뉴 (현재 페이지 Active) -->
+    <div class="top-nav">
+        <a href="index.html" class="nav-btn">🛒 거래소 검색</a>
+        <a href="items.html" class="nav-btn active">🔍 아이템 검색</a>
+    </div>
     
-    <!-- 검색창 및 드롭다운 필터 -->
     <div style="margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <input type="text" id="search" placeholder="아이템 이름 검색..." onkeyup="filterTable()" style="padding: 8px; width: 220px; background: #222; color: #fff; border: 1px solid #444;">
+        <input type="text" id="search" placeholder="아이템 이름 검색..." onkeyup="filterTable()" style="padding: 8px; width: 220px; background: #1e293b; color: #fff; border: 1px solid #334155; border-radius: 4px;">
         
-        <select id="filter-parts" onchange="filterTable()" style="padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+        <select id="filter-class" onchange="filterTable()" style="padding: 8px; background: #1e293b; color: #fff; border: 1px solid #334155; border-radius: 4px;">
+            <option value="">모든 Class</option>
+        </select>
+
+        <select id="filter-parts" onchange="filterTable()" style="padding: 8px; background: #1e293b; color: #fff; border: 1px solid #334155; border-radius: 4px;">
             <option value="">모든 파츠</option>
         </select>
 
-        <select id="filter-class" onchange="filterTable()" style="padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
-            <option value="">모든 클래스</option>
-        </select>
-
-        <select id="filter-shop" onchange="filterTable()" style="padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+        <select id="filter-shop" onchange="filterTable()" style="padding: 8px; background: #1e293b; color: #fff; border: 1px solid #334155; border-radius: 4px;">
             <option value="">모든 상점그룹</option>
         </select>
     </div>
@@ -44,46 +90,62 @@
                 <th>이름</th>
                 <th>파츠</th>
                 <th>상점그룹</th>
-                <th>클래스</th>
+                <th>Class</th>
                 <th>TP</th>
                 <th>가격</th>
             </tr>
         </thead>
         <tbody id="item-list"></tbody>
-    </thead>
     </table>
 
-    <!-- 상세 모달창 -->
+    <div id="pagination" class="pagination"></div>
+
     <div id="modal" onclick="if(event.target === this) closeModal()">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h3 id="modal-title" style="margin-top:0;"></h3>
+            <h3 id="modal-title" style="margin-top:0; display:none;"></h3>
             <div id="modal-body"></div>
         </div>
     </div>
 
     <script>
         let itemData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 30;
 
         fetch('ctr_items_db.json')
             .then(res => res.json())
             .then(data => {
                 itemData = data;
+                filteredData = data;
                 initDropdowns(itemData);
-                renderTable(itemData);
+                filterTable();
             });
 
-        // 드롭다운 옵션 자동 생성
+        function getItemClass(item) {
+            const raw = item.carclass || item.class || '';
+            return String(raw).trim().toUpperCase();
+        }
+
+        function getClassBadgeHtml(cls) {
+            if (!cls) return '-';
+            if (['C', 'B', 'A', 'S', 'G', 'R'].includes(cls)) {
+                return `<span class="class-badge ${cls}">${cls}</span>`;
+            }
+            return cls;
+        }
+
         function initDropdowns(data) {
-            const partsSet = [...new Set(data.map(i => i.parts))].filter(Boolean);
-            const classSet = [...new Set(data.map(i => i.carclass))].filter(Boolean);
-            const shopSet = [...new Set(data.map(i => i.shopgroup))].filter(Boolean);
+            const classSet = [...new Set(data.map(i => getItemClass(i)))].filter(Boolean).sort();
+            const partsSet = [...new Set(data.map(i => i.parts))].filter(Boolean).sort();
+            const shopSet = [...new Set(data.map(i => i.shopgroup))].filter(Boolean).sort();
+
+            const classSelect = document.getElementById('filter-class');
+            classSet.forEach(c => { classSelect.innerHTML += `<option value="${c}">Class ${c}</option>`; });
 
             const partsSelect = document.getElementById('filter-parts');
             partsSet.forEach(p => { partsSelect.innerHTML += `<option value="${p}">${p}</option>`; });
-
-            const classSelect = document.getElementById('filter-class');
-            classSet.forEach(c => { classSelect.innerHTML += `<option value="${c}">클래스 ${c}</option>`; });
 
             const shopSelect = document.getElementById('filter-shop');
             shopSet.forEach(s => { shopSelect.innerHTML += `<option value="${s}">${s}</option>`; });
@@ -92,58 +154,164 @@
         function renderTable(data) {
             const tbody = document.getElementById('item-list');
             tbody.innerHTML = '';
-            data.forEach((item) => {
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = data.slice(start, end);
+
+            pageData.forEach((item) => {
+                const cls = getItemClass(item);
                 const tr = document.createElement('tr');
                 tr.onclick = () => showModal(item);
                 tr.innerHTML = `
                     <td><img src="${item.image}" width="32" height="32" onerror="this.style.display='none'"></td>
                     <td style="text-align:left; padding-left:15px;">${item.name}</td>
-                    <td>${item.parts}</td>
-                    <td>${item.shopgroup}</td>
-                    <td><b>${item.carclass}</b></td>
-                    <td>${item.tp}</td>
-                    <td>${item.price}</td>
+                    <td>${item.parts || '-'}</td>
+                    <td>${item.shopgroup || '-'}</td>
+                    <td>${getClassBadgeHtml(cls)}</td>
+                    <td>${item.tp || '-'}</td>
+                    <td>${item.price || '-'}</td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            renderPagination(data.length);
         }
 
-        // 검색어 + 파츠 + 클래스 + 상점그룹 복합 필터링
+    function renderPagination(totalItems) {
+            const container = document.getElementById('pagination');
+            container.innerHTML = '';
+            const pageCount = Math.ceil(totalItems / itemsPerPage);
+
+            if (pageCount <= 1) return;
+
+            // 한 번에 보여줄 페이지 버튼 개수
+            const maxPages = 9; 
+            let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+            let endPage = startPage + maxPages - 1;
+
+            if (endPage > pageCount) {
+                endPage = pageCount;
+                startPage = Math.max(1, endPage - maxPages + 1);
+            }
+
+            // 버튼 생성 헬퍼 함수
+            const createBtn = (text, targetPage, isActive = false, isDisabled = false) => {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${isActive ? 'active' : ''}`;
+                btn.innerText = text;
+                
+                if (isDisabled) {
+                    btn.style.opacity = '0.3';
+                    btn.style.cursor = 'default';
+                } else {
+                    btn.onclick = () => {
+                        currentPage = targetPage;
+                        renderTable(filteredData);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    };
+                }
+                return btn;
+            };
+
+            // 처음(<<), 이전(<) 버튼
+            container.appendChild(createBtn('<<', 1, false, currentPage === 1));
+            container.appendChild(createBtn('<', currentPage - 1, false, currentPage === 1));
+
+            // 페이지 번호 버튼들
+            for (let i = startPage; i <= endPage; i++) {
+                container.appendChild(createBtn(i, i, i === currentPage));
+            }
+
+            // 다음(>), 끝(>>) 버튼
+            container.appendChild(createBtn('>', currentPage + 1, false, currentPage === pageCount));
+            container.appendChild(createBtn('>>', pageCount, false, currentPage === pageCount));
+        }
+
         function filterTable() {
             const keyword = document.getElementById('search').value.toLowerCase();
-            const selectedPart = document.getElementById('filter-parts').value;
             const selectedClass = document.getElementById('filter-class').value;
+            const selectedPart = document.getElementById('filter-parts').value;
             const selectedShop = document.getElementById('filter-shop').value;
 
-            const filtered = itemData.filter(item => {
+            filteredData = itemData.filter(item => {
+                const itemCls = getItemClass(item);
                 const matchName = item.name.toLowerCase().includes(keyword);
+                const matchClass = !selectedClass || itemCls === selectedClass;
                 const matchPart = !selectedPart || item.parts === selectedPart;
-                const matchClass = !selectedClass || item.carclass === selectedClass;
                 const matchShop = !selectedShop || item.shopgroup === selectedShop;
-                return matchName && matchPart && matchClass && matchShop;
+                return matchName && matchClass && matchPart && matchShop;
             });
-            renderTable(filtered);
+
+            currentPage = 1;
+            renderTable(filteredData);
         }
 
         function showModal(item) {
-            document.getElementById('modal-title').innerText = item.name;
             const body = document.getElementById('modal-body');
-            
-            let html = `<div style="text-align:center; margin-bottom:10px;"><img src="${item.image}" width="64" height="64" onerror="this.style.display='none'"></div>`;
-            html += `<table class="modal-details">`;
-            html += `<tr><th>파츠</th><td>${item.parts}</td></tr>`;
-            html += `<tr><th>상점그룹</th><td>${item.shopgroup}</td></tr>`;
-            html += `<tr><th>차량클래스</th><td>${item.carclass}</td></tr>`;
-            html += `<tr><th>TP수치</th><td>${item.tp}</td></tr>`;
-            html += `<tr><th>가격</th><td>${item.price}</td></tr>`;
-            
+            const cls = getItemClass(item);
+
+            let html = `
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <img src="${item.image}" width="48" height="48" onerror="this.style.display='none'" style="border:1px solid #334155; border-radius:4px; padding:2px; background:#0f172a;">
+                    <div>
+                        <div style="font-size:16px; font-weight:bold; color:#fff;">${item.name}</div>
+                    </div>
+                </div>
+            `;
+
+            html += `
+                <div class="tooltip-card">
+                    <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:4px;">${item.name}</div>
+                    <div class="stat-green">장착위치 ${item.parts || ''}</div>
+            `;
+
             if (item.details) {
                 for (let [k, v] of Object.entries(item.details)) {
-                    html += `<tr><th>${k}</th><td>${v}</td></tr>`;
+                    const strV = String(v);
+                    if (strV.startsWith('+')) {
+                        html += `<div class="stat-green">${k}${strV}</div>`;
+                    } else if (strV.startsWith('-')) {
+                        html += `<div class="stat-red">${k}${strV}</div>`;
+                    }
                 }
             }
-            html += `</table>`;
+
+            if (item.tp) {
+                html += `<div class="stat-yellow" style="margin-top:2px;">요구 TP ${item.tp}</div>`;
+            }
+            if (item.description) {
+                html += `<div style="margin-top:6px; color:#9ca3af; font-size:12px; border-top:1px solid #374151; padding-top:4px;">${item.description}</div>`;
+            }
+            html += `</div>`;
+
+            html += `<table class="modal-details">`;
+            html += `<tr><th>설정 이름</th><th>값</th></tr>`;
             
+            const baseInfo = [
+                ['가격', item.price],
+                ['적용차량', cls ? getClassBadgeHtml(cls) : '전체'],
+                ['상점그룹', item.shopgroup],
+                ['거래소 분류', item.parts]
+            ];
+
+            baseInfo.forEach(([k, v]) => {
+                if (v) html += `<tr><td>${k}</td><td>${v}</td></tr>`;
+            });
+
+            if (item.details) {
+                for (let [k, v] of Object.entries(item.details)) {
+                    let classAttr = '';
+                    const strV = String(v);
+                    if (strV.startsWith('+')) classAttr = 'class="stat-green"';
+                    else if (strV.startsWith('-')) classAttr = 'class="stat-red"';
+
+                    html += `<tr><td>${k}</td><td ${classAttr}>${v}</td></tr>`;
+                }
+            }
+
+            html += `</table>`;
+
             body.innerHTML = html;
             document.getElementById('modal').style.display = 'flex';
         }

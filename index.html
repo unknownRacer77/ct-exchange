@@ -33,6 +33,28 @@
             min-height: 90vh;
         }
 
+        /* 상단 페이지 이동 버튼 */
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
         /* 상단 헤더 */
         .header {
             display: flex;
@@ -215,6 +237,11 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- 아이템 검색 페이지 이동 버튼 -->
+        <a href="test_items.html" class="nav-btn">
+            📦 아이템 검색
+        </a>
+
         <!-- 상단 헤더 -->
         <div class="header">
             <div class="logo-area">
@@ -269,7 +296,6 @@
                     }
                 });
 
-           
                 syncEl.innerText = `동기화: ${jsonData[0].timestamp}`;
                 
                 applyFilters();
@@ -310,10 +336,10 @@
             return num.toLocaleString() + ' CT';
         }
 
-      function formatTime(str) {
-    if (!str) return '-';
-    return str;
-}
+        function formatTime(str) {
+            if (!str) return '-';
+            return str;
+        }
 
         function renderList(items) {
             const listEl = document.getElementById('item-list');
