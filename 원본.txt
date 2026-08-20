@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시티레이서 거래소 - 아이템 시세 조회 및 정보</title>
+    <meta name="naver-site-verification" content="e20ca4a0df269d85ef87b6278ff2c3fcb4dd229a" />
+    <!-- Chart.js 그래프 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #070a12;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #0d1322;
+            border-radius: 24px;
+            padding: 20px 16px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            min-height: 90vh;
+        }
+
+        /* 뷰 전환 시스템 스타일 */
+        .view { display: none; }
+        .view.active-view { display: block; }
+
+        /* 상단 네비게이션 탭 버튼 */
+        .top-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .nav-tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: #1e293b;
+            color: #64748b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        /* 공통 헤더 및 검색 스타일 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-badge {
+            width: 36px;
+            height: 36px;
+            background: #0088ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .live-tag {
+            background: #06b6d4;
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .sync-time {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* 우측 상단 액션 영역 (아이콘 + 갱신 버튼) */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 경고 ⓘ 아이콘 및 툴팁 스타일 */
+        .info-tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            color: #64748b;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        /* 마우스 호버 시 주황색 글로우 효과 */
+        .info-tooltip-wrap:hover .info-icon {
+            color: #ff9800;
+            text-shadow: 0 0 8px rgba(255, 152, 0, 0.9), 0 0 12px rgba(255, 152, 0, 0.5);
+        }
+
+        /* 경고 팝업 툴팁 */
+        .info-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            width: 210px;
+            background-color: #1e293b;
+            color: #f8fafc;
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 100;
+            bottom: 130%;
+            right: -10px;
+            border: 1px solid #ff9800;
+            font-size: 11px;
+            line-height: 1.4;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            word-break: keep-all;
+        }
+
+        .info-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            right: 14px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #ff9800 transparent transparent transparent;
+        }
+
+        .info-tooltip-wrap:hover .info-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .refresh-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #38bdf8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .search-box {
+            width: 100%;
+            background: #162032;
+            border: 1px solid #28354d;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .search-box::placeholder {
+            color: #64748b;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .select-box {
+            background: #162032;
+            border: 1px solid #28354d;
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        /* 1. 거래소 검색 화면 스타일 */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-card {
+            background: #131c2e;
+            border: 1px solid #202d44;
+            border-radius: 16px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: transform 0.1s ease, border-color 0.2s ease;
+        }
+
+        .item-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .item-middle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .item-thumbnail {
+            width: 75px;
+            height: 60px;
+            object-fit: contain;
+            background: #0a0f1d;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+            flex-shrink: 0;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #f8fafc;
+            word-break: break-all;
+            letter-spacing: -0.3px;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .time-text {
+            font-size: 12px;
+            color: #f43f5e;
+            font-weight: 600;
+        }
+
+        .price-text {
+            font-size: 16px;
+            font-weight: 800;
+            color: #facc15;
+            letter-spacing: -0.5px;
+        }
+
+        /* 2. 아이템 정보 검색 화면 스타일 */
+        .filter-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-row select, .filter-row input {
+            flex: 1;
+            background: #162032;
+            border: 1px solid #28354d;
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #131c2e;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 13px;
+        }
+
+        .info-table th, .info-table td {
+            padding: 8px;
+            border: 1px solid #202d44;
+            text-align: center;
+        }
+
+        .info-table th {
+            background: #0a0f1d;
+            color: #94a3b8;
+        }
+
+        .info-table tr:hover {
+            background: #1e293b;
+            cursor: pointer;
+        }
+
+        /* 클래스 배지 */
+        .class-badge {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 11px;
+            border-radius: 3px;
+        }
+        .class-badge.C { background: #e2e8f0; color: #0f172a; }
+        .class-badge.B { background: #a3e635; color: #0f172a; }
+        .class-badge.A { background: #06b6d4; color: #fff; }
+        .class-badge.S { background: #facc15; color: #0f172a; }
+        .class-badge.G { background: #b91c1c; color: #fff; }
+        .class-badge.R { background: #a855f7; color: #fff; }
+
+        /* 페이징 */
+        .pagination {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 6px 10px;
+            background: #162032;
+            color: #fff;
+            border: 1px solid #28354d;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .page-btn.active {
+            background: #2563eb;
+            border-color: #3b82f6;
+            font-weight: bold;
+        }
+
+        /* 모달 스타일 */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #0d1322;
+            padding: 20px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 440px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid #28354d;
+            position: relative;
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .tooltip-card {
+            background: #131c2e;
+            border: 1px solid #28354d;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .stat-green { color: #00ff66; font-weight: bold; }
+        .stat-red { color: #ff5555; font-weight: bold; }
+        .stat-yellow { color: #facc15; }
+
+        .loading {
+            text-align: center;
+            color: #64748b;
+            padding: 40px;
+            font-size: 14px;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 14px 0;
+        }
+
+        .info-box {
+            background: #131c2e;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #28354d;
+        }
+
+        .info-box span {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 2px;
+        }
+
+        .info-box strong {
+            font-size: 13px;
+            color: #38bdf8;
+        }
+
+        .chart-section {
+            margin-top: 16px;
+            background: #131c2e;
+            border: 1px solid #28354d;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .chart-section h4 {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 180px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 상단 네비게이션 탭 -->
+        <div class="top-nav">
+            <button class="nav-tab-btn active" id="tab-trade" onclick="switchView('trade')">🛒 거래소 검색</button>
+            <button class="nav-tab-btn" id="tab-items" onclick="switchView('items')">🔍 아이템 검색</button>
+        </div>
+
+        <!-- [VIEW 1] 거래소 검색 화면 -->
+        <div id="view-trade" class="view active-view">
+            <div class="header">
+                <div class="logo-area">
+                    <div class="logo-badge">CT</div>
+                    <div>
+                        <div class="title-wrap">
+                            <span class="title">시티레이서 거래소</span>
+                            <span class="live-tag">LIVE</span>
+                        </div>
+                        <div class="sync-time" id="sync-time">동기화: 불러오는 중...</div>
+                    </div>
+                </div>
+
+                <!-- ⓘ 아이콘 및 갱신 버튼 영역 -->
+                <div class="header-actions">
+                    <div class="info-tooltip-wrap">
+                        <span class="info-icon">ⓘ</span>
+                        <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
+                    </div>
+                    <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
+                </div>
+            </div>
+
+            <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 검색" oninput="applyTradeFilters()">
+
+            <div class="status-bar">
+                <span id="total-count">총 0개 매물</span>
+                <select class="select-box" id="sort-select" onchange="applyTradeFilters()">
+                    <option value="default">기본순</option>
+                    <option value="price-asc">가격 낮은순</option>
+                    <option value="price-desc">가격 높은순</option>
+                </select>
+            </div>
+
+            <div class="item-list" id="item-list">
+                <div class="loading">데이터를 불러오는 중입니다...</div>
+            </div>
+        </div>
+
+        <!-- [VIEW 2] 아이템 정보 검색 화면 -->
+        <div id="view-items" class="view">
+            <div class="header">
+                <div class="logo-area">
+                    <div class="logo-badge" style="background:#8b5cf6;">DB</div>
+                    <div>
+                        <div class="title-wrap">
+                            <span class="title">아이템 정보 DB</span>
+                        </div>
+                        <div class="sync-time">게임 아이템 스펙 조회</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <input type="text" id="item-search" placeholder="아이템 이름 검색..." onkeyup="filterItemTable()">
+                <select id="filter-class" onchange="filterItemTable()">
+                    <option value="">모든 Class</option>
+                </select>
+            </div>
+            <div class="filter-row">
+                <select id="filter-parts" onchange="filterItemTable()">
+                    <option value="">모든 파츠</option>
+                </select>
+                <select id="filter-shop" onchange="filterItemTable()">
+                    <option value="">모든 상점그룹</option>
+                </select>
+            </div>
+
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>아이콘</th>
+                        <th>이름</th>
+                        <th>파츠</th>
+                        <th>Class</th>
+                        <th>TP</th>
+                        <th>가격</th>
+                    </tr>
+                </thead>
+                <tbody id="item-db-list">
+                    <tr><td colspan="6" class="loading">DB 로딩 중...</td></tr>
+                </tbody>
+            </table>
+
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <!-- 상세 정보 모달 -->
+    <div id="modal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('view-' + viewId).classList.add('active-view');
+            document.getElementById('tab-' + viewId).classList.add('active');
+
+            if (viewId === 'items' && itemData.length === 0) {
+                initItemDatabase();
+            }
+        }
+
+        let rawItems = [];
+        let priceChartInstance = null;
+
+        async function fetchAndRenderTrade() {
+            const listEl = document.getElementById('item-list');
+            const syncEl = document.getElementById('sync-time');
+
+            try {
+                const res = await fetch('data.json?t=' + new Date().getTime());
+                if (!res.ok) throw new Error('data.json 로드 실패');
+                
+                const jsonData = await res.json();
+                rawItems = [];
+
+                if (Array.isArray(jsonData)) {
+                    jsonData.forEach(p => {
+                        if (p.items && Array.isArray(p.items)) {
+                            rawItems.push(...p.items);
+                        } else if (p.name || p.item_name) {
+                            rawItems.push(p);
+                        }
+                    });
+                    if (jsonData[0] && jsonData[0].timestamp) {
+                        syncEl.innerText = `동기화: ${jsonData[0].timestamp}`;
+                    } else {
+                        syncEl.innerText = `동기화 완료`;
+                    }
+                }
+                
+                applyTradeFilters();
+            } catch (err) {
+                console.error(err);
+                listEl.innerHTML = `<div class="loading" style="color: #f43f5e;">데이터를 불러올 수 없습니다.</div>`;
+            }
+        }
+
+        function applyTradeFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const sortVal = document.getElementById('sort-select').value;
+
+            let filtered = rawItems.filter(item => {
+                const nameMatch = item.name && item.name.toLowerCase().includes(query);
+                const nickMatch = item.nickname && item.nickname.toLowerCase().includes(query);
+                return nameMatch || nickMatch;
+            });
+
+            if (sortVal === 'price-asc') {
+                filtered.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+            } else if (sortVal === 'price-desc') {
+                filtered.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+            }
+
+            document.getElementById('total-count').innerText = `총 ${filtered.length}개 매물`;
+            renderTradeList(filtered);
+        }
+
+        function parsePrice(str) {
+            if (!str) return 0;
+            return parseInt(str.toString().replace(/[^0-9]/g, '')) || 0;
+        }
+
+        function renderTradeList(items) {
+            const listEl = document.getElementById('item-list');
+            if (!items || items.length === 0) {
+                listEl.innerHTML = `<div class="loading">등록된 매물이 없습니다.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = items.map(item => {
+                const priceStr = parsePrice(item.price) > 0 ? parsePrice(item.price).toLocaleString() + ' CT' : '-';
+                const imagePath = item.image_path ? item.image_path + '?t=' + new Date().getTime() : '';
+                const safeName = (item.name || '').replace(/'/g, "\\'");
+
+                return `
+                    <div class="item-card" onclick="openTradeItemModal('${safeName}')">
+                        <div class="item-middle">
+                            <img src="${imagePath}" class="item-thumbnail" alt="아이템" onerror="this.style.display='none'">
+                            <div class="item-title">${item.name || '알 수 없음'}</div>
+                        </div>
+                        <div class="item-footer">
+                            <span class="time-text">⏱ ${item.time || '-'}</span>
+                            <span class="price-text">${priceStr}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openTradeItemModal(itemName) {
+            const body = document.getElementById('modal-body');
+            const sameItems = rawItems.filter(i => i.name === itemName);
+            const prices = sameItems.map(i => parsePrice(i.price)).filter(p => p > 0);
+            
+            let minP = 0, maxP = 0, medP = 0;
+            if (prices.length > 0) {
+                minP = Math.min(...prices);
+                maxP = Math.max(...prices);
+                const sorted = [...prices].sort((a,b) => a - b);
+                const mid = Math.floor(sorted.length / 2);
+                medP = sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+            }
+
+            const imgPath = sameItems[0]?.image_path ? sameItems[0].image_path + '?t=' + new Date().getTime() : '';
+
+            let html = `
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <img src="${imgPath}" width="48" height="48" onerror="this.style.display='none'" style="border:1px solid #28354d; border-radius:8px; padding:2px; background:#0a0f1d; object-fit:contain;">
+                    <div>
+                        <div style="font-size:16px; font-weight:bold; color:#fff;">${itemName}</div>
+                        <div style="font-size:11px; color:#64748b; margin-top:2px;">실시간 거래소 시세 분석</div>
+                    </div>
+                </div>
+
+                <div class="modal-grid">
+                    <div class="info-box"><span>매물 수량</span><strong>${sameItems.length}개</strong></div>
+                    <div class="info-box"><span>최저가</span><strong>${minP > 0 ? minP.toLocaleString() + ' CT' : '-'}</strong></div>
+                    <div class="info-box"><span>중앙값</span><strong>${medP > 0 ? medP.toLocaleString() + ' CT' : '-'}</strong></div>
+                    <div class="info-box"><span>최고가</span><strong>${maxP > 0 ? maxP.toLocaleString() + ' CT' : '-'}</strong></div>
+                </div>
+
+                <div class="chart-section">
+                    <h4>📈 등록 매물 가격 분포</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            `;
+
+            body.innerHTML = html;
+            document.getElementById('modal').style.display = 'flex';
+
+            setTimeout(() => {
+                renderPriceChart(prices);
+            }, 50);
+        }
+
+        function renderPriceChart(prices) {
+            const ctx = document.getElementById('priceChart');
+            if (!ctx) return;
+            
+            if (priceChartInstance) {
+                priceChartInstance.destroy();
+                priceChartInstance = null;
+            }
+
+            const sortedPrices = [...prices].sort((a,b) => a - b);
+            const chartLabels = sortedPrices.map((_, idx) => `매물 ${idx + 1}`);
+
+            priceChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels.length > 0 ? chartLabels : ['매물 없음'],
+                    datasets: [{
+                        label: '가격 (CT)',
+                        data: sortedPrices.length > 0 ? sortedPrices : [0],
+                        borderColor: '#38bdf8',
+                        backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#facc15'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+        }
+
+        let itemData = [], filteredItemData = [], currentItemPage = 1;
+        const itemsPerPage = 20;
+
+        async function initItemDatabase() {
+            try {
+                const res = await fetch('ctr_items_db.json?t=' + new Date().getTime());
+                itemData = await res.json();
+                filteredItemData = itemData;
+                initDropdowns(itemData);
+                filterItemTable();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('item-db-list').innerHTML = `<tr><td colspan="6" class="loading" style="color: #f43f5e;">DB 로드 실패</td></tr>`;
+            }
+        }
+
+        function getItemClass(item) {
+            return String(item.carclass || item.class || '').trim().toUpperCase();
+        }
+
+        function getItemTp(item) {
+            if (item.tp !== undefined && item.tp !== null && item.tp !== '') return item.tp;
+            if (item.details) {
+                for (let [k, v] of Object.entries(item.details)) {
+                    if (k.toUpperCase().includes('TP')) return v;
+                }
+            }
+            return '-';
+        }
+
+        function getClassBadgeHtml(cls) {
+            if (!cls) return '-';
+            return ['C', 'B', 'A', 'S', 'G', 'R'].includes(cls) ? `<span class="class-badge ${cls}">${cls}</span>` : cls;
+        }
+
+        function initDropdowns(data) {
+            const classSet = [...new Set(data.map(i => getItemClass(i)))].filter(Boolean).sort();
+            const partsSet = [...new Set(data.map(i => i.parts))].filter(Boolean).sort();
+            const shopSet = [...new Set(data.map(i => i.shopgroup))].filter(Boolean).sort();
+
+            const cSel = document.getElementById('filter-class');
+            const pSel = document.getElementById('filter-parts');
+            const sSel = document.getElementById('filter-shop');
+
+            classSet.forEach(c => cSel.innerHTML += `<option value="${c}">Class ${c}</option>`);
+            partsSet.forEach(p => pSel.innerHTML += `<option value="${p}">${p}</option>`);
+            shopSet.forEach(s => sSel.innerHTML += `<option value="${s}">${s}</option>`);
+        }
+
+        function filterItemTable() {
+            const keyword = document.getElementById('item-search').value.toLowerCase();
+            const sc = document.getElementById('filter-class').value;
+            const sp = document.getElementById('filter-parts').value;
+            const ss = document.getElementById('filter-shop').value;
+
+            filteredItemData = itemData.filter(item => {
+                return item.name.toLowerCase().includes(keyword) &&
+                       (!sc || getItemClass(item) === sc) &&
+                       (!sp || item.parts === sp) &&
+                       (!ss || item.shopgroup === ss);
+            });
+            currentItemPage = 1;
+            renderItemTable(filteredItemData);
+        }
+
+        function renderItemTable(data) {
+            const tbody = document.getElementById('item-db-list');
+            tbody.innerHTML = '';
+            
+            const start = (currentItemPage - 1) * itemsPerPage;
+            const pageData = data.slice(start, start + itemsPerPage);
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="loading">검색 결과가 없습니다.</td></tr>`;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            pageData.forEach(item => {
+                const cls = getItemClass(item);
+                const tr = document.createElement('tr');
+                tr.onclick = () => showModal(item);
+                tr.innerHTML = `
+                    <td><img src="https://ctr.domi.kr${item.image}" width="28" height="28" onerror="this.style.display='none'"></td>
+                    <td style="text-align:left; padding-left:10px; font-weight:600;">${item.name}</td>
+                    <td>${item.parts || '-'}</td>
+                    <td>${getClassBadgeHtml(cls)}</td>
+                    <td>${getItemTp(item)}</td>
+                    <td>${item.price || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            renderItemPagination(data.length);
+        }
+
+        function renderItemPagination(totalItems) {
+            const container = document.getElementById('pagination');
+            container.innerHTML = '';
+            const pageCount = Math.ceil(totalItems / itemsPerPage);
+            if (pageCount <= 1) return;
+
+            const maxVisible = 5;
+            let start = Math.max(1, currentItemPage - Math.floor(maxVisible / 2));
+            let end = Math.min(pageCount, start + maxVisible - 1);
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+
+            if (currentItemPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.innerText = '◀';
+                prevBtn.onclick = () => { currentItemPage--; renderItemTable(filteredItemData); };
+                container.appendChild(prevBtn);
+            }
+
+            for (let i = start; i <= end; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentItemPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => {
+                    currentItemPage = i;
+                    renderItemTable(filteredItemData);
+                };
+                container.appendChild(btn);
+            }
+
+            if (currentItemPage < pageCount) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.innerText = '▶';
+                nextBtn.onclick = () => { currentItemPage++; renderItemTable(filteredItemData); };
+                container.appendChild(nextBtn);
+            }
+        }
+
+        function showModal(item) {
+            const body = document.getElementById('modal-body');
+            const cls = getItemClass(item);
+            const tpVal = getItemTp(item);
+
+            let html = `
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <img src="https://ctr.domi.kr${item.image}" width="42" height="42" onerror="this.style.display='none'" style="border:1px solid #28354d; border-radius:6px; padding:2px; background:#0a0f1d;">
+                    <div style="font-size:15px; font-weight:bold; color:#fff;">${item.name}</div>
+                </div>
+                <div class="tooltip-card">
+                    <div style="font-size:13px; font-weight:bold; color:#fff; margin-bottom:4px;">${item.name}</div>
+                    <div class="stat-green">장착위치 ${item.parts || ''}</div>
+            `;
+
+            if (item.details) {
+                for (let [k, v] of Object.entries(item.details)) {
+                    const strV = String(v);
+                    if (strV.startsWith('+')) html += `<div class="stat-green">${k}${strV}</div>`;
+                    else if (strV.startsWith('-')) html += `<div class="stat-red">${k}${strV}</div>`;
+                }
+            }
+            if (tpVal !== '-') html += `<div class="stat-yellow" style="margin-top:2px;">요구 TP ${tpVal}</div>`;
+            if (item.description) html += `<div style="margin-top:6px; color:#9ca3af; font-size:11px; border-top:1px solid #28354d; padding-top:4px;">${item.description}</div>`;
+            html += `</div><table class="info-table" style="font-size:12px;"><tr><th>상세 정보</th><th>값</th></tr>`;
+
+            const baseInfo = [
+                ['가격', item.price],
+                ['적용차량', getClassBadgeHtml(cls)],
+                ['상점그룹', item.shopgroup],
+                ['거래소 분류', item.parts]
+            ];
+            baseInfo.forEach(([k, v]) => { if (v) html += `<tr><td>${k}</td><td>${v}</td></tr>`; });
+
+            if (item.details) {
+                for (let [k, v] of Object.entries(item.details)) {
+                    let styleClass = String(v).startsWith('+') ? 'class="stat-green"' : String(v).startsWith('-') ? 'class="stat-red"' : '';
+                    html += `<tr><td>${k}</td><td ${styleClass}>${v}</td></tr>`;
+                }
+            }
+            html += `</table>`;
+            body.innerHTML = html;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            if (priceChartInstance) {
+                priceChartInstance.destroy();
+                priceChartInstance = null;
+            }
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchAndRenderTrade);
+    </script>
+</body>
+</html>
