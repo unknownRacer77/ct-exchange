@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>시티레이서 거래소 - 아이템 시세 조회 및 정보</title>
     <meta name="naver-site-verification" content="e20ca4a0df269d85ef87b6278ff2c3fcb4dd229a" />
+    <!-- Chart.js 그래프 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -117,6 +119,72 @@
             margin-top: 2px;
         }
 
+        /* 우측 상단 액션 영역 (아이콘 + 갱신 버튼) */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 경고 ⓘ 아이콘 및 툴팁 스타일 */
+        .info-tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            color: #64748b;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        /* 마우스 호버 시 주황색 글로우 효과 */
+        .info-tooltip-wrap:hover .info-icon {
+            color: #ff9800;
+            text-shadow: 0 0 8px rgba(255, 152, 0, 0.9), 0 0 12px rgba(255, 152, 0, 0.5);
+        }
+
+        /* 경고 팝업 툴팁 */
+        .info-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            width: 210px;
+            background-color: #1e293b;
+            color: #f8fafc;
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 100;
+            bottom: 130%;
+            right: -10px;
+            border: 1px solid #ff9800;
+            font-size: 11px;
+            line-height: 1.4;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            word-break: keep-all;
+        }
+
+        .info-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            right: 14px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #ff9800 transparent transparent transparent;
+        }
+
+        .info-tooltip-wrap:hover .info-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .refresh-btn {
             background: #1e293b;
             border: 1px solid #334155;
@@ -175,18 +243,13 @@
             border: 1px solid #202d44;
             border-radius: 16px;
             padding: 14px 16px;
+            cursor: pointer;
+            transition: transform 0.1s ease, border-color 0.2s ease;
         }
 
-        .item-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .seller-id {
-            font-size: 12px;
-            color: #94a3b8;
+        .item-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
         }
 
         .item-middle {
@@ -337,17 +400,18 @@
             padding: 20px;
             border-radius: 16px;
             width: 90%;
-            max-width: 400px;
+            max-width: 440px;
             max-height: 85vh;
             overflow-y: auto;
             border: 1px solid #28354d;
+            position: relative;
         }
 
         .close-btn {
             float: right;
             cursor: pointer;
             color: #94a3b8;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
         }
 
@@ -372,6 +436,53 @@
             padding: 40px;
             font-size: 14px;
         }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 14px 0;
+        }
+
+        .info-box {
+            background: #131c2e;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #28354d;
+        }
+
+        .info-box span {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 2px;
+        }
+
+        .info-box strong {
+            font-size: 13px;
+            color: #38bdf8;
+        }
+
+        .chart-section {
+            margin-top: 16px;
+            background: #131c2e;
+            border: 1px solid #28354d;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .chart-section h4 {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 180px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -395,10 +506,18 @@
                         <div class="sync-time" id="sync-time">동기화: 불러오는 중...</div>
                     </div>
                 </div>
-                <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
+
+                <!-- ⓘ 아이콘 및 갱신 버튼 영역 -->
+                <div class="header-actions">
+                    <div class="info-tooltip-wrap">
+                        <span class="info-icon">ⓘ</span>
+                        <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
+                    </div>
+                    <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
+                </div>
             </div>
 
-            <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 또는 판매자 검색" oninput="applyTradeFilters()">
+            <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 검색" oninput="applyTradeFilters()">
 
             <div class="status-bar">
                 <span id="total-count">총 0개 매물</span>
@@ -472,7 +591,6 @@
     </div>
 
     <script>
-        // 화면 전환 로직
         function switchView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
             document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
@@ -485,8 +603,8 @@
             }
         }
 
-        // --- [PART 1] 거래소 검색 로직 ---
         let rawItems = [];
+        let priceChartInstance = null;
 
         async function fetchAndRenderTrade() {
             const listEl = document.getElementById('item-list');
@@ -498,13 +616,22 @@
                 
                 const jsonData = await res.json();
                 rawItems = [];
-                jsonData.forEach(p => {
-                    if (p.items && Array.isArray(p.items)) {
-                        rawItems.push(...p.items);
-                    }
-                });
 
-                syncEl.innerText = `동기화: ${jsonData[0].timestamp}`;
+                if (Array.isArray(jsonData)) {
+                    jsonData.forEach(p => {
+                        if (p.items && Array.isArray(p.items)) {
+                            rawItems.push(...p.items);
+                        } else if (p.name || p.item_name) {
+                            rawItems.push(p);
+                        }
+                    });
+                    if (jsonData[0] && jsonData[0].timestamp) {
+                        syncEl.innerText = `동기화: ${jsonData[0].timestamp}`;
+                    } else {
+                        syncEl.innerText = `동기화 완료`;
+                    }
+                }
+                
                 applyTradeFilters();
             } catch (err) {
                 console.error(err);
@@ -547,12 +674,10 @@
             listEl.innerHTML = items.map(item => {
                 const priceStr = parsePrice(item.price) > 0 ? parsePrice(item.price).toLocaleString() + ' CT' : '-';
                 const imagePath = item.image_path ? item.image_path + '?t=' + new Date().getTime() : '';
+                const safeName = (item.name || '').replace(/'/g, "\\'");
 
                 return `
-                    <div class="item-card">
-                        <div class="item-card-top">
-                            <span class="seller-id">ID: ${item.nickname || '알 수 없음'}</span>
-                        </div>
+                    <div class="item-card" onclick="openTradeItemModal('${safeName}')">
                         <div class="item-middle">
                             <img src="${imagePath}" class="item-thumbnail" alt="아이템" onerror="this.style.display='none'">
                             <div class="item-title">${item.name || '알 수 없음'}</div>
@@ -566,7 +691,95 @@
             }).join('');
         }
 
-        // --- [PART 2] 아이템 정보 검색 로직 ---
+        function openTradeItemModal(itemName) {
+            const body = document.getElementById('modal-body');
+            const sameItems = rawItems.filter(i => i.name === itemName);
+            const prices = sameItems.map(i => parsePrice(i.price)).filter(p => p > 0);
+            
+            let minP = 0, maxP = 0, medP = 0;
+            if (prices.length > 0) {
+                minP = Math.min(...prices);
+                maxP = Math.max(...prices);
+                const sorted = [...prices].sort((a,b) => a - b);
+                const mid = Math.floor(sorted.length / 2);
+                medP = sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+            }
+
+            const imgPath = sameItems[0]?.image_path ? sameItems[0].image_path + '?t=' + new Date().getTime() : '';
+
+            let html = `
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <img src="${imgPath}" width="48" height="48" onerror="this.style.display='none'" style="border:1px solid #28354d; border-radius:8px; padding:2px; background:#0a0f1d; object-fit:contain;">
+                    <div>
+                        <div style="font-size:16px; font-weight:bold; color:#fff;">${itemName}</div>
+                        <div style="font-size:11px; color:#64748b; margin-top:2px;">실시간 거래소 시세 분석</div>
+                    </div>
+                </div>
+
+                <div class="modal-grid">
+                    <div class="info-box"><span>매물 수량</span><strong>${sameItems.length}개</strong></div>
+                    <div class="info-box"><span>최저가</span><strong>${minP > 0 ? minP.toLocaleString() + ' CT' : '-'}</strong></div>
+                    <div class="info-box"><span>중앙값</span><strong>${medP > 0 ? medP.toLocaleString() + ' CT' : '-'}</strong></div>
+                    <div class="info-box"><span>최고가</span><strong>${maxP > 0 ? maxP.toLocaleString() + ' CT' : '-'}</strong></div>
+                </div>
+
+                <div class="chart-section">
+                    <h4>📈 등록 매물 가격 분포</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            `;
+
+            body.innerHTML = html;
+            document.getElementById('modal').style.display = 'flex';
+
+            setTimeout(() => {
+                renderPriceChart(prices);
+            }, 50);
+        }
+
+        function renderPriceChart(prices) {
+            const ctx = document.getElementById('priceChart');
+            if (!ctx) return;
+            
+            if (priceChartInstance) {
+                priceChartInstance.destroy();
+                priceChartInstance = null;
+            }
+
+            const sortedPrices = [...prices].sort((a,b) => a - b);
+            const chartLabels = sortedPrices.map((_, idx) => `매물 ${idx + 1}`);
+
+            priceChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels.length > 0 ? chartLabels : ['매물 없음'],
+                    datasets: [{
+                        label: '가격 (CT)',
+                        data: sortedPrices.length > 0 ? sortedPrices : [0],
+                        borderColor: '#38bdf8',
+                        backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#facc15'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+        }
+
         let itemData = [], filteredItemData = [], currentItemPage = 1;
         const itemsPerPage = 20;
 
@@ -662,7 +875,6 @@
             renderItemPagination(data.length);
         }
 
-        // 수정된 페이지네이션 (가시성을 위해 최대 5개 번호와 이전/다음 버튼만 표시)
         function renderItemPagination(totalItems) {
             const container = document.getElementById('pagination');
             container.innerHTML = '';
@@ -676,7 +888,6 @@
                 start = Math.max(1, end - maxVisible + 1);
             }
 
-            // 이전 버튼
             if (currentItemPage > 1) {
                 const prevBtn = document.createElement('button');
                 prevBtn.className = 'page-btn';
@@ -685,7 +896,6 @@
                 container.appendChild(prevBtn);
             }
 
-            // 페이지 번호 버튼
             for (let i = start; i <= end; i++) {
                 const btn = document.createElement('button');
                 btn.className = `page-btn ${i === currentItemPage ? 'active' : ''}`;
@@ -697,7 +907,6 @@
                 container.appendChild(btn);
             }
 
-            // 다음 버튼
             if (currentItemPage < pageCount) {
                 const nextBtn = document.createElement('button');
                 nextBtn.className = 'page-btn';
@@ -753,6 +962,10 @@
         }
 
         function closeModal() {
+            if (priceChartInstance) {
+                priceChartInstance.destroy();
+                priceChartInstance = null;
+            }
             document.getElementById('modal').style.display = 'none';
         }
 
