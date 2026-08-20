@@ -95088,3 +95088,21 @@ TRS-1 FA엔진
 트윈터보 TYPE SP2C
 빅보어 SP2B
 에어클리너 SP1C
+트윈터보 TYPE UC1C
+인테이크파이프 EX2 설계도B
+빅보어 EX1 설계도B
+트윈터보 TYPE SP2C
+빅보어 SP2B
+에어클리너 SP1C
+트윈터보 TYPE UC1C
+인테이크파이프 EX2 설계도B
+빅보어 EX1 설계도B
+트윈터보 TYPE SP2C
+빅보어 SP2B
+에어클리너 SP1C
+트윈터보 TYPE UC1C
+인테이크파이프 EX2 설계도B
+빅보어 EX1 설계도B
+트윈터보 TYPE SP2C
+빅보어 SP2B
+에어클리너 SP1C
