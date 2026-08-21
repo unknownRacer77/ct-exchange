@@ -23,8 +23,15 @@ try:
 except Exception:
     pass
 
-# PaddleOCR 엔진 초기화 (한국어, PP-OCRv3 버전 지정)
-ocr_engine = PaddleOCR(use_angle_cls=False, lang='korean', show_log=False, ocr_version='PP-OCRv4')
+# PaddleOCR 엔진 초기화 (한국어, PP-OCRv4 버전 지정 및 경량화)
+ocr_engine = PaddleOCR(
+    use_angle_cls=False, 
+    lang='korean', 
+    show_log=False, 
+    ocr_version='PP-OCRv4',
+    det_db_thresh=0.3,
+    det_db_box_thresh=0.5
+)
 
 # 거래소 주요 아이템 DB (items.txt 파일에서 자동 로드)
 def load_item_db():
@@ -104,6 +111,7 @@ REPLACEMENTS = {
     "QUESTZ이": "QUEST훈이",
     "1 QUESTE이": "QUEST훈이"
 }
+
 COORDS = {
     'buy_tab': (946, 361),
     'sell_tab': (1299, 361),
@@ -166,10 +174,10 @@ def stop_program():
     sys.exit(0)
 
 def click_pos(x, y):
-    pyautogui.moveTo(x, y, duration=0.1)
-    time.sleep(0.1)
+    pyautogui.moveTo(x, y, duration=0.03)
+    time.sleep(0.05)
     pyautogui.mouseDown()
-    time.sleep(0.1)
+    time.sleep(0.05)
     pyautogui.mouseUp()
 
 def read_text(crop_img):
@@ -179,14 +187,10 @@ def read_text(crop_img):
     else:
         gray = img_np
         
-    _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-    resized = cv2.resize(thresh, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-    padded = cv2.copyMakeBorder(resized, 15, 15, 15, 15, cv2.BORDER_CONSTANT, value=255)
-    inverted = cv2.bitwise_not(padded)
-    img_final = cv2.cvtColor(inverted, cv2.COLOR_GRAY2BGR)
+    resized = cv2.resize(gray, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_LINEAR)
     
     try:
-        result = ocr_engine.ocr(img_final, cls=False)
+        result = ocr_engine.ocr(resized, cls=False)
         if not result or not result[0]:
             return ""
         return " ".join([line[1][0] for line in result[0]]).strip()
@@ -311,7 +315,6 @@ def parse_slots(screen, page_num):
 def save_and_push():
     print('\n>> 크롤링 완료: json 저장 및 웹 전송(Git Push) 진행...')
     
-    # 크롤링 완주 시점의 시각으로 timestamp 전체 갱신
     now_time = time.strftime('%Y-%m-%d %H:%M:%S')
     for page_data in all_items_data:
         page_data['timestamp'] = now_time
@@ -345,14 +348,14 @@ def main():
         print(f'\n--- [크롤링 사이클 {cycle}] 시작 ---')
 
         click_pos(*COORDS['sell_tab'])
-        time.sleep(0.3)
+        time.sleep(0.1)
         click_pos(*COORDS['buy_tab'])
-        time.sleep(0.3)
+        time.sleep(0.1)
 
         for _ in range(3):
             if not is_running: break
             click_pos(*COORDS['refresh'])
-            time.sleep(0.2)
+            time.sleep(0.1)
 
         page = 1
         prev_page_signature = ""
@@ -361,16 +364,17 @@ def main():
         while is_running:
             print(f'\n[{page} 페이지 크롤링 중]')
             screen = None
-        for attempt in range(5):
-            try:
-                screen = pyautogui.screenshot()
-                break
-            except OSError:
-                time.sleep(1)
+            for attempt in range(5):
+                try:
+                    screen = pyautogui.screenshot()
+                    break
+                except OSError:
+                    time.sleep(1)
 
-        if screen is None:
-            print("❌ 화면 캡처 실패로 진행을 건너뜁니다.")
-            continue
+            if screen is None:
+                print("❌ 화면 캡처 실패로 진행을 건너뜁니다.")
+                continue
+                
             items = parse_slots(screen, page)
             
             current_signature = "".join([f"{item['name']}_{item['price']}_{item['nickname']}" for item in items])
@@ -384,7 +388,7 @@ def main():
             click_pos(*COORDS['next_btn'])
             pydirectinput.moveTo(10, 10)
             
-            time.sleep(1)
+            time.sleep(0.4)
 
             if current_signature and current_signature == prev_page_signature:
                 same_page_count += 1
