@@ -360,7 +360,17 @@ def main():
 
         while is_running:
             print(f'\n[{page} 페이지 크롤링 중]')
-            screen = pyautogui.screenshot()
+            screen = None
+        for attempt in range(5):
+            try:
+                screen = pyautogui.screenshot()
+                break
+            except OSError:
+                time.sleep(1)
+
+        if screen is None:
+            print("❌ 화면 캡처 실패로 진행을 건너뜁니다.")
+            continue
             items = parse_slots(screen, page)
             
             current_signature = "".join([f"{item['name']}_{item['price']}_{item['nickname']}" for item in items])
