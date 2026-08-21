@@ -36,11 +36,9 @@
             min-height: 90vh;
         }
 
-        /* 뷰 전환 시스템 */
         .view { display: none; }
         .view.active-view { display: block; }
 
-        /* 상단 네비게이션 탭 */
         .top-nav {
             display: flex;
             gap: 8px;
@@ -67,7 +65,6 @@
             border-color: #3b82f6;
         }
 
-        /* 헤더 및 검색 */
         .header {
             display: flex;
             justify-content: space-between;
@@ -129,7 +126,6 @@
             gap: 12px;
         }
 
-        /* 툴팁 */
         .info-tooltip-wrap {
             position: relative;
             display: inline-flex;
@@ -231,7 +227,6 @@
             outline: none;
         }
 
-        /* 거래소 카드 목록 */
         .item-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -296,7 +291,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* 아이템 정보 DB 테이블 */
         .filter-row {
             display: flex;
             gap: 6px;
@@ -333,11 +327,6 @@
         .info-table th {
             background: #0a0f1d;
             color: #94a3b8;
-        }
-
-        .info-table tr:hover {
-            background: #1e293b;
-            cursor: pointer;
         }
 
         .class-badge {
@@ -384,7 +373,6 @@
             font-weight: bold;
         }
 
-        /* 모달 스타일 */
         #modal {
             display: none;
             position: fixed;
@@ -471,7 +459,6 @@
             width: 100%;
         }
 
-        /* 이벤트 배지 */
         .event-badge {
             display: inline-flex;
             align-items: center;
@@ -519,11 +506,9 @@
             100% { opacity: 1; }
         }
 
-        /* 모바일 전용 텍스트 전환 */
         .badge-text-full { display: inline; }
         .badge-text-short { display: none; }
 
-        /* 모바일 전용 네비게이션 헤더 레이아웃 (768px 이하) */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -580,16 +565,13 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- 상단 네비게이션 탭 -->
         <div class="top-nav">
             <button class="nav-tab-btn active" id="tab-trade" onclick="switchView('trade')">🛒 거래소 검색</button>
             <button class="nav-tab-btn" id="tab-items" onclick="switchView('items')">🔍 아이템 검색</button>
         </div>
 
-        <!-- [VIEW 1] 거래소 검색 화면 -->
         <div id="view-trade" class="view active-view">
             <div class="header">
-                <!-- 1줄: 로고, 제목, 골타/폭타 -->
                 <div class="logo-area">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <div class="logo-badge">CT</div>
@@ -612,7 +594,6 @@
                     </div>
                 </div>
 
-                <!-- 2줄: 동기화 시간 및 갱신 버튼 -->
                 <div class="header-actions">
                     <div class="sync-time" id="sync-time">동기화: 불러오는 중...</div>
                     <div style="display: flex; align-items: center; gap: 6px;">
@@ -642,7 +623,6 @@
             <div id="trade-pagination" class="pagination"></div>
         </div>
 
-        <!-- [VIEW 2] 아이템 정보 검색 화면 -->
         <div id="view-items" class="view">
             <div class="header">
                 <div class="logo-area">
@@ -691,7 +671,6 @@
         </div>
     </div>
 
-    <!-- 상세 정보 모달 -->
     <div id="modal" onclick="if(event.target === this) closeModal()">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -705,9 +684,8 @@
         let filteredTrade = [];
         let filteredItemDb = [];
         let priceChartInstance = null;
-
-        // 거래소 페이징 상태
         let currentTradePage = 1;
+        let currentItemDbPage = 1;
 
         function getItemsPerPage() {
             return window.innerWidth <= 768 ? 10 : 28;
@@ -731,45 +709,30 @@
                 let isGolden = false;
                 let isFokju = false;
 
-                // 1. JSON이 객체 형태인 경우 ({ updatedAt: "...", golden: true, items: [...] })
                 if (!Array.isArray(data) && data.items) {
                     tradeData = data.items;
                     syncTimeStr = data.updatedAt || data.updated_at || data.syncTime || '';
                     isGolden = !!(data.golden || data.isGolden);
                     isFokju = !!(data.fokju || data.isFokju);
                 } else {
-                    // 2. JSON이 배열 형태인 경우 ([{...}, {...}])
                     tradeData = data;
                     if (lastModifiedHeader) {
                         const dateObj = new Date(lastModifiedHeader);
                         syncTimeStr = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                     }
-                    
-                    // 시간 기반 자동 이벤트 판단 (필요 시 조정)
                     const now = new Date();
                     const hour = now.getHours();
                     isGolden = (hour >= 20 && hour < 22);
                     isFokju = (hour >= 21 && hour < 22);
                 }
 
-                // 동기화 시각 업데이트
                 document.getElementById('sync-time').innerText = syncTimeStr ? `동기화: ${syncTimeStr}` : '동기화: 완료';
-
-                // 골든타임 / 폭주타임 활성화 처리
                 document.getElementById('golden-badge').classList.toggle('active', isGolden);
                 document.getElementById('fokju-badge').classList.toggle('active', isFokju);
 
             } catch (e) {
-                console.log('ct_trade_db.json 로드 안됨 - 샘플 데이터 사용');
-                tradeData = Array.from({ length: 45 }, (_, i) => ({
-                    itemName: `S클래스 엔진 [V${i + 1}]`,
-                    price: 1000000 * (i + 1),
-                    time: `${i + 1}분 전`,
-                    icon: ""
-                }));
-                document.getElementById('sync-time').innerText = '동기화: 연결 실패';
-                document.getElementById('golden-badge').classList.remove('active');
-                document.getElementById('fokju-badge').classList.remove('active');
+                tradeData = [];
+                document.getElementById('sync-time').innerText = '동기화: 파일 없음';
             }
             applyTradeFilters();
         }
@@ -791,7 +754,7 @@
         function renderTradeList() {
             const listEl = document.getElementById('item-list');
             if (filteredTrade.length === 0) {
-                listEl.innerHTML = `<div class="loading">검색 결과가 없습니다.</div>`;
+                listEl.innerHTML = `<div class="loading">등록된 매물이 없습니다.</div>`;
                 document.getElementById('trade-pagination').innerHTML = '';
                 return;
             }
@@ -805,10 +768,11 @@
 
             listEl.innerHTML = pageItems.map(item => {
                 const name = item.itemName || item.name;
+                const iconSrc = item.icon || '';
                 return `
                     <div class="item-card" onclick="openModal('${name}')">
                         <div class="item-middle">
-                            <img class="item-thumbnail" src="${item.icon || ''}" onerror="this.style.display='none'">
+                            ${iconSrc ? `<img class="item-thumbnail" src="${iconSrc}" onerror="this.style.display='none'">` : `<div class="item-thumbnail" style="display:flex;align-items:center;justify-content:center;color:#64748b;font-size:11px;">No Img</div>`}
                             <div class="item-title">${name}</div>
                         </div>
                         <div class="item-footer">
@@ -829,9 +793,19 @@
                 return;
             }
 
+            const maxButtons = 10;
+            let startPage = Math.floor((currentTradePage - 1) / maxButtons) * maxButtons + 1;
+            let endPage = Math.min(startPage + maxButtons - 1, totalPages);
+
             let html = '';
-            for (let i = 1; i <= totalPages; i++) {
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="changeTradePage(${startPage - 1})">‹</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
                 html += `<button class="page-btn ${i === currentTradePage ? 'active' : ''}" onclick="changeTradePage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                html += `<button class="page-btn" onclick="changeTradePage(${endPage + 1})">›</button>`;
             }
             pageEl.innerHTML = html;
         }
@@ -847,7 +821,6 @@
                 const res = await fetch('ctr_items_db.json?t=' + new Date().getTime());
                 itemDbData = await res.json();
             } catch (err) {
-                console.log('ctr_items_db.json 로드 안됨');
                 itemDbData = [];
             }
             filteredItemDb = itemDbData;
@@ -883,22 +856,34 @@
                        (!shopKey || item.shopgroup === shopKey);
             });
 
-            renderItemTable(filteredItemDb);
+            currentItemDbPage = 1;
+            renderItemTable();
         }
 
-        function renderItemTable(items) {
+        function renderItemTable() {
             const tbody = document.getElementById('item-db-list');
-            if (items.length === 0) {
+            const pageEl = document.getElementById('pagination');
+
+            if (filteredItemDb.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="loading">데이터가 없습니다.</td></tr>`;
+                pageEl.innerHTML = '';
                 return;
             }
 
-            tbody.innerHTML = items.map(item => {
+            const itemsPerPage = 10;
+            const totalPages = Math.ceil(filteredItemDb.length / itemsPerPage);
+            if (currentItemDbPage > totalPages) currentItemDbPage = totalPages;
+
+            const start = (currentItemDbPage - 1) * itemsPerPage;
+            const pageItems = filteredItemDb.slice(start, start + itemsPerPage);
+
+            tbody.innerHTML = pageItems.map(item => {
                 const cls = getItemClass(item);
                 const tp = getItemTp(item);
+                const iconSrc = item.icon || '';
                 return `
-                    <tr onclick="openModal('${item.name}')">
-                        <td>🖼️</td>
+                    <tr>
+                        <td>${iconSrc ? `<img src="${iconSrc}" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none'">` : '🖼️'}</td>
                         <td>${item.name}</td>
                         <td>${item.parts || '-'}</td>
                         <td><span class="class-badge ${cls}">${cls}</span></td>
@@ -907,6 +892,37 @@
                     </tr>
                 `;
             }).join('');
+
+            renderItemDbPagination(totalPages);
+        }
+
+        function renderItemDbPagination(totalPages) {
+            const pageEl = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                pageEl.innerHTML = '';
+                return;
+            }
+
+            const maxButtons = 10;
+            let startPage = Math.floor((currentItemDbPage - 1) / maxButtons) * maxButtons + 1;
+            let endPage = Math.min(startPage + maxButtons - 1, totalPages);
+
+            let html = '';
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="changeItemDbPage(${startPage - 1})">‹</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentItemDbPage ? 'active' : ''}" onclick="changeItemDbPage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                html += `<button class="page-btn" onclick="changeItemDbPage(${endPage + 1})">›</button>`;
+            }
+            pageEl.innerHTML = html;
+        }
+
+        function changeItemDbPage(page) {
+            currentItemDbPage = page;
+            renderItemTable();
         }
 
         function getItemClass(item) {
