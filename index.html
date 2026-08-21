@@ -98,11 +98,13 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .title {
             font-size: 17px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .live-tag {
@@ -118,6 +120,7 @@
             font-size: 12px;
             color: #64748b;
             margin-top: 2px;
+            white-space: nowrap;
         }
 
         .header-actions {
@@ -192,6 +195,7 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         .search-box {
@@ -478,6 +482,7 @@
             font-size: 12px;
             background-color: #2a2a2a;
             color: #666;
+            white-space: nowrap;
         }
 
         .event-badge.fokju.active {
@@ -513,6 +518,64 @@
             50% { opacity: 0.3; }
             100% { opacity: 1; }
         }
+
+        /* 모바일 전용 텍스트 전환 */
+        .badge-text-full { display: inline; }
+        .badge-text-short { display: none; }
+
+        /* 모바일 전용 네비게이션 헤더 레이아웃 (768px 이하) */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .logo-area {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .title {
+                font-size: 13px;
+            }
+
+            .logo-badge {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+
+            .badge-text-full { display: none; }
+            .badge-text-short { display: inline; }
+
+            .event-badge {
+                padding: 3px 6px;
+                font-size: 11px;
+            }
+
+            .header-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                background: #131c2e;
+                padding: 6px 10px;
+                border-radius: 8px;
+                border: 1px solid #202d44;
+            }
+
+            .sync-time {
+                font-size: 11px;
+            }
+
+            .refresh-btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -526,27 +589,39 @@
         <!-- [VIEW 1] 거래소 검색 화면 -->
         <div id="view-trade" class="view active-view">
             <div class="header">
+                <!-- 1줄: 로고, 제목, 골타/폭타 -->
                 <div class="logo-area">
-                    <div class="logo-badge">CT</div>
-                    <div class="title-wrap">
-                        <span class="title">시티레이서 거래소</span>
-                        <span class="live-tag">LIVE</span>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div class="logo-badge">CT</div>
+                        <div class="title-wrap">
+                            <span class="title">시티레이서 거래소</span>
+                            <span class="live-tag">LIVE</span>
+                        </div>
                     </div>
-                    <div id="golden-badge" class="event-badge golden">
-                        <span class="dot"></span> 골든타임
-                    </div>
-                    <div id="fokju-badge" class="event-badge fokju">
-                        <span class="dot"></span> 폭주타임
+                    <div style="display: flex; gap: 4px;">
+                        <div id="golden-badge" class="event-badge golden">
+                            <span class="dot"></span>
+                            <span class="badge-text-full">골든타임</span>
+                            <span class="badge-text-short">골타</span>
+                        </div>
+                        <div id="fokju-badge" class="event-badge fokju">
+                            <span class="dot"></span>
+                            <span class="badge-text-full">폭주타임</span>
+                            <span class="badge-text-short">폭타</span>
+                        </div>
                     </div>
                 </div>
 
+                <!-- 2줄: 동기화 시간 및 갱신 버튼 -->
                 <div class="header-actions">
                     <div class="sync-time" id="sync-time">동기화: 불러오는 중...</div>
-                    <div class="info-tooltip-wrap">
-                        <span class="info-icon">ⓘ</span>
-                        <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div class="info-tooltip-wrap">
+                            <span class="info-icon">ⓘ</span>
+                            <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
+                        </div>
+                        <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
                     </div>
-                    <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
                 </div>
             </div>
 
@@ -649,22 +724,41 @@
         async function fetchAndRenderTrade() {
             try {
                 const res = await fetch('ct_trade_db.json?t=' + new Date().getTime());
-                
-                // 서버에 json 파일이 업로드된 시간(Last-Modified)을 읽어와서 동기화 시각으로 출력
-                const lastModified = res.headers.get('Last-Modified');
-                if (lastModified) {
-                    const uploadTime = new Date(lastModified);
-                    const timeString = uploadTime.toLocaleTimeString('ko-KR', { 
-                        hour: '2-digit', 
-                        minute: '2-digit', 
-                        second: '2-digit' 
-                    });
-                    document.getElementById('sync-time').innerText = '동기화: ' + timeString;
+                const lastModifiedHeader = res.headers.get('Last-Modified');
+                const data = await res.json();
+
+                let syncTimeStr = '';
+                let isGolden = false;
+                let isFokju = false;
+
+                // 1. JSON이 객체 형태인 경우 ({ updatedAt: "...", golden: true, items: [...] })
+                if (!Array.isArray(data) && data.items) {
+                    tradeData = data.items;
+                    syncTimeStr = data.updatedAt || data.updated_at || data.syncTime || '';
+                    isGolden = !!(data.golden || data.isGolden);
+                    isFokju = !!(data.fokju || data.isFokju);
                 } else {
-                    document.getElementById('sync-time').innerText = '동기화: 완료';
+                    // 2. JSON이 배열 형태인 경우 ([{...}, {...}])
+                    tradeData = data;
+                    if (lastModifiedHeader) {
+                        const dateObj = new Date(lastModifiedHeader);
+                        syncTimeStr = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    }
+                    
+                    // 시간 기반 자동 이벤트 판단 (필요 시 조정)
+                    const now = new Date();
+                    const hour = now.getHours();
+                    isGolden = (hour >= 20 && hour < 22);
+                    isFokju = (hour >= 21 && hour < 22);
                 }
 
-                tradeData = await res.json();
+                // 동기화 시각 업데이트
+                document.getElementById('sync-time').innerText = syncTimeStr ? `동기화: ${syncTimeStr}` : '동기화: 완료';
+
+                // 골든타임 / 폭주타임 활성화 처리
+                document.getElementById('golden-badge').classList.toggle('active', isGolden);
+                document.getElementById('fokju-badge').classList.toggle('active', isFokju);
+
             } catch (e) {
                 console.log('ct_trade_db.json 로드 안됨 - 샘플 데이터 사용');
                 tradeData = Array.from({ length: 45 }, (_, i) => ({
@@ -673,7 +767,9 @@
                     time: `${i + 1}분 전`,
                     icon: ""
                 }));
-                document.getElementById('sync-time').innerText = '동기화: 실패';
+                document.getElementById('sync-time').innerText = '동기화: 연결 실패';
+                document.getElementById('golden-badge').classList.remove('active');
+                document.getElementById('fokju-badge').classList.remove('active');
             }
             applyTradeFilters();
         }
@@ -911,22 +1007,6 @@
             document.getElementById('modal').style.display = 'none';
         }
 
-        /* 실시간 골든타임/폭주타임 감지 */
-        function checkEventStatus() {
-            const now = new Date();
-            const hour = now.getHours();
-
-            // 필요하신 실시간 골든타임 / 폭주타임 시간 조건으로 변경해 사용하시면 됩니다.
-            const isGolden = (hour >= 20 && hour < 21);
-            const isFokju = (hour >= 21 && hour < 22);
-
-            const goldenBadge = document.getElementById('golden-badge');
-            const fokjuBadge = document.getElementById('fokju-badge');
-
-            if (goldenBadge) goldenBadge.classList.toggle('active', isGolden);
-            if (fokjuBadge) fokjuBadge.classList.toggle('active', isFokju);
-        }
-
         window.addEventListener('resize', () => {
             renderTradeList();
         });
@@ -934,8 +1014,6 @@
         window.onload = () => {
             fetchAndRenderTrade();
             initItemDatabase();
-            checkEventStatus();
-            setInterval(checkEventStatus, 60000);
         };
     </script>
 </body>
