@@ -331,17 +331,14 @@
 
         .class-badge {
             display: inline-block;
-            min-width: 20px;
-            padding: 0 4px;
+            width: 20px;
             height: 20px;
             line-height: 20px;
             text-align: center;
             font-weight: bold;
             font-size: 11px;
             border-radius: 3px;
-            white-space: nowrap;
         }
-        .class-badge.전체 { background: #334155; color: #fff; }
         .class-badge.C { background: #e2e8f0; color: #0f172a; }
         .class-badge.B { background: #a3e635; color: #0f172a; }
         .class-badge.A { background: #06b6d4; color: #fff; }
@@ -605,7 +602,7 @@
                             <span class="info-icon">ⓘ</span>
                             <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
                         </div>
-                        <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
+                        <button class="refresh-btn" onclick="fetchAndRenderTrade(true)">🔄 갱신</button>
                     </div>
                 </div>
             </div>
@@ -703,52 +700,75 @@
             document.getElementById(`tab-${viewName}`).classList.add('active');
         }
 
-        async function fetchAndRenderTrade() {
+        function checkEventTimes() {
+            const now = new Date();
+            const hour = now.getHours();
+            const isGolden = (hour >= 20 && hour < 22);
+            const isFokju = (hour >= 21 && hour < 22);
+            
+            document.getElementById('golden-badge').classList.toggle('active', isGolden);
+            document.getElementById('fokju-badge').classList.toggle('active', isFokju);
+        }
+
+        async function fetchAndRenderTrade(isManual = false) {
             try {
                 const res = await fetch('ct_trade_db.json?t=' + new Date().getTime());
                 const lastModifiedHeader = res.headers.get('Last-Modified');
                 const data = await res.json();
 
                 let syncTimeStr = '';
-                let isGolden = false;
-                let isFokju = false;
 
-                if (!Array.isArray(data) && data.items) {
+                if (Array.isArray(data)) {
+                    tradeData = data;
+                } else if (data && data.items) {
                     tradeData = data.items;
                     syncTimeStr = data.updatedAt || data.updated_at || data.syncTime || '';
-                    isGolden = !!(data.golden || data.isGolden);
-                    isFokju = !!(data.fokju || data.isFokju);
                 } else {
-                    tradeData = data;
+                    tradeData = [];
+                }
+
+                if (!syncTimeStr) {
                     if (lastModifiedHeader) {
                         const dateObj = new Date(lastModifiedHeader);
                         syncTimeStr = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    } else {
+                        const dateObj = new Date();
+                        syncTimeStr = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                     }
-                    const now = new Date();
-                    const hour = now.getHours();
-                    isGolden = (hour >= 20 && hour < 22);
-                    isFokju = (hour >= 21 && hour < 22);
                 }
 
-                document.getElementById('sync-time').innerText = syncTimeStr ? `동기화: ${syncTimeStr}` : '동기화: 완료';
-                document.getElementById('golden-badge').classList.toggle('active', isGolden);
-                document.getElementById('fokju-badge').classList.toggle('active', isFokju);
+                document.getElementById('sync-time').innerText = `동기화: ${syncTimeStr}`;
+                
+                if (isManual) {
+                    alert(`거래소 데이터가 동기화되었습니다.\n(기준 시간: ${syncTimeStr})`);
+                }
 
             } catch (e) {
                 tradeData = [];
                 document.getElementById('sync-time').innerText = '동기화: 파일 없음';
+                if (isManual) {
+                    alert('거래소 데이터를 불러오지 못했습니다. (파일 없음)');
+                }
             }
+            
             applyTradeFilters();
+            checkEventTimes();
+        }
+
+        function getNumberOnly(val) {
+            if (val === undefined || val === null) return 0;
+            const str = String(val).replace(/[^0-9]/g, '');
+            return str ? Number(str) : 0;
         }
 
         function applyTradeFilters() {
             const keyword = document.getElementById('search-input').value.trim().toLowerCase();
             const sort = document.getElementById('sort-select').value;
 
-            filteredTrade = tradeData.filter(item => (item.itemName || item.name || '').toLowerCase().includes(keyword));
+            filteredTrade = tradeData.filter(item => (item.item_name || item.itemName || item.name || '').toLowerCase().includes(keyword));
 
-            if (sort === 'price-asc') filteredTrade.sort((a, b) => a.price - b.price);
-            if (sort === 'price-desc') filteredTrade.sort((a, b) => b.price - a.price);
+            if (sort === 'price-asc') filteredTrade.sort((a, b) => getNumberOnly(a.price) - getNumberOnly(b.price));
+            if (sort === 'price-desc') filteredTrade.sort((a, b) => getNumberOnly(b.price) - getNumberOnly(a.price));
 
             document.getElementById('total-count').innerText = `총 ${filteredTrade.length}개 매물`;
             currentTradePage = 1;
@@ -771,8 +791,12 @@
             const pageItems = filteredTrade.slice(start, start + itemsPerPage);
 
             listEl.innerHTML = pageItems.map(item => {
-                const name = item.itemName || item.name;
-                const iconSrc = item.icon || item.image || item.img || item.iconPath || '';
+                const name = item.item_name || item.itemName || item.name || '이름 없음';
+                const iconSrc = item.item_image || item.icon || item.image || item.img || item.iconPath || '';
+                const timeStr = item.time_remaining || item.time || '-';
+                const priceNum = getNumberOnly(item.price);
+                const priceDisplay = priceNum > 0 ? priceNum.toLocaleString() + ' CT' : '가격 미상';
+
                 return `
                     <div class="item-card" onclick="openModal('${name}')">
                         <div class="item-middle">
@@ -780,8 +804,8 @@
                             <div class="item-title">${name}</div>
                         </div>
                         <div class="item-footer">
-                            <span class="time-text">${item.time || ''}</span>
-                            <span class="price-text">${Number(item.price).toLocaleString()} CT</span>
+                            <span class="time-text">${timeStr}</span>
+                            <span class="price-text">${priceDisplay}</span>
                         </div>
                     </div>
                 `;
@@ -838,21 +862,12 @@
             const pSel = document.getElementById('filter-parts');
             const sSel = document.getElementById('filter-shop');
 
+            const predefinedClasses = ['C', 'B', 'A', 'S', 'R', 'G'];
+            const classSet = [...new Set([...predefinedClasses, ...data.map(i => getItemClass(i)).filter(c => c && c !== '-')])].sort();
             const partsSet = [...new Set(data.map(i => getVal(i, ['parts', 'part', 'partName', '파츠'])).filter(Boolean))].sort();
             const shopSet = [...new Set(data.map(i => getVal(i, ['shopgroup', 'shopGroup', 'shop', '상점그룹'])).filter(Boolean))].sort();
 
-            // 클래스 필터 옵션 고정 처리
-            cSel.innerHTML = `
-                <option value="">전체 Class (필터 해제)</option>
-                <option value="전체">전체 (액세서리 등)</option>
-                <option value="C">Class C</option>
-                <option value="B">Class B</option>
-                <option value="A">Class A</option>
-                <option value="S">Class S</option>
-                <option value="R">Class R</option>
-                <option value="G">Class G</option>
-            `;
-            
+            cSel.innerHTML = '<option value="">전체 Class</option>' + classSet.map(c => `<option value="${c}">Class ${c}</option>`).join('');
             pSel.innerHTML = '<option value="">전체 파츠</option>' + partsSet.map(p => `<option value="${p}">${p}</option>`).join('');
             sSel.innerHTML = '<option value="">전체 상점그룹</option>' + shopSet.map(s => `<option value="${s}">${s}</option>`).join('');
         }
@@ -887,7 +902,11 @@
 
         function getItemClass(item) {
             const val = getVal(item, ['carclass', 'class', 'carClass', 'itemClass', 'Class', 'CLASS', 'car_class', 'item_class', 'vehicleClass', 'grade', 'Grade', 'rank', 'Rank', '클래스', '등급']);
-            return val ? String(val).trim().toUpperCase() : '-';
+            if (!val) return '-';
+            const strVal = String(val).trim().toUpperCase();
+            // 데이터 중에 'A클래스' 같은 식이면 영문자만 추출
+            const match = strVal.match(/[CBSARG]/);
+            return match ? match[0] : strVal;
         }
 
         function getItemTp(item) {
@@ -920,9 +939,10 @@
                 if (iconSrc.startsWith('/')) iconSrc = '.' + iconSrc;
 
                 let priceVal = getVal(item, ['price', 'Price', 'PRICE', 'cost', 'Cost', 'sellPrice', 'sell_price', 'shopPrice', 'shop_price', 'money', 'Money', 'ct', 'CT', 'amount', 'Amount', '가격', '금액']);
-                let cleanPrice = priceVal ? String(priceVal).replace(/,/g, '').trim() : '';
+                let cleanPrice = priceVal ? String(priceVal).replace(/[^0-9]/g, '').trim() : '';
+                // CT 단어 제거하고 숫자만 콤마 형식으로 출력
                 const priceStr = (cleanPrice !== '' && !isNaN(Number(cleanPrice))) 
-                                 ? Number(cleanPrice).toLocaleString() + ' CT' : '-';
+                                 ? Number(cleanPrice).toLocaleString() : '-';
 
                 return `
                     <tr>
@@ -969,8 +989,8 @@
         }
 
         function openModal(itemName) {
-            const sameItems = tradeData.filter(i => (i.itemName || i.name) === itemName);
-            const prices = sameItems.map(i => Number(i.price)).filter(p => !isNaN(p));
+            const sameItems = tradeData.filter(i => (i.item_name || i.itemName || i.name || '') === itemName);
+            const prices = sameItems.map(i => getNumberOnly(i.price)).filter(p => p > 0);
 
             let minP = prices.length ? Math.min(...prices) : 0;
             let maxP = prices.length ? Math.max(...prices) : 0;
@@ -1063,6 +1083,8 @@
         });
 
         window.onload = () => {
+            checkEventTimes();
+            setInterval(checkEventTimes, 60000);
             fetchAndRenderTrade();
             initItemDatabase();
         };

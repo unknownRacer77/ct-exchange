@@ -68,17 +68,23 @@ def main():
             tds = row.find_all("td")
             parts = tds[2].text.strip() if len(tds) > 2 else ""
             shopgroup = tds[3].text.strip() if len(tds) > 3 else ""
-            carclass = tds[4].text.strip() if len(tds) > 4 else ""
             
-            # 목록에서 가져오기 시도 후, 없으면 빈값으로 둠
+            # --- 수정된 부분: Class 이미지에서 알파벳 추출 ---
+            carclass = ""
+            classimg_el = row.select_one("td.classimg img")
+            if classimg_el and classimg_el.has_attr("src"):
+                src_val = classimg_el["src"]  # 예: /assets/itemlist/class/class_b.png
+                file_name = src_val.split("/")[-1]  # class_b.png
+                # class_ 와 .png 를 제거하고 대문자로 변환 -> B
+                carclass = file_name.replace("class_", "").replace(".png", "").upper()
+            # --------------------------------------------------
+
             tp = tds[5].text.strip() if len(tds) > 5 else ""
             price = tds[6].text.strip() if len(tds) > 6 else ""
 
             print(f"  - [{name}] (ID: {item_id}) 상세 데이터 파싱")
             details = get_item_detail(item_id)
 
-            # 상세 페이지 표 데이터(detail_info)에 'TP' 또는 '튜닝포인트' 같은 키가 있다면 가져옴
-            # (사이트 내 상세 표 키 이름에 맞춰 'TP' 혹은 '튜닝포인트' 등을 체크)
             if not tp or tp == '-':
                 tp = details.get("TP") or details.get("tp") or details.get("튜닝포인트") or "-"
 
@@ -96,7 +102,8 @@ def main():
 
         page += 1
 
-    with open("ctr_items_db.json", "w", encoding="utf-8") as f:
+    # 웹페이지에서 동기화 에러가 나지 않도록 파일명을 ct_trade_db.json 으로 맞춤
+    with open("ct_trade_db.json", "w", encoding="utf-8") as f:
         json.dump(items, f, ensure_ascii=False, indent=4)
 
     print(f"\n🎉 총 {page - 1}개 페이지에서 총 {len(items)}개 아이템 수집 및 저장 완료!")
