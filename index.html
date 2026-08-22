@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>시티레이서 거래소 - 아이템 시세 조회 및 정보</title>
     <meta name="naver-site-verification" content="e20ca4a0df269d85ef87b6278ff2c3fcb4dd229a" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
         * {
             box-sizing: border-box;
@@ -26,8 +24,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 480px;
             background: #0d1322;
             border-radius: 24px;
             padding: 20px 16px;
@@ -95,13 +92,12 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            white-space: nowrap;
+            flex-wrap: wrap;
         }
 
         .title {
             font-size: 17px;
             font-weight: 700;
-            white-space: nowrap;
         }
 
         .live-tag {
@@ -113,73 +109,34 @@
             border-radius: 4px;
         }
 
+        .event-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #1e293b;
+            color: #64748b;
+            border: 1px solid #334155;
+        }
+        .event-badge.active-gold { background: #f59e0b; color: #000; border-color: #fbbf24; }
+        .event-badge.active-rampage { background: #ef4444; color: #fff; border-color: #f87171; }
+
+        .sync-time-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
         .sync-time {
             font-size: 12px;
             color: #64748b;
-            margin-top: 2px;
-            white-space: nowrap;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .info-tooltip-wrap {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
         }
 
         .info-icon {
-            font-size: 18px;
-            color: #64748b;
-            transition: all 0.25s ease;
-            user-select: none;
-        }
-
-        .info-tooltip-wrap:hover .info-icon {
-            color: #ff9800;
-            text-shadow: 0 0 8px rgba(255, 152, 0, 0.9), 0 0 12px rgba(255, 152, 0, 0.5);
-        }
-
-        .info-tooltip {
-            visibility: hidden;
-            opacity: 0;
-            width: 210px;
-            background-color: #1e293b;
-            color: #f8fafc;
-            text-align: center;
-            border-radius: 8px;
-            padding: 8px 10px;
-            position: absolute;
-            z-index: 100;
-            bottom: 130%;
-            right: -10px;
-            border: 1px solid #ff9800;
-            font-size: 11px;
-            line-height: 1.4;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            transition: opacity 0.2s ease, visibility 0.2s ease;
-            word-break: keep-all;
-        }
-
-        .info-tooltip::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            right: 14px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #ff9800 transparent transparent transparent;
-        }
-
-        .info-tooltip-wrap:hover .info-tooltip {
-            visibility: visible;
-            opacity: 1;
+            font-size: 12px;
+            color: #94a3b8;
+            cursor: pointer;
         }
 
         .refresh-btn {
@@ -191,7 +148,6 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            white-space: nowrap;
         }
 
         .search-box {
@@ -206,7 +162,9 @@
             outline: none;
         }
 
-        .search-box::placeholder { color: #64748b; }
+        .search-box::placeholder {
+            color: #64748b;
+        }
 
         .status-bar {
             display: flex;
@@ -228,8 +186,8 @@
         }
 
         .item-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
 
@@ -238,13 +196,18 @@
             border: 1px solid #202d44;
             border-radius: 16px;
             padding: 14px 16px;
-            cursor: pointer;
-            transition: transform 0.1s ease, border-color 0.2s ease;
         }
 
-        .item-card:hover {
-            border-color: #3b82f6;
-            transform: translateY(-2px);
+        .item-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .seller-id {
+            font-size: 12px;
+            color: #94a3b8;
         }
 
         .item-middle {
@@ -270,6 +233,12 @@
             color: #f8fafc;
             word-break: break-all;
             letter-spacing: -0.3px;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-color: #3b82f6;
+        }
+        .item-title:hover {
+            color: #60a5fa;
         }
 
         .item-footer {
@@ -329,6 +298,11 @@
             color: #94a3b8;
         }
 
+        .info-table tr:hover {
+            background: #1e293b;
+            cursor: pointer;
+        }
+
         .class-badge {
             display: inline-block;
             width: 20px;
@@ -345,31 +319,27 @@
         .class-badge.S { background: #facc15; color: #0f172a; }
         .class-badge.G { background: #b91c1c; color: #fff; }
         .class-badge.R { background: #a855f7; color: #fff; }
-        .class-badge.DEFAULT { background: #334155; color: #fff; }
 
         .pagination {
-            margin-top: 20px;
+            margin-top: 15px;
             display: flex;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
-            width: 100%;
         }
 
         .page-btn {
-            padding: 6px 12px;
+            padding: 6px 10px;
             background: #162032;
-            color: #94a3b8;
+            color: #fff;
             border: 1px solid #28354d;
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
-            transition: all 0.2s;
         }
 
         .page-btn.active {
             background: #2563eb;
-            color: #ffffff;
             border-color: #3b82f6;
             font-weight: bold;
         }
@@ -390,177 +360,40 @@
             padding: 20px;
             border-radius: 16px;
             width: 90%;
-            max-width: 440px;
+            max-width: 400px;
             max-height: 85vh;
             overflow-y: auto;
             border: 1px solid #28354d;
-            position: relative;
         }
 
         .close-btn {
             float: right;
             cursor: pointer;
             color: #94a3b8;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
         }
+
+        .tooltip-card {
+            background: #131c2e;
+            border: 1px solid #28354d;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .stat-green { color: #00ff66; font-weight: bold; }
+        .stat-red { color: #ff5555; font-weight: bold; }
+        .stat-yellow { color: #facc15; font-weight: bold; }
 
         .loading {
             text-align: center;
             color: #64748b;
             padding: 40px;
             font-size: 14px;
-            grid-column: 1 / -1;
-        }
-
-        .modal-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin: 14px 0;
-        }
-
-        .info-box {
-            background: #131c2e;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #28354d;
-        }
-
-        .info-box span {
-            display: block;
-            font-size: 11px;
-            color: #94a3b8;
-            margin-bottom: 2px;
-        }
-
-        .info-box strong {
-            font-size: 13px;
-            color: #38bdf8;
-        }
-
-        .chart-section {
-            margin-top: 16px;
-            background: #131c2e;
-            border: 1px solid #28354d;
-            border-radius: 12px;
-            padding: 12px;
-        }
-
-        .chart-section h4 {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 10px;
-        }
-
-        .chart-wrapper {
-            position: relative;
-            height: 180px;
-            width: 100%;
-        }
-
-        .event-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 12px;
-            background-color: #2a2a2a;
-            color: #666;
-            white-space: nowrap;
-        }
-
-        .event-badge.fokju.active {
-            background-color: #3d0000;
-            color: #ff4d4d;
-            border: 1px solid #ff4d4d;
-            box-shadow: 0 0 8px rgba(255, 77, 77, 0.6);
-        }
-
-        .event-badge.fokju.active .dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background-color: #ff4d4d;
-            animation: pulse 1s infinite;
-        }
-
-        .event-badge.golden.active {
-            background-color: #3d3400;
-            color: #ffd700;
-            border: 1px solid #ffd700;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-        }
-
-        .event-badge.golden.active .dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background-color: #ffd700;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        .badge-text-full { display: inline; }
-        .badge-text-short { display: none; }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-
-            .logo-area {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-            }
-
-            .title {
-                font-size: 13px;
-            }
-
-            .logo-badge {
-                width: 28px;
-                height: 28px;
-                font-size: 11px;
-            }
-
-            .badge-text-full { display: none; }
-            .badge-text-short { display: inline; }
-
-            .event-badge {
-                padding: 3px 6px;
-                font-size: 11px;
-            }
-
-            .header-actions {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                background: #131c2e;
-                padding: 6px 10px;
-                border-radius: 8px;
-                border: 1px solid #202d44;
-            }
-
-            .sync-time {
-                font-size: 11px;
-            }
-
-            .refresh-btn {
-                padding: 4px 8px;
-                font-size: 11px;
-            }
         }
     </style>
 </head>
@@ -574,40 +407,24 @@
         <div id="view-trade" class="view active-view">
             <div class="header">
                 <div class="logo-area">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div class="logo-badge">CT</div>
+                    <div class="logo-badge">CT</div>
+                    <div>
                         <div class="title-wrap">
                             <span class="title">시티레이서 거래소</span>
                             <span class="live-tag">LIVE</span>
+                            <span id="badge-gold" class="event-badge">골타</span>
+                            <span id="badge-rampage" class="event-badge">폭타</span>
                         </div>
-                    </div>
-                    <div style="display: flex; gap: 4px;">
-                        <div id="golden-badge" class="event-badge golden">
-                            <span class="dot"></span>
-                            <span class="badge-text-full">골든타임</span>
-                            <span class="badge-text-short">골타</span>
-                        </div>
-                        <div id="fokju-badge" class="event-badge fokju">
-                            <span class="dot"></span>
-                            <span class="badge-text-full">폭주타임</span>
-                            <span class="badge-text-short">폭타</span>
+                        <div class="sync-time-wrap">
+                            <span class="sync-time" id="sync-time">동기화: 불러오는 중...</span>
+                            <span class="info-icon" title="실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다">ⓘ</span>
                         </div>
                     </div>
                 </div>
-
-                <div class="header-actions">
-                    <div class="sync-time" id="sync-time">동기화: 불러오는 중...</div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div class="info-tooltip-wrap">
-                            <span class="info-icon">ⓘ</span>
-                            <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
-                        </div>
-                        <button class="refresh-btn" onclick="fetchAndRenderTrade(true)">🔄 갱신</button>
-                    </div>
-                </div>
+                <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
             </div>
 
-            <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 검색" oninput="applyTradeFilters()">
+            <input type="text" id="search-input" class="search-box" placeholder="아이템 이름 또는 판매자 검색" oninput="applyTradeFilters()">
 
             <div class="status-bar">
                 <span id="total-count">총 0개 매물</span>
@@ -621,6 +438,7 @@
             <div class="item-list" id="item-list">
                 <div class="loading">데이터를 불러오는 중입니다...</div>
             </div>
+
             <div id="trade-pagination" class="pagination"></div>
         </div>
 
@@ -640,15 +458,15 @@
             <div class="filter-row">
                 <input type="text" id="item-search" placeholder="아이템 이름 검색..." onkeyup="filterItemTable()">
                 <select id="filter-class" onchange="filterItemTable()">
-                    <option value="">전체 Class</option>
+                    <option value="">모든 Class</option>
                 </select>
             </div>
             <div class="filter-row">
                 <select id="filter-parts" onchange="filterItemTable()">
-                    <option value="">전체 파츠</option>
+                    <option value="">모든 파츠</option>
                 </select>
                 <select id="filter-shop" onchange="filterItemTable()">
-                    <option value="">전체 상점그룹</option>
+                    <option value="">모든 상점그룹</option>
                 </select>
             </div>
 
@@ -680,414 +498,400 @@
     </div>
 
     <script>
-        let tradeData = [];
-        let itemDbData = [];
-        let filteredTrade = [];
-        let filteredItemDb = [];
-        let priceChartInstance = null;
-        let currentTradePage = 1;
-        let currentItemDbPage = 1;
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
 
-        function getItemsPerPage() {
-            return window.innerWidth <= 768 ? 10 : 28;
-        }
+            document.getElementById('view-' + viewId).classList.add('active-view');
+            document.getElementById('tab-' + viewId).classList.add('active');
 
-        function switchView(viewName) {
-            document.querySelectorAll('.view').forEach(el => el.classList.remove('active-view'));
-            document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(`view-${viewName}`).classList.add('active-view');
-            document.getElementById(`tab-${viewName}`).classList.add('active');
-        }
-
-        function checkEventTimes() {
-            const now = new Date();
-            const hour = now.getHours();
-            const isGolden = (hour >= 20 && hour < 22);
-            const isFokju = (hour >= 21 && hour < 22);
-            
-            document.getElementById('golden-badge').classList.toggle('active', isGolden);
-            document.getElementById('fokju-badge').classList.toggle('active', isFokju);
-        }
-
-        async function fetchAndRenderTrade(isManual = false) {
-            try {
-                const res = await fetch('ct_trade_db.json?t=' + new Date().getTime());
-                const lastModifiedHeader = res.headers.get('Last-Modified');
-                const data = await res.json();
-
-                let syncTimeStr = '';
-
-                if (Array.isArray(data)) {
-                    tradeData = data;
-                } else if (data && data.items) {
-                    tradeData = data.items;
-                    syncTimeStr = data.updatedAt || data.updated_at || data.syncTime || '';
-                } else {
-                    tradeData = [];
-                }
-
-                if (!syncTimeStr) {
-                    if (lastModifiedHeader) {
-                        const dateObj = new Date(lastModifiedHeader);
-                        syncTimeStr = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    } else {
-                        const dateObj = new Date();
-                        syncTimeStr = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    }
-                }
-
-                document.getElementById('sync-time').innerText = `동기화: ${syncTimeStr}`;
-                
-                if (isManual) {
-                    alert(`거래소 데이터가 동기화되었습니다.\n(기준 시간: ${syncTimeStr})`);
-                }
-
-            } catch (e) {
-                tradeData = [];
-                document.getElementById('sync-time').innerText = '동기화: 파일 없음';
-                if (isManual) {
-                    alert('거래소 데이터를 불러오지 못했습니다. (파일 없음)');
-                }
+            if (viewId === 'items' && itemData.length === 0) {
+                initItemDatabase();
             }
-            
-            applyTradeFilters();
-            checkEventTimes();
         }
 
-        function getNumberOnly(val) {
-            if (val === undefined || val === null) return 0;
-            const str = String(val).replace(/[^0-9]/g, '');
-            return str ? Number(str) : 0;
+        // --- 여기서부터 수정됨: 파이썬 이미지 인식 결과(JSON)를 가져와서 뱃지 불을 켬 ---
+       async function checkEventTimes() {
+            try {
+                const res = await fetch('event.json?t=' + new Date().getTime());
+                if (res.ok) {
+                    const status = await res.json();
+                    const goldBadge = document.getElementById('badge-gold');
+                    const rampageBadge = document.getElementById('badge-rampage');
+
+                    // 파이썬 코드의 key("golden", "fokju")와 일치시킴
+                    if (goldBadge) goldBadge.classList.toggle('active-gold', status.golden === true);
+                    if (rampageBadge) rampageBadge.classList.toggle('active-rampage', status.fokju === true);
+                }
+            } catch (err) {
+                console.log('이벤트 상태 파일을 찾을 수 없습니다.');
+            }
+        }
+        // --- 여기까지 수정됨 ---
+
+        let rawItems = [];
+        let currentTradePage = 1;
+        const tradeItemsPerPage = 10;
+        let filteredTradeItems = [];
+
+        async function fetchAndRenderTrade() {
+            const listEl = document.getElementById('item-list');
+            const syncEl = document.getElementById('sync-time');
+
+            try {
+                const res = await fetch('data.json?t=' + new Date().getTime());
+                if (!res.ok) throw new Error('data.json 로드 실패');
+                
+                const jsonData = await res.json();
+                rawItems = [];
+                jsonData.forEach(p => {
+                    if (p.items && Array.isArray(p.items)) {
+                        rawItems.push(...p.items);
+                    }
+                });
+
+                syncEl.innerText = `동기화: ${jsonData[0].timestamp}`;
+                applyTradeFilters();
+                checkEventTimes();
+            } catch (err) {
+                console.error(err);
+                listEl.innerHTML = `<div class="loading" style="color: #f43f5e;">데이터를 불러올 수 없습니다.</div>`;
+            }
         }
 
         function applyTradeFilters() {
-            const keyword = document.getElementById('search-input').value.trim().toLowerCase();
-            const sort = document.getElementById('sort-select').value;
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const sortVal = document.getElementById('sort-select').value;
 
-            filteredTrade = tradeData.filter(item => (item.item_name || item.itemName || item.name || '').toLowerCase().includes(keyword));
+            filteredTradeItems = rawItems.filter(item => {
+                const nameMatch = item.name && item.name.toLowerCase().includes(query);
+                const nickMatch = item.nickname && item.nickname.toLowerCase().includes(query);
+                return nameMatch || nickMatch;
+            });
 
-            if (sort === 'price-asc') filteredTrade.sort((a, b) => getNumberOnly(a.price) - getNumberOnly(b.price));
-            if (sort === 'price-desc') filteredTrade.sort((a, b) => getNumberOnly(b.price) - getNumberOnly(a.price));
+            if (sortVal === 'price-asc') {
+                filteredTradeItems.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+            } else if (sortVal === 'price-desc') {
+                filteredTradeItems.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+            }
 
-            document.getElementById('total-count').innerText = `총 ${filteredTrade.length}개 매물`;
+            document.getElementById('total-count').innerText = `총 ${filteredTradeItems.length}개 매물`;
             currentTradePage = 1;
             renderTradeList();
         }
 
+        function parsePrice(str) {
+            if (!str) return 0;
+            return parseInt(str.toString().replace(/[^0-9]/g, '')) || 0;
+        }
+
         function renderTradeList() {
             const listEl = document.getElementById('item-list');
-            if (filteredTrade.length === 0) {
+            if (!filteredTradeItems || filteredTradeItems.length === 0) {
                 listEl.innerHTML = `<div class="loading">등록된 매물이 없습니다.</div>`;
                 document.getElementById('trade-pagination').innerHTML = '';
                 return;
             }
 
-            const itemsPerPage = getItemsPerPage();
-            const totalPages = Math.ceil(filteredTrade.length / itemsPerPage);
-            if (currentTradePage > totalPages) currentTradePage = totalPages;
+            const start = (currentTradePage - 1) * tradeItemsPerPage;
+            const pageData = filteredTradeItems.slice(start, start + tradeItemsPerPage);
 
-            const start = (currentTradePage - 1) * itemsPerPage;
-            const pageItems = filteredTrade.slice(start, start + itemsPerPage);
-
-            listEl.innerHTML = pageItems.map(item => {
-                const name = item.item_name || item.itemName || item.name || '이름 없음';
-                const iconSrc = item.item_image || item.icon || item.image || item.img || item.iconPath || '';
-                const timeStr = item.time_remaining || item.time || '-';
-                const priceNum = getNumberOnly(item.price);
-                const priceDisplay = priceNum > 0 ? priceNum.toLocaleString() + ' CT' : '가격 미상';
+            listEl.innerHTML = pageData.map(item => {
+                const priceStr = parsePrice(item.price) > 0 ? parsePrice(item.price).toLocaleString() + ' CT' : '-';
+                const imagePath = item.image_path ? item.image_path + '?t=' + new Date().getTime() : '';
+                const safeName = (item.name || '').replace(/'/g, "\\'");
 
                 return `
-                    <div class="item-card" onclick="openModal('${name}')">
+                    <div class="item-card">
+                        <div class="item-card-top">
+                            <span class="seller-id">ID: ${item.nickname || '알 수 없음'}</span>
+                        </div>
                         <div class="item-middle">
-                            ${iconSrc ? `<img class="item-thumbnail" src="${iconSrc}" onerror="this.style.display='none'">` : `<div class="item-thumbnail" style="display:flex;align-items:center;justify-content:center;color:#64748b;font-size:11px;">No Img</div>`}
-                            <div class="item-title">${name}</div>
+                            <img src="${imagePath}" class="item-thumbnail" alt="아이템" onerror="this.style.display='none'">
+                            <div class="item-title" onclick="showTradeItemStats('${safeName}')">${item.name || '알 수 없음'}</div>
                         </div>
                         <div class="item-footer">
-                            <span class="time-text">${timeStr}</span>
-                            <span class="price-text">${priceDisplay}</span>
+                            <span class="time-text">⏱ ${item.time || '-'}</span>
+                            <span class="price-text">${priceStr}</span>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            renderTradePagination(totalPages);
+            renderTradePagination();
         }
 
-        function renderTradePagination(totalPages) {
-            const pageEl = document.getElementById('trade-pagination');
-            if (totalPages <= 1) {
-                pageEl.innerHTML = '';
+        function renderTradePagination() {
+            const container = document.getElementById('trade-pagination');
+            container.innerHTML = '';
+            const pageCount = Math.ceil(filteredTradeItems.length / tradeItemsPerPage);
+            if (pageCount <= 1) return;
+
+            const maxVisible = 5;
+            let start = Math.max(1, currentTradePage - Math.floor(maxVisible / 2));
+            let end = Math.min(pageCount, start + maxVisible - 1);
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+
+            if (currentTradePage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.innerText = '◀';
+                prevBtn.onclick = () => { currentTradePage--; renderTradeList(); };
+                container.appendChild(prevBtn);
+            }
+
+            for (let i = start; i <= end; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentTradePage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => {
+                    currentTradePage = i;
+                    renderTradeList();
+                };
+                container.appendChild(btn);
+            }
+
+            if (currentTradePage < pageCount) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.innerText = '▶';
+                nextBtn.onclick = () => { currentTradePage++; renderTradeList(); };
+                container.appendChild(nextBtn);
+            }
+        }
+
+        function showTradeItemStats(itemName) {
+            const sameItems = rawItems.filter(i => i.name === itemName);
+            const prices = sameItems.map(i => parsePrice(i.price)).filter(p => p > 0).sort((a, b) => a - b);
+
+            const body = document.getElementById('modal-body');
+            if (prices.length === 0) {
+                body.innerHTML = `<div style="text-align:center; padding:20px;">유효한 가격 정보가 없습니다.</div>`;
+                document.getElementById('modal').style.display = 'flex';
                 return;
             }
 
-            const maxButtons = 10;
-            let startPage = Math.floor((currentTradePage - 1) / maxButtons) * maxButtons + 1;
-            let endPage = Math.min(startPage + maxButtons - 1, totalPages);
+            const min = prices[0];
+            const max = prices[prices.length - 1];
+            const sum = prices.reduce((a, b) => a + b, 0);
+            const avg = Math.round(sum / prices.length);
+            const midIndex = Math.floor(prices.length / 2);
+            const median = prices.length % 2 !== 0 ? prices[midIndex] : Math.round((prices[midIndex - 1] + prices[midIndex]) / 2);
 
-            let html = '';
-            if (startPage > 1) {
-                html += `<button class="page-btn" onclick="changeTradePage(${startPage - 1})">‹</button>`;
-            }
-            for (let i = startPage; i <= endPage; i++) {
-                html += `<button class="page-btn ${i === currentTradePage ? 'active' : ''}" onclick="changeTradePage(${i})">${i}</button>`;
-            }
-            if (endPage < totalPages) {
-                html += `<button class="page-btn" onclick="changeTradePage(${endPage + 1})">›</button>`;
-            }
-            pageEl.innerHTML = html;
+            body.innerHTML = `
+                <div style="font-size:16px; font-weight:bold; margin-bottom:12px; color:#fff; word-break:break-all;">${itemName} 시세 분석</div>
+                <div class="tooltip-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>최저가</span><span class="stat-green">${min.toLocaleString()} CT</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>중간값</span><span class="stat-yellow">${median.toLocaleString()} CT</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>평균값</span><span style="color:#38bdf8; font-weight:bold;">${avg.toLocaleString()} CT</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>최고가</span><span class="stat-red">${max.toLocaleString()} CT</span></div>
+                </div>
+            `;
+            document.getElementById('modal').style.display = 'flex';
         }
 
-        function changeTradePage(page) {
-            currentTradePage = page;
-            renderTradeList();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        let itemData = [], filteredItemData = [], currentItemPage = 1;
+        const itemsPerPage = 20;
 
         async function initItemDatabase() {
             try {
                 const res = await fetch('ctr_items_db.json?t=' + new Date().getTime());
-                const data = await res.json();
-                itemDbData = (!Array.isArray(data) && data.items) ? data.items : data;
+                itemData = await res.json();
+                filteredItemData = itemData;
+                initDropdowns(itemData);
+                filterItemTable();
             } catch (err) {
-                itemDbData = [];
+                console.error(err);
+                document.getElementById('item-db-list').innerHTML = `<tr><td colspan="6" class="loading" style="color: #f43f5e;">DB 로드 실패</td></tr>`;
             }
-            filteredItemDb = itemDbData;
-            initDropdowns(itemDbData);
-            filterItemTable();
+        }
+
+        function getItemClass(item) {
+            return String(item.carclass || item.class || '').trim().toUpperCase();
+        }
+
+        function getItemTp(item) {
+            if (item.tp !== undefined && item.tp !== null && item.tp !== '') return item.tp;
+            if (item.details) {
+                for (let [k, v] of Object.entries(item.details)) {
+                    if (k.toUpperCase().includes('TP')) return v;
+                }
+            }
+            return '-';
+        }
+
+        function getClassBadgeHtml(cls) {
+            if (!cls) return '-';
+            return ['C', 'B', 'A', 'S', 'G', 'R'].includes(cls) ? `<span class="class-badge ${cls}">${cls}</span>` : cls;
         }
 
         function initDropdowns(data) {
+            const classSet = [...new Set(data.map(i => getItemClass(i)))].filter(Boolean).sort();
+            const partsSet = [...new Set(data.map(i => i.parts))].filter(Boolean).sort();
+            const shopSet = [...new Set(data.map(i => i.shopgroup))].filter(Boolean).sort();
+
             const cSel = document.getElementById('filter-class');
             const pSel = document.getElementById('filter-parts');
             const sSel = document.getElementById('filter-shop');
 
-            const predefinedClasses = ['C', 'B', 'A', 'S', 'R', 'G'];
-            const classSet = [...new Set([...predefinedClasses, ...data.map(i => getItemClass(i)).filter(c => c && c !== '-')])].sort();
-            const partsSet = [...new Set(data.map(i => getVal(i, ['parts', 'part', 'partName', '파츠'])).filter(Boolean))].sort();
-            const shopSet = [...new Set(data.map(i => getVal(i, ['shopgroup', 'shopGroup', 'shop', '상점그룹'])).filter(Boolean))].sort();
-
-            cSel.innerHTML = '<option value="">전체 Class</option>' + classSet.map(c => `<option value="${c}">Class ${c}</option>`).join('');
-            pSel.innerHTML = '<option value="">전체 파츠</option>' + partsSet.map(p => `<option value="${p}">${p}</option>`).join('');
-            sSel.innerHTML = '<option value="">전체 상점그룹</option>' + shopSet.map(s => `<option value="${s}">${s}</option>`).join('');
+            classSet.forEach(c => cSel.innerHTML += `<option value="${c}">Class ${c}</option>`);
+            partsSet.forEach(p => pSel.innerHTML += `<option value="${p}">${p}</option>`);
+            shopSet.forEach(s => sSel.innerHTML += `<option value="${s}">${s}</option>`);
         }
 
         function filterItemTable() {
-            const nameKey = document.getElementById('item-search').value.toLowerCase();
-            const classKey = document.getElementById('filter-class').value;
-            const partsKey = document.getElementById('filter-parts').value;
-            const shopKey = document.getElementById('filter-shop').value;
+            const keyword = document.getElementById('item-search').value.toLowerCase();
+            const sc = document.getElementById('filter-class').value;
+            const sp = document.getElementById('filter-parts').value;
+            const ss = document.getElementById('filter-shop').value;
 
-            filteredItemDb = itemDbData.filter(item => {
-                const itemCls = getItemClass(item);
-                const itemName = (getVal(item, ['name', 'itemName', '이름']) || '').toLowerCase();
-                const itemParts = getVal(item, ['parts', 'part', 'partName', '파츠']) || '';
-                const itemShop = getVal(item, ['shopgroup', 'shopGroup', 'shop', '상점그룹']) || '';
-                return (!nameKey || itemName.includes(nameKey)) &&
-                       (!classKey || itemCls === classKey) &&
-                       (!partsKey || itemParts === partsKey) &&
-                       (!shopKey || itemShop === shopKey);
+            filteredItemData = itemData.filter(item => {
+                return item.name.toLowerCase().includes(keyword) &&
+                       (!sc || getItemClass(item) === sc) &&
+                       (!sp || item.parts === sp) &&
+                       (!ss || item.shopgroup === ss);
             });
-
-            currentItemDbPage = 1;
-            renderItemTable();
+            currentItemPage = 1;
+            renderItemTable(filteredItemData);
         }
 
-        function getVal(item, keys) {
-            for (let k of keys) {
-                if (item[k] !== undefined && item[k] !== null && item[k] !== '' && item[k] !== '-') return item[k];
-            }
-            return null;
-        }
-
-        function getItemClass(item) {
-            const val = getVal(item, ['carclass', 'class', 'carClass', 'itemClass', 'Class', 'CLASS', 'car_class', 'item_class', 'vehicleClass', 'grade', 'Grade', 'rank', 'Rank', '클래스', '등급']);
-            if (!val) return '-';
-            const strVal = String(val).trim().toUpperCase();
-            // 데이터 중에 'A클래스' 같은 식이면 영문자만 추출
-            const match = strVal.match(/[CBSARG]/);
-            return match ? match[0] : strVal;
-        }
-
-        function getItemTp(item) {
-            const val = getVal(item, ['tp', 'TP', 'tPoint', 'tpoint', 't_point', 'point', 'Point', '점수', '포인트']);
-            return (val !== null && val !== undefined && String(val).trim() !== '') ? val : '-';
-        }
-
-        function renderItemTable() {
+        function renderItemTable(data) {
             const tbody = document.getElementById('item-db-list');
-            const pageEl = document.getElementById('pagination');
+            tbody.innerHTML = '';
+            
+            const start = (currentItemPage - 1) * itemsPerPage;
+            const pageData = data.slice(start, start + itemsPerPage);
 
-            if (filteredItemDb.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="loading">데이터가 없습니다.</td></tr>`;
-                pageEl.innerHTML = '';
+            if (pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="loading">검색 결과가 없습니다.</td></tr>`;
+                document.getElementById('pagination').innerHTML = '';
                 return;
             }
 
-            const itemsPerPage = 10;
-            const totalPages = Math.ceil(filteredItemDb.length / itemsPerPage);
-            if (currentItemDbPage > totalPages) currentItemDbPage = totalPages;
-
-            const start = (currentItemDbPage - 1) * itemsPerPage;
-            const pageItems = filteredItemDb.slice(start, start + itemsPerPage);
-
-            tbody.innerHTML = pageItems.map(item => {
+            pageData.forEach(item => {
                 const cls = getItemClass(item);
-                const tp = getItemTp(item);
-                
-                let iconSrc = getVal(item, ['image', 'icon', 'Icon', 'img', 'Img', 'iconPath', 'thumbnail', 'thumb', '아이콘', '이미지']) || '';
-                if (iconSrc.startsWith('/')) iconSrc = '.' + iconSrc;
-
-                let priceVal = getVal(item, ['price', 'Price', 'PRICE', 'cost', 'Cost', 'sellPrice', 'sell_price', 'shopPrice', 'shop_price', 'money', 'Money', 'ct', 'CT', 'amount', 'Amount', '가격', '금액']);
-                let cleanPrice = priceVal ? String(priceVal).replace(/[^0-9]/g, '').trim() : '';
-                // CT 단어 제거하고 숫자만 콤마 형식으로 출력
-                const priceStr = (cleanPrice !== '' && !isNaN(Number(cleanPrice))) 
-                                 ? Number(cleanPrice).toLocaleString() : '-';
-
-                return `
-                    <tr>
-                        <td>${iconSrc ? `<img src="${iconSrc}" style="width:28px;height:28px;object-fit:contain;" onerror="this.onerror=null; this.parentNode.innerHTML='🖼️';">` : '🖼️'}</td>
-                        <td>${getVal(item, ['name', 'itemName', '이름']) || '-'}</td>
-                        <td>${getVal(item, ['parts', 'part', 'partName', '파츠']) || '-'}</td>
-                        <td><span class="class-badge ${cls}">${cls}</span></td>
-                        <td>${tp}</td>
-                        <td>${priceStr}</td>
-                    </tr>
+                const tpVal = getItemTp(item);
+                const tr = document.createElement('tr');
+                tr.onclick = () => showModal(item);
+                tr.innerHTML = `
+                    <td><img src="${item.image || ''}" width="28" height="28" onerror="this.style.display='none'"></td>
+                    <td style="text-align:left; padding-left:10px; font-weight:600; text-decoration:underline; text-decoration-color:#3b82f6;">${item.name}</td>
+                    <td>${item.parts || '-'}</td>
+                    <td>${getClassBadgeHtml(cls)}</td>
+                    <td>${tpVal}</td>
+                    <td>${item.price || '-'}</td>
                 `;
-            }).join('');
-
-            renderItemDbPagination(totalPages);
+                tbody.appendChild(tr);
+            });
+            renderItemPagination(data.length);
         }
 
-        function renderItemDbPagination(totalPages) {
-            const pageEl = document.getElementById('pagination');
-            if (totalPages <= 1) {
-                pageEl.innerHTML = '';
-                return;
+        function renderItemPagination(totalItems) {
+            const container = document.getElementById('pagination');
+            container.innerHTML = '';
+            const pageCount = Math.ceil(totalItems / itemsPerPage);
+            if (pageCount <= 1) return;
+
+            const maxVisible = 5;
+            let start = Math.max(1, currentItemPage - Math.floor(maxVisible / 2));
+            let end = Math.min(pageCount, start + maxVisible - 1);
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
             }
 
-            const maxButtons = 10;
-            let startPage = Math.floor((currentItemDbPage - 1) / maxButtons) * maxButtons + 1;
-            let endPage = Math.min(startPage + maxButtons - 1, totalPages);
+            if (currentItemPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.innerText = '◀';
+                prevBtn.onclick = () => { currentItemPage--; renderItemTable(filteredItemData); };
+                container.appendChild(prevBtn);
+            }
 
-            let html = '';
-            if (startPage > 1) {
-                html += `<button class="page-btn" onclick="changeItemDbPage(${startPage - 1})">‹</button>`;
+            for (let i = start; i <= end; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentItemPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => {
+                    currentItemPage = i;
+                    renderItemTable(filteredItemData);
+                };
+                container.appendChild(btn);
             }
-            for (let i = startPage; i <= endPage; i++) {
-                html += `<button class="page-btn ${i === currentItemDbPage ? 'active' : ''}" onclick="changeItemDbPage(${i})">${i}</button>`;
+
+            if (currentItemPage < pageCount) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.innerText = '▶';
+                nextBtn.onclick = () => { currentItemPage++; renderItemTable(filteredItemData); };
+                container.appendChild(nextBtn);
             }
-            if (endPage < totalPages) {
-                html += `<button class="page-btn" onclick="changeItemDbPage(${endPage + 1})">›</button>`;
-            }
-            pageEl.innerHTML = html;
         }
 
-        function changeItemDbPage(page) {
-            currentItemDbPage = page;
-            renderItemTable();
-        }
+        function showModal(item) {
+            const body = document.getElementById('modal-body');
+            const cls = getItemClass(item);
+            const tpVal = getItemTp(item);
 
-        function openModal(itemName) {
-            const sameItems = tradeData.filter(i => (i.item_name || i.itemName || i.name || '') === itemName);
-            const prices = sameItems.map(i => getNumberOnly(i.price)).filter(p => p > 0);
+            const findValue = (keys) => {
+                for(let key of keys) {
+                    if(item[key] !== undefined && item[key] !== null && item[key] !== '') return item[key];
+                    if(item.details && item.details[key] !== undefined && item.details[key] !== null && item.details[key] !== '') return item.details[key];
+                }
+                return '-';
+            };
 
-            let minP = prices.length ? Math.min(...prices) : 0;
-            let maxP = prices.length ? Math.max(...prices) : 0;
-            let medP = 0;
+            const name = item.name || findValue(['설정 이름', '설정이름']);
+            const torque = findValue(['토크값', '토크', 'Torque']);
+            const weight = findValue(['무게', 'Weight']);
+            const reqTp = tpVal;
+            const price = item.price || '-';
+            const carClass = getClassBadgeHtml(cls);
+            const factory = findValue(['팩토리조합여부', '팩토리 조합 여부', 'factory', '팩토리']);
+            const paymentType = findValue(['유무료형식', '유무료 형식', 'payment_type']);
+            const shopDisplay = findValue(['상점표시관련', '상점 표시 관련', '상점그룹', 'shopgroup']);
+            const shopDesc = item.description || findValue(['상점 판매 문구', '상점판매문구']);
+            const tradeCategory = item.parts || findValue(['거래소 분류', '거래소분류']);
 
-            if (prices.length) {
-                const sorted = [...prices].sort((a, b) => a - b);
-                const mid = Math.floor(sorted.length / 2);
-                medP = sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
-            }
-
-            const html = `
-                <h3 style="color:#f8fafc; margin-bottom:12px;">${itemName}</h3>
-                <div class="modal-grid">
-                    <div class="info-box">
-                        <span>매물 수량</span>
-                        <strong>${sameItems.length}개</strong>
-                    </div>
-                    <div class="info-box">
-                        <span>최저가</span>
-                        <strong>${minP > 0 ? minP.toLocaleString() + ' CT' : '-'}</strong>
-                    </div>
-                    <div class="info-box">
-                        <span>중앙값</span>
-                        <strong>${medP > 0 ? medP.toLocaleString() + ' CT' : '-'}</strong>
-                    </div>
-                    <div class="info-box">
-                        <span>최고가</span>
-                        <strong>${maxP > 0 ? maxP.toLocaleString() + ' CT' : '-'}</strong>
-                    </div>
+            let html = `
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <img src="${item.image || ''}" width="42" height="42" onerror="this.style.display='none'" style="border:1px solid #28354d; border-radius:6px; padding:2px; background:#0a0f1d;">
+                    <div style="font-size:15px; font-weight:bold; color:#fff;">${name}</div>
                 </div>
-                <div class="chart-section">
-                    <h4>등록 매물 가격 분포</h4>
-                    <div class="chart-wrapper">
-                        <canvas id="priceChart"></canvas>
-                    </div>
+                
+                <table class="info-table" style="font-size:12px; margin-bottom: 12px;">
+                    <tr><th style="width: 35%;">항목</th><th>상세 정보</th></tr>
+                    <tr><td>설정 이름</td><td style="font-weight:bold; color:#fff;">${name}</td></tr>
+                    <tr><td>토크값</td><td class="stat-green">${torque}</td></tr>
+                    <tr><td>무게</td><td class="stat-red">${weight}</td></tr>
+                    <tr><td>요구숙련치</td><td class="stat-yellow">${reqTp}</td></tr>
+                    <tr><td>가격</td><td>${price}</td></tr>
+                    <tr><td>적용차량</td><td>${carClass}</td></tr>
+                    <tr><td>팩토리조합여부</td><td>${factory}</td></tr>
+                    <tr><td>유무료형식</td><td>${paymentType}</td></tr>
+                    <tr><td>상점표시관련</td><td>${shopDisplay}</td></tr>
+                    <tr><td>거래소 분류</td><td>${tradeCategory}</td></tr>
+                </table>
+
+                <div class="tooltip-card">
+                    <div style="font-size:12px; color:#94a3b8; margin-bottom:4px; font-weight:bold;">상점 판매 문구</div>
+                    <div style="font-size:12px; color:#e2e8f0; line-height:1.4;">${shopDesc !== '-' ? shopDesc : '정보 없음'}</div>
                 </div>
             `;
-
-            document.getElementById('modal-body').innerHTML = html;
+            
+            body.innerHTML = html;
             document.getElementById('modal').style.display = 'flex';
-
-            setTimeout(() => { renderPriceChart(prices); }, 50);
-        }
-
-        function renderPriceChart(prices) {
-            const ctx = document.getElementById('priceChart');
-            if (!ctx) return;
-
-            if (priceChartInstance) {
-                priceChartInstance.destroy();
-            }
-
-            const sortedPrices = [...prices].sort((a, b) => a - b);
-            const chartLabels = sortedPrices.map((_, idx) => `매물 ${idx + 1}`);
-
-            priceChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartLabels.length > 0 ? chartLabels : ['매물 없음'],
-                    datasets: [{
-                        label: '가격 (CT)',
-                        data: sortedPrices.length > 0 ? sortedPrices : [0],
-                        borderColor: '#38bdf8',
-                        backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#facc15'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
-                        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#1e293b' } }
-                    }
-                }
-            });
         }
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }
 
-        window.addEventListener('resize', () => {
-            renderTradeList();
-        });
-
-        window.onload = () => {
-            checkEventTimes();
-            setInterval(checkEventTimes, 60000);
+        document.addEventListener('DOMContentLoaded', () => {
             fetchAndRenderTrade();
-            initItemDatabase();
-        };
+            setInterval(checkEventTimes, 60000);
+        });
     </script>
 </body>
 </html>
