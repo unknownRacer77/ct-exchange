@@ -331,20 +331,24 @@
 
         .class-badge {
             display: inline-block;
-            width: 20px;
+            min-width: 20px;
+            padding: 0 4px;
             height: 20px;
             line-height: 20px;
             text-align: center;
             font-weight: bold;
             font-size: 11px;
             border-radius: 3px;
+            white-space: nowrap;
         }
+        .class-badge.전체 { background: #334155; color: #fff; }
         .class-badge.C { background: #e2e8f0; color: #0f172a; }
         .class-badge.B { background: #a3e635; color: #0f172a; }
         .class-badge.A { background: #06b6d4; color: #fff; }
         .class-badge.S { background: #facc15; color: #0f172a; }
         .class-badge.G { background: #b91c1c; color: #fff; }
         .class-badge.R { background: #a855f7; color: #fff; }
+        .class-badge.DEFAULT { background: #334155; color: #fff; }
 
         .pagination {
             margin-top: 20px;
@@ -768,7 +772,7 @@
 
             listEl.innerHTML = pageItems.map(item => {
                 const name = item.itemName || item.name;
-                const iconSrc = item.icon || '';
+                const iconSrc = item.icon || item.image || item.img || item.iconPath || '';
                 return `
                     <div class="item-card" onclick="openModal('${name}')">
                         <div class="item-middle">
@@ -819,7 +823,8 @@
         async function initItemDatabase() {
             try {
                 const res = await fetch('ctr_items_db.json?t=' + new Date().getTime());
-                itemDbData = await res.json();
+                const data = await res.json();
+                itemDbData = (!Array.isArray(data) && data.items) ? data.items : data;
             } catch (err) {
                 itemDbData = [];
             }
@@ -833,11 +838,21 @@
             const pSel = document.getElementById('filter-parts');
             const sSel = document.getElementById('filter-shop');
 
-            const classSet = [...new Set(data.map(i => getItemClass(i)).filter(Boolean))].sort();
-            const partsSet = [...new Set(data.map(i => i.parts).filter(Boolean))].sort();
-            const shopSet = [...new Set(data.map(i => i.shopgroup).filter(Boolean))].sort();
+            const partsSet = [...new Set(data.map(i => getVal(i, ['parts', 'part', 'partName', '파츠'])).filter(Boolean))].sort();
+            const shopSet = [...new Set(data.map(i => getVal(i, ['shopgroup', 'shopGroup', 'shop', '상점그룹'])).filter(Boolean))].sort();
 
-            cSel.innerHTML = '<option value="">전체 Class</option>' + classSet.map(c => `<option value="${c}">Class ${c}</option>`).join('');
+            // 클래스 필터 옵션 고정 처리
+            cSel.innerHTML = `
+                <option value="">전체 Class (필터 해제)</option>
+                <option value="전체">전체 (액세서리 등)</option>
+                <option value="C">Class C</option>
+                <option value="B">Class B</option>
+                <option value="A">Class A</option>
+                <option value="S">Class S</option>
+                <option value="R">Class R</option>
+                <option value="G">Class G</option>
+            `;
+            
             pSel.innerHTML = '<option value="">전체 파츠</option>' + partsSet.map(p => `<option value="${p}">${p}</option>`).join('');
             sSel.innerHTML = '<option value="">전체 상점그룹</option>' + shopSet.map(s => `<option value="${s}">${s}</option>`).join('');
         }
@@ -850,14 +865,34 @@
 
             filteredItemDb = itemDbData.filter(item => {
                 const itemCls = getItemClass(item);
-                return (!nameKey || item.name.toLowerCase().includes(nameKey)) &&
+                const itemName = (getVal(item, ['name', 'itemName', '이름']) || '').toLowerCase();
+                const itemParts = getVal(item, ['parts', 'part', 'partName', '파츠']) || '';
+                const itemShop = getVal(item, ['shopgroup', 'shopGroup', 'shop', '상점그룹']) || '';
+                return (!nameKey || itemName.includes(nameKey)) &&
                        (!classKey || itemCls === classKey) &&
-                       (!partsKey || item.parts === partsKey) &&
-                       (!shopKey || item.shopgroup === shopKey);
+                       (!partsKey || itemParts === partsKey) &&
+                       (!shopKey || itemShop === shopKey);
             });
 
             currentItemDbPage = 1;
             renderItemTable();
+        }
+
+        function getVal(item, keys) {
+            for (let k of keys) {
+                if (item[k] !== undefined && item[k] !== null && item[k] !== '' && item[k] !== '-') return item[k];
+            }
+            return null;
+        }
+
+        function getItemClass(item) {
+            const val = getVal(item, ['carclass', 'class', 'carClass', 'itemClass', 'Class', 'CLASS', 'car_class', 'item_class', 'vehicleClass', 'grade', 'Grade', 'rank', 'Rank', '클래스', '등급']);
+            return val ? String(val).trim().toUpperCase() : '-';
+        }
+
+        function getItemTp(item) {
+            const val = getVal(item, ['tp', 'TP', 'tPoint', 'tpoint', 't_point', 'point', 'Point', '점수', '포인트']);
+            return (val !== null && val !== undefined && String(val).trim() !== '') ? val : '-';
         }
 
         function renderItemTable() {
@@ -880,15 +915,23 @@
             tbody.innerHTML = pageItems.map(item => {
                 const cls = getItemClass(item);
                 const tp = getItemTp(item);
-                const iconSrc = item.icon || '';
+                
+                let iconSrc = getVal(item, ['image', 'icon', 'Icon', 'img', 'Img', 'iconPath', 'thumbnail', 'thumb', '아이콘', '이미지']) || '';
+                if (iconSrc.startsWith('/')) iconSrc = '.' + iconSrc;
+
+                let priceVal = getVal(item, ['price', 'Price', 'PRICE', 'cost', 'Cost', 'sellPrice', 'sell_price', 'shopPrice', 'shop_price', 'money', 'Money', 'ct', 'CT', 'amount', 'Amount', '가격', '금액']);
+                let cleanPrice = priceVal ? String(priceVal).replace(/,/g, '').trim() : '';
+                const priceStr = (cleanPrice !== '' && !isNaN(Number(cleanPrice))) 
+                                 ? Number(cleanPrice).toLocaleString() + ' CT' : '-';
+
                 return `
                     <tr>
-                        <td>${iconSrc ? `<img src="${iconSrc}" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none'">` : '🖼️'}</td>
-                        <td>${item.name}</td>
-                        <td>${item.parts || '-'}</td>
+                        <td>${iconSrc ? `<img src="${iconSrc}" style="width:28px;height:28px;object-fit:contain;" onerror="this.onerror=null; this.parentNode.innerHTML='🖼️';">` : '🖼️'}</td>
+                        <td>${getVal(item, ['name', 'itemName', '이름']) || '-'}</td>
+                        <td>${getVal(item, ['parts', 'part', 'partName', '파츠']) || '-'}</td>
                         <td><span class="class-badge ${cls}">${cls}</span></td>
                         <td>${tp}</td>
-                        <td>${item.price ? Number(item.price).toLocaleString() : '-'} CT</td>
+                        <td>${priceStr}</td>
                     </tr>
                 `;
             }).join('');
@@ -923,14 +966,6 @@
         function changeItemDbPage(page) {
             currentItemDbPage = page;
             renderItemTable();
-        }
-
-        function getItemClass(item) {
-            return item.class ? String(item.carclass || item.class).trim().toUpperCase() : 'C';
-        }
-
-        function getItemTp(item) {
-            return (item.tp !== undefined && item.tp !== null && item.tp !== "") ? item.tp : '-';
         }
 
         function openModal(itemName) {

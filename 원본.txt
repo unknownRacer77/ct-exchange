@@ -36,11 +36,9 @@
             min-height: 90vh;
         }
 
-        /* 뷰 전환 시스템 */
         .view { display: none; }
         .view.active-view { display: block; }
 
-        /* 상단 네비게이션 탭 */
         .top-nav {
             display: flex;
             gap: 8px;
@@ -67,7 +65,6 @@
             border-color: #3b82f6;
         }
 
-        /* 헤더 및 검색 */
         .header {
             display: flex;
             justify-content: space-between;
@@ -98,11 +95,13 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .title {
             font-size: 17px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .live-tag {
@@ -118,6 +117,7 @@
             font-size: 12px;
             color: #64748b;
             margin-top: 2px;
+            white-space: nowrap;
         }
 
         .header-actions {
@@ -126,7 +126,6 @@
             gap: 12px;
         }
 
-        /* 툴팁 */
         .info-tooltip-wrap {
             position: relative;
             display: inline-flex;
@@ -192,6 +191,7 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         .search-box {
@@ -227,7 +227,6 @@
             outline: none;
         }
 
-        /* 거래소 카드 목록 */
         .item-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -292,7 +291,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* 아이템 정보 DB 테이블 */
         .filter-row {
             display: flex;
             gap: 6px;
@@ -331,11 +329,6 @@
             color: #94a3b8;
         }
 
-        .info-table tr:hover {
-            background: #1e293b;
-            cursor: pointer;
-        }
-
         .class-badge {
             display: inline-block;
             width: 20px;
@@ -352,6 +345,7 @@
         .class-badge.S { background: #facc15; color: #0f172a; }
         .class-badge.G { background: #b91c1c; color: #fff; }
         .class-badge.R { background: #a855f7; color: #fff; }
+        .class-badge.DEFAULT { background: #334155; color: #fff; }
 
         .pagination {
             margin-top: 20px;
@@ -380,7 +374,6 @@
             font-weight: bold;
         }
 
-        /* 모달 스타일 */
         #modal {
             display: none;
             position: fixed;
@@ -467,7 +460,6 @@
             width: 100%;
         }
 
-        /* 이벤트 배지 */
         .event-badge {
             display: inline-flex;
             align-items: center;
@@ -478,6 +470,7 @@
             font-size: 12px;
             background-color: #2a2a2a;
             color: #666;
+            white-space: nowrap;
         }
 
         .event-badge.fokju.active {
@@ -513,40 +506,104 @@
             50% { opacity: 0.3; }
             100% { opacity: 1; }
         }
+
+        .badge-text-full { display: inline; }
+        .badge-text-short { display: none; }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .logo-area {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .title {
+                font-size: 13px;
+            }
+
+            .logo-badge {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+
+            .badge-text-full { display: none; }
+            .badge-text-short { display: inline; }
+
+            .event-badge {
+                padding: 3px 6px;
+                font-size: 11px;
+            }
+
+            .header-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                background: #131c2e;
+                padding: 6px 10px;
+                border-radius: 8px;
+                border: 1px solid #202d44;
+            }
+
+            .sync-time {
+                font-size: 11px;
+            }
+
+            .refresh-btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- 상단 네비게이션 탭 -->
         <div class="top-nav">
             <button class="nav-tab-btn active" id="tab-trade" onclick="switchView('trade')">🛒 거래소 검색</button>
             <button class="nav-tab-btn" id="tab-items" onclick="switchView('items')">🔍 아이템 검색</button>
         </div>
 
-        <!-- [VIEW 1] 거래소 검색 화면 -->
         <div id="view-trade" class="view active-view">
             <div class="header">
                 <div class="logo-area">
-                    <div class="logo-badge">CT</div>
-                    <div class="title-wrap">
-                        <span class="title">시티레이서 거래소</span>
-                        <span class="live-tag">LIVE</span>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div class="logo-badge">CT</div>
+                        <div class="title-wrap">
+                            <span class="title">시티레이서 거래소</span>
+                            <span class="live-tag">LIVE</span>
+                        </div>
                     </div>
-                    <div id="golden-badge" class="event-badge golden active">
-                        <span class="dot"></span> 골든타임
-                    </div>
-                    <div id="fokju-badge" class="event-badge fokju active">
-                        <span class="dot"></span> 폭주타임
+                    <div style="display: flex; gap: 4px;">
+                        <div id="golden-badge" class="event-badge golden">
+                            <span class="dot"></span>
+                            <span class="badge-text-full">골든타임</span>
+                            <span class="badge-text-short">골타</span>
+                        </div>
+                        <div id="fokju-badge" class="event-badge fokju">
+                            <span class="dot"></span>
+                            <span class="badge-text-full">폭주타임</span>
+                            <span class="badge-text-short">폭타</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="header-actions">
                     <div class="sync-time" id="sync-time">동기화: 불러오는 중...</div>
-                    <div class="info-tooltip-wrap">
-                        <span class="info-icon">ⓘ</span>
-                        <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div class="info-tooltip-wrap">
+                            <span class="info-icon">ⓘ</span>
+                            <div class="info-tooltip">실제 게임 내 거래소 데이터와 차이가 있을 수 있습니다.</div>
+                        </div>
+                        <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
                     </div>
-                    <button class="refresh-btn" onclick="fetchAndRenderTrade()">🔄 갱신</button>
                 </div>
             </div>
 
@@ -567,7 +624,6 @@
             <div id="trade-pagination" class="pagination"></div>
         </div>
 
-        <!-- [VIEW 2] 아이템 정보 검색 화면 -->
         <div id="view-items" class="view">
             <div class="header">
                 <div class="logo-area">
@@ -616,7 +672,6 @@
         </div>
     </div>
 
-    <!-- 상세 정보 모달 -->
     <div id="modal" onclick="if(event.target === this) closeModal()">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -630,9 +685,8 @@
         let filteredTrade = [];
         let filteredItemDb = [];
         let priceChartInstance = null;
-
-        // 거래소 페이징 상태
         let currentTradePage = 1;
+        let currentItemDbPage = 1;
 
         function getItemsPerPage() {
             return window.innerWidth <= 768 ? 10 : 28;
@@ -649,17 +703,38 @@
         async function fetchAndRenderTrade() {
             try {
                 const res = await fetch('ct_trade_db.json?t=' + new Date().getTime());
-                tradeData = await res.json();
+                const lastModifiedHeader = res.headers.get('Last-Modified');
+                const data = await res.json();
+
+                let syncTimeStr = '';
+                let isGolden = false;
+                let isFokju = false;
+
+                if (!Array.isArray(data) && data.items) {
+                    tradeData = data.items;
+                    syncTimeStr = data.updatedAt || data.updated_at || data.syncTime || '';
+                    isGolden = !!(data.golden || data.isGolden);
+                    isFokju = !!(data.fokju || data.isFokju);
+                } else {
+                    tradeData = data;
+                    if (lastModifiedHeader) {
+                        const dateObj = new Date(lastModifiedHeader);
+                        syncTimeStr = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    }
+                    const now = new Date();
+                    const hour = now.getHours();
+                    isGolden = (hour >= 20 && hour < 22);
+                    isFokju = (hour >= 21 && hour < 22);
+                }
+
+                document.getElementById('sync-time').innerText = syncTimeStr ? `동기화: ${syncTimeStr}` : '동기화: 완료';
+                document.getElementById('golden-badge').classList.toggle('active', isGolden);
+                document.getElementById('fokju-badge').classList.toggle('active', isFokju);
+
             } catch (e) {
-                console.log('ct_trade_db.json 로드 안됨 - 샘플 데이터 사용');
-                tradeData = Array.from({ length: 45 }, (_, i) => ({
-                    itemName: `S클래스 엔진 [V${i + 1}]`,
-                    price: 1000000 * (i + 1),
-                    time: `${i + 1}분 전`,
-                    icon: ""
-                }));
+                tradeData = [];
+                document.getElementById('sync-time').innerText = '동기화: 파일 없음';
             }
-            document.getElementById('sync-time').innerText = '동기화: ' + new Date().toLocaleTimeString();
             applyTradeFilters();
         }
 
@@ -680,7 +755,7 @@
         function renderTradeList() {
             const listEl = document.getElementById('item-list');
             if (filteredTrade.length === 0) {
-                listEl.innerHTML = `<div class="loading">검색 결과가 없습니다.</div>`;
+                listEl.innerHTML = `<div class="loading">등록된 매물이 없습니다.</div>`;
                 document.getElementById('trade-pagination').innerHTML = '';
                 return;
             }
@@ -694,10 +769,11 @@
 
             listEl.innerHTML = pageItems.map(item => {
                 const name = item.itemName || item.name;
+                const iconSrc = item.icon || item.image || item.img || item.iconPath || '';
                 return `
                     <div class="item-card" onclick="openModal('${name}')">
                         <div class="item-middle">
-                            <img class="item-thumbnail" src="${item.icon || ''}" onerror="this.style.display='none'">
+                            ${iconSrc ? `<img class="item-thumbnail" src="${iconSrc}" onerror="this.style.display='none'">` : `<div class="item-thumbnail" style="display:flex;align-items:center;justify-content:center;color:#64748b;font-size:11px;">No Img</div>`}
                             <div class="item-title">${name}</div>
                         </div>
                         <div class="item-footer">
@@ -718,9 +794,19 @@
                 return;
             }
 
+            const maxButtons = 10;
+            let startPage = Math.floor((currentTradePage - 1) / maxButtons) * maxButtons + 1;
+            let endPage = Math.min(startPage + maxButtons - 1, totalPages);
+
             let html = '';
-            for (let i = 1; i <= totalPages; i++) {
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="changeTradePage(${startPage - 1})">‹</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
                 html += `<button class="page-btn ${i === currentTradePage ? 'active' : ''}" onclick="changeTradePage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                html += `<button class="page-btn" onclick="changeTradePage(${endPage + 1})">›</button>`;
             }
             pageEl.innerHTML = html;
         }
@@ -734,9 +820,9 @@
         async function initItemDatabase() {
             try {
                 const res = await fetch('ctr_items_db.json?t=' + new Date().getTime());
-                itemDbData = await res.json();
+                const data = await res.json();
+                itemDbData = (!Array.isArray(data) && data.items) ? data.items : data;
             } catch (err) {
-                console.log('ctr_items_db.json 로드 안됨');
                 itemDbData = [];
             }
             filteredItemDb = itemDbData;
@@ -749,9 +835,9 @@
             const pSel = document.getElementById('filter-parts');
             const sSel = document.getElementById('filter-shop');
 
-            const classSet = [...new Set(data.map(i => getItemClass(i)).filter(Boolean))].sort();
-            const partsSet = [...new Set(data.map(i => i.parts).filter(Boolean))].sort();
-            const shopSet = [...new Set(data.map(i => i.shopgroup).filter(Boolean))].sort();
+            const classSet = [...new Set(data.map(i => getItemClass(i)).filter(c => c && c !== '-'))].sort();
+            const partsSet = [...new Set(data.map(i => getVal(i, ['parts', 'part', 'partName', '파츠'])).filter(Boolean))].sort();
+            const shopSet = [...new Set(data.map(i => getVal(i, ['shopgroup', 'shopGroup', 'shop', '상점그룹'])).filter(Boolean))].sort();
 
             cSel.innerHTML = '<option value="">전체 Class</option>' + classSet.map(c => `<option value="${c}">Class ${c}</option>`).join('');
             pSel.innerHTML = '<option value="">전체 파츠</option>' + partsSet.map(p => `<option value="${p}">${p}</option>`).join('');
@@ -766,44 +852,107 @@
 
             filteredItemDb = itemDbData.filter(item => {
                 const itemCls = getItemClass(item);
-                return (!nameKey || item.name.toLowerCase().includes(nameKey)) &&
+                const itemName = (getVal(item, ['name', 'itemName', '이름']) || '').toLowerCase();
+                const itemParts = getVal(item, ['parts', 'part', 'partName', '파츠']) || '';
+                const itemShop = getVal(item, ['shopgroup', 'shopGroup', 'shop', '상점그룹']) || '';
+                return (!nameKey || itemName.includes(nameKey)) &&
                        (!classKey || itemCls === classKey) &&
-                       (!partsKey || item.parts === partsKey) &&
-                       (!shopKey || item.shopgroup === shopKey);
+                       (!partsKey || itemParts === partsKey) &&
+                       (!shopKey || itemShop === shopKey);
             });
 
-            renderItemTable(filteredItemDb);
+            currentItemDbPage = 1;
+            renderItemTable();
         }
 
-        function renderItemTable(items) {
-            const tbody = document.getElementById('item-db-list');
-            if (items.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="loading">데이터가 없습니다.</td></tr>`;
-                return;
+        function getVal(item, keys) {
+            for (let k of keys) {
+                if (item[k] !== undefined && item[k] !== null && item[k] !== '' && item[k] !== '-') return item[k];
             }
-
-            tbody.innerHTML = items.map(item => {
-                const cls = getItemClass(item);
-                const tp = getItemTp(item);
-                return `
-                    <tr onclick="openModal('${item.name}')">
-                        <td>🖼️</td>
-                        <td>${item.name}</td>
-                        <td>${item.parts || '-'}</td>
-                        <td><span class="class-badge ${cls}">${cls}</span></td>
-                        <td>${tp}</td>
-                        <td>${item.price ? Number(item.price).toLocaleString() : '-'} CT</td>
-                    </tr>
-                `;
-            }).join('');
+            return null;
         }
 
-        function getItemClass(item) {
-            return item.class ? String(item.carclass || item.class).trim().toUpperCase() : 'C';
+      function getItemClass(item) {
+            const val = getVal(item, ['carclass', 'class', 'carClass', 'itemClass', 'Class', 'CLASS', 'car_class', 'item_class', 'vehicleClass', 'grade', 'Grade', 'rank', 'Rank', '클래스', '등급']);
+            return val ? String(val).trim().toUpperCase() : '-';
         }
 
         function getItemTp(item) {
-            return (item.tp !== undefined && item.tp !== null && item.tp !== "") ? item.tp : '-';
+            const val = getVal(item, ['tp', 'TP', 'tPoint', 'tpoint', 't_point', 'point', 'Point', '점수', '포인트']);
+            return (val !== null && val !== undefined && String(val).trim() !== '') ? val : '-';
+        }
+
+        function renderItemTable() {
+            const tbody = document.getElementById('item-db-list');
+            const pageEl = document.getElementById('pagination');
+
+            if (filteredItemDb.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="loading">데이터가 없습니다.</td></tr>`;
+                pageEl.innerHTML = '';
+                return;
+            }
+
+            const itemsPerPage = 10;
+            const totalPages = Math.ceil(filteredItemDb.length / itemsPerPage);
+            if (currentItemDbPage > totalPages) currentItemDbPage = totalPages;
+
+            const start = (currentItemDbPage - 1) * itemsPerPage;
+            const pageItems = filteredItemDb.slice(start, start + itemsPerPage);
+
+            tbody.innerHTML = pageItems.map(item => {
+                const cls = getItemClass(item);
+                const tp = getItemTp(item);
+                
+                let iconSrc = getVal(item, ['image', 'icon', 'Icon', 'img', 'Img', 'iconPath', 'thumbnail', 'thumb', '아이콘', '이미지']) || '';
+                if (iconSrc.startsWith('/')) iconSrc = '.' + iconSrc;
+
+                let priceVal = getVal(item, ['price', 'Price', 'PRICE', 'cost', 'Cost', 'sellPrice', 'sell_price', 'shopPrice', 'shop_price', 'money', 'Money', 'ct', 'CT', 'amount', 'Amount', '가격', '금액']);
+                let cleanPrice = priceVal ? String(priceVal).replace(/,/g, '').trim() : '';
+                const priceStr = (cleanPrice !== '' && !isNaN(Number(cleanPrice))) 
+                                 ? Number(cleanPrice).toLocaleString() + ' CT' : '-';
+
+                return `
+                    <tr>
+                        <td>${iconSrc ? `<img src="${iconSrc}" style="width:28px;height:28px;object-fit:contain;" onerror="this.onerror=null; this.parentNode.innerHTML='🖼️';">` : '🖼️'}</td>
+                        <td>${getVal(item, ['name', 'itemName', '이름']) || '-'}</td>
+                        <td>${getVal(item, ['parts', 'part', 'partName', '파츠']) || '-'}</td>
+                        <td><span class="class-badge ${cls}">${cls}</span></td>
+                        <td>${tp}</td>
+                        <td>${priceStr}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            renderItemDbPagination(totalPages);
+        }
+
+        function renderItemDbPagination(totalPages) {
+            const pageEl = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                pageEl.innerHTML = '';
+                return;
+            }
+
+            const maxButtons = 10;
+            let startPage = Math.floor((currentItemDbPage - 1) / maxButtons) * maxButtons + 1;
+            let endPage = Math.min(startPage + maxButtons - 1, totalPages);
+
+            let html = '';
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="changeItemDbPage(${startPage - 1})">‹</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentItemDbPage ? 'active' : ''}" onclick="changeItemDbPage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                html += `<button class="page-btn" onclick="changeItemDbPage(${endPage + 1})">›</button>`;
+            }
+            pageEl.innerHTML = html;
+        }
+
+        function changeItemDbPage(page) {
+            currentItemDbPage = page;
+            renderItemTable();
         }
 
         function openModal(itemName) {
